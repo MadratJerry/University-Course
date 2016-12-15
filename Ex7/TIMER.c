@@ -16,7 +16,7 @@ void time0() interrupt 1 {
     TH0 = 0x4c; TL0 = 0x00;
 }
 void time1() interrupt 3 {
-    if (i1++ == 20) {i1 = 0; if (!t--) TR1 = 0, TR0 = 1, t = 0;}
+    if (i1++ == 20) {i1 = 0; t++;}
     TH1 = 0x4c; TL1 = 0x00;
 }
 void main() {
@@ -25,8 +25,8 @@ void main() {
     EA = ET0 = ET1 = EX0 = 1;
     while(1){
         display(t);
-        if (T0 == 0 && TR1 == 0) {t += b ? 60 : 1; while(T0==0)f();}
-        if (T1 == 0 && TR1 == 0) {t -= b ? 60 : 1; while(T1==0)f();}
+        if (T0 == 0 && TR0 == 1) {t += b ? 60 : 1; while(T0==0)f();}
+        if (T1 == 0 && TR0 == 1) {t -= b ? 60 : 1; while(T1==0)f();}
         if (INT0 == 0) {b = !b; while(INT0==0)f();}
     }
 }
