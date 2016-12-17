@@ -7,7 +7,6 @@ sbit led1 = P0^1;
 sbit led2 = P0^2;
 sbit led3 = P0^3;
 sbit led4 = P0^4;
-sbit led5 = P0^5;
 
 //红外地址接口定义
 sbit A0 = P1^2;
@@ -31,7 +30,8 @@ sbit MR1=P2^2;
 sbit MR2=P2^3;
 
 //设置变量记录左右电机产生的脉冲数
-unsigned char intCountL=0,intCountR=0;	  
+unsigned char intCountL=0,intCountR=0;
+unsigned int i, j, k;	  
 
 //红外发射控制宏定义(传入传感器组号)
 #define MOUSE_IR_ON(GROUP_NO)\
@@ -51,12 +51,44 @@ void initT_2(unsigned int us)
 	TL2=RCAP2L=(65536-us)/256; //500ms
 	TH2=RCAP2H=(65536-us)%256;
 	TR2=ET2=1;
-
+}
+void runML(bit f) {
+    if (f) {
+        ML1 = 1; ML2 = 0;
+    } else {
+        ML1 = 0; ML2 = 1;
+    }
+}
+void runMR(bit f) {
+    if (f) {
+        MR1 = 1; MR2 = 0;
+    } else {
+        MR1 = 0; MR2 = 1;
+    }
+}
+void stopMR() { MR1 = MR2 = 1; }
+void stopML() { ML1 = ML2 = 1; }
+void go() {
+    unsigned int l = 50;
+    for (i = 0, j = 0; i < l; i++, j++) {
+        runMR(1);
+        if (j < 39) {
+            runML(0);
+        } else stopML();
+    }
+}
+void turn() {
+    stopMR();
+    for (i = 0; i < 50; i++) runML(0);
 }
 void main()
 {
 	initT_2(500);	//5000代表间隔时间
-	while(1);
+	while(1){
+        for (k = 0; k < 3000; k++) go();
+        for (k = 0; k < 500; k++) turn();
+        
+    };
 }
 void T_1() interrupt 3
 {
