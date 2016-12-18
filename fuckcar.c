@@ -1,24 +1,37 @@
 #include <reg52.h>
+#define LOOP_0(f) f##(0)
+#define LOOP_1(f) LOOP_0(f) f##(1)
+#define LOOP_2(f) LOOP_1(f) f##(2)
+#define LOOP_3(f) LOOP_2(f) f##(3)
+#define LOOP_4(f) LOOP_3(f) f##(4)
+#define LOOP_HELPER(n, f) LOOP_##n(f)
+#define LOOP(n, f) LOOP_HELPER(n, f)
+#define CMD(n, f) f##(n)
+
+#define MARCO_RG_F(n) if (e==n) return R##n;
+#define MARCO_LED_DEFINE(n) sbit LED##n = P0^##n;
+#define MARCO_LED_F(n) if (e==n) return LED##n = s;
+// #define MARCO_RL 
+LOOP(4, MARCO_LED_DEFINE)
+
+typedef bit bool;
+typedef unsigned char uint8;
+typedef signed char int8;
+typedef unsigned int uint16;
+typedef signed int int16;
+
 sfr T2MOD=0xc9;
-
-//指示灯接口定义
-sbit led0 = P0^0;
-sbit led1 = P0^1;
-sbit led2 = P0^2;
-sbit led3 = P0^3;
-sbit led4 = P0^4;
-
 //红外地址接口定义
 sbit A0 = P1^2;
 sbit A1 = P1^3;
 sbit A2 = P1^4;
 
 //红外传感器接收信号口定义（接收--0 未接收--1）
-sbit irR1 = P3^6;	//左
-sbit irR2 = P2^5;	//左前
-sbit irR3 = P2^6;	//中
-sbit irR4 = P2^7;	//右前
-sbit irR5 = P3^7;	//右
+sbit R0 = P3^6;	//左
+sbit R1 = P2^5;	//左前
+sbit R2 = P2^6;	//中
+sbit R3 = P2^7;	//右前
+sbit R4 = P3^7;	//右
 
 //定义红外传感器检测状态全局位变量 （L--Left R--Right C--Center LU--左前方 RU--右前方）
 bit irL = 0,irR = 0,irC = 0,irLU = 0,irRU = 0;
@@ -34,22 +47,21 @@ unsigned char intCountL=0,intCountR=0;
 unsigned int i, j, k;	  
 
 //红外发射控制宏定义(传入传感器组号)
-#define MOUSE_IR_ON(GROUP_NO)\
-do\
-{ \
-   A0 = (GROUP_NO)&0x01;\
-   A0 = (GROUP_NO)&0x02;\
-   A0 = (GROUP_NO)&0x04;\
-}while(0)
+void IR_ON(uint8 n) { 
+    A0 = (n)&0x01, A1 = (n)&0x02, A2 = (n)&0x04;
+    if ((n)==5) A0=A1=A2=1; 
+}
 
+uint8 RG(uint8 e) { LOOP(4, MARCO_RG_F) }
+uint8 LED(uint8 e, uint8 s) { LOOP(4, MARCO_LED_F) return -1;}
 //初始化定时器T2
-void initT_2(unsigned int us)
+void initT2(uint16 us)
 {
 	EA=1;
 	T2MOD=0;
 	TCON=0;
-	TL2=RCAP2L=(65536-us)/256; //500ms
-	TH2=RCAP2H=(65536-us)%256;
+	TL2=RCAP2L=(65536-us)%256; //500ms
+	TH2=RCAP2H=(65536-us)/256;
 	TR2=ET2=1;
 }
 void runML(bit f) {
@@ -71,8 +83,10 @@ void stopML() { ML1 = ML2 = 1; }
 void go() {
     unsigned int l = 50;
     for (i = 0, j = 0; i < l; i++, j++) {
+        if (i < 50) 
         runMR(1);
-        if (j < 39) {
+        else stopMR();
+        if (j < 50) {
             runML(0);
         } else stopML();
     }
@@ -83,111 +97,16 @@ void turn() {
 }
 void main()
 {
-	initT_2(500);	//5000代表间隔时间
+	initT2(8000);
 	while(1){
-        for (k = 0; k < 3000; k++) go();
-        for (k = 0; k < 500; k++) turn();
-        
+        for (k = 0; k < 1000; k++) go();
+        for (k = 0; k < 300; k++) turn();
     };
 }
-void T_1() interrupt 3
-{
-	intCountR++;
-}
-//T2中断服务函数
-void T_2() interrupt 5	
-{
-	static unsigned char irNo=1;  	//判断量
-	TF2=0;	//T2定时器人为清零
-	switch(irNo)
-	{
-		case 1 :{
-			A0 = 0; A1 = 0; A2 = 0;	  //第一个信号灯(左前)
-			break; 	
-		}
-
-		case 2 :{	
-			if(irR1 == 1)  //红外传感器接收信号定义 ，接收--0，未接收--1  判断case1信是否接收到
-			{
-				irL=0;	  //左灯
-				led0=1;
-			}
-			else
-			{
-				irL=1;
-				led0=0;
-			}
-
-			A0 = 1; A1 = 0; A2 = 0;	 //第二个信号灯
-			break;
-		 }
-
-		case 3 : {
-			if(irR2 == 1)  //红外传感器接收信号定义 ，接收--0，未接收--1  判断case2信是否接收到
-			{
-				irLU=0;	  //左前灯
-				led1=1;
-			}
-			else
-			{
-				irLU=1;
-				led1=0;
-			}
-
-			A0 = 0; A1 = 1; A2 = 0;	 //第三个信号灯	   
-			break;
-		}
-
-		case 4 : {
-			if(irR3 == 1)  //红外传感器接收信号定义 ，接收--0，未接收--1  判断case3信是否接收到
-			{
-				irC=0;	  //中灯
-				led2=1;
-			}
-			else
-			{
-				irC=1;
-				led2=0;
-			}
-
-			A0 = 1; A1 = 1; A2 = 0;	 //第四个信号灯	   
-			break;
-		}
-
-		case 5 : {
-			if(irR4 == 1)  //红外传感器接收信号定义 ，接收--0，未接收--1  判断case4信是否接收到
-			{
-				irRU=0;	  //右前灯
-				led3=1;
-			}
-			else
-			{
-				irRU=1;
-				led3=0;
-			}
-
-			A0 = 0; A1 = 0; A2 = 1;	 //第五个信号灯	   
-			break;
-		}
-		case 6 : {
-			if(irR5 == 1)  //红外传感器接收信号定义 ，接收--0，未接收--1  判断case4信是否接收到
-			{
-				irR=0;	  //右灯
-				led4=1;
-			}
-			else
-			{
-				irR=1;	  //右灯
-				led4=0;
-			}
-
-			A0 = 1; A1 = 1; A2 = 1;	 //关闭信号灯   
-			break;
-		}
-		//***
-		//***
-		//***同理
-	}
-	if(irNo<6)  irNo++;
-	else	irNo = 1;
+void scan() interrupt 5 {
+    static uint8 n = 0;
+    TF2 = 0;
+    (RG(n-1))?LED(n-1, 1):LED(n-1, 0);
+    IR_ON(n);
+    n = (n+1)%6;
 }
