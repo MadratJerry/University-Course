@@ -1,4 +1,5 @@
 #include <reg52.h>
+#define SCAN_DELAY 10000
 #define LOOP_0(f) f##(0)
 #define LOOP_1(f) LOOP_0(f) f##(1)
 #define LOOP_2(f) LOOP_1(f) f##(2)
@@ -11,7 +12,6 @@
 #define MARCO_RG_F(n) if (e==n) return R##n;
 #define MARCO_LED_DEFINE(n) sbit LED##n = P0^##n;
 #define MARCO_LED_F(n) if (e==n) return LED##n = s;
-// #define MARCO_RL 
 LOOP(4, MARCO_LED_DEFINE)
 
 typedef bit bool;
@@ -42,9 +42,10 @@ sbit ML2=P2^1;
 sbit MR1=P2^2;
 sbit MR2=P2^3;
 
-//设置变量记录左右电机产生的脉冲数
-unsigned char intCountL=0,intCountR=0;
-unsigned int i, j, k;	  
+//个人变量
+uint8 code mTable[] = {0x03, 0x1, 0x2, 0xc, 0x8, 0x4};
+uint8 mL = 0, mR = 0;
+uint8 i, j, k;	  
 
 //红外发射控制宏定义(传入传感器组号)
 void IR_ON(uint8 n) { 
@@ -81,27 +82,41 @@ void runMR(bit f) {
 void stopMR() { MR1 = MR2 = 1; }
 void stopML() { ML1 = ML2 = 1; }
 void go() {
-    unsigned int l = 50;
-    for (i = 0, j = 0; i < l; i++, j++) {
-        if (i < 50) 
-        runMR(1);
-        else stopMR();
-        if (j < 50) {
+    mL = mR = 0;
+    while ((mL < 50) || (mR < 50)) {
+        if (mL < mR) {
+            stopMR();
             runML(0);
-        } else stopML();
+        } else {
+            stopML();
+            runMR(1);
+        }
     }
 }
 void turn() {
     stopMR();
     for (i = 0; i < 50; i++) runML(0);
 }
+void initT0_1(uint8 l, uint8 r) {
+    TMOD = 0x66;
+    TH0 = TL0 = 256 - l;
+    TH1 = TL1 = 256 - r;
+    EA = ET0 = ET1 = 1;
+    TR0 = TR1 = 1;
+}
 void main()
 {
-	initT2(8000);
+	initT2(SCAN_DELAY);
+    initT0_1(4, 4);
 	while(1){
-        for (k = 0; k < 1000; k++) go();
-        for (k = 0; k < 300; k++) turn();
-    };
+        go();
+    }
+}
+void mCountL() interrupt 1 {
+    mL++;
+}
+void mCountR() interrupt 3 {
+    mR++;
 }
 void scan() interrupt 5 {
     static uint8 n = 0;
