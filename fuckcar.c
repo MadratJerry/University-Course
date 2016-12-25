@@ -1,7 +1,7 @@
 #include <reg52.h>
 
 // 预设参数
-#define SCAN_DELAY 5000
+#define SCAN_DELAY 10000
 #define FORWARD 0xE7
 #define RETREAT 0xDB
 #define TURNRIGHT 0xEB
@@ -93,6 +93,7 @@ void initT2(uint16 us) {
 	TH2=RCAP2H=(65536-us)/256;
 	TR2=ET2=1;
 }
+int8 SHIT = -1;
 //初始化定时器T0 T1
 void initT0_1(uint8 l, uint8 r) {
     TMOD = 0x66;
@@ -101,15 +102,51 @@ void initT0_1(uint8 l, uint8 r) {
     EA = ET0 = ET1 = 1;
     TR0 = TR1 = 1;
 }
-void straight() {
-    MOVE(FORWARD, 3, 3);
-    while (I0 && !I2) MOVE(FORWARD, 1, 0);
-    while (!I0 && I2) MOVE(FORWARD, 0, 1);
+void straight(uint8 l) {
+    while (l--) {
+        if (I1) break;
+        MOVE(FORWARD, 5, 5);
+        while (I0 || I2) {
+            if (I0 && !I2) MOVE(FORWARD, 1, 0);
+            if (!I0 && I2) MOVE(FORWARD, 0, 1);
+        }
+    }
 }
 void main() {
+    uint16 a = 0;
 	initT2(SCAN_DELAY);
     initT0_1(4, 4);
 	while(1) {
-        straight();
+        if (I1) {
+            if (I3&&I4) SHIT = 0;
+            else SHIT = 3;
+            break;
+            }
+        if (!I3&&I4) {SHIT = 1;}
+        if (I3&&!I4 || !I1&&!I3&&!I4) {SHIT = 2;}
+
+        switch(SHIT) {
+            case 0: {
+                while (I1) { MOVE(TURNLEFT, 1, 1); }
+                break;
+            }
+            case 1: {
+                MOVE(TURNLEFT, 25, 25);
+                break;
+            }
+            case 2: {
+                MOVE(TURNRIGHT, 25, 25);
+                break;
+            }
+            case 3: {
+                // MOVE(RETREAT, 1, 1);
+            }
+            default: {
+                straight(10);
+            }
+        }
+        MOVE(0, 0, 0);
+        for (a = 0; a < 50000; a++);
+        SHIT = -1;
     }
 }
