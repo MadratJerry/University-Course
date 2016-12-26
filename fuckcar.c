@@ -64,7 +64,7 @@ sbit R4 = P3 ^ 7;
 // 定义红外传感器检测状态全局位变量
 LOOP(4, MARCO_I_DEFINE)
 // 红外接收控制(传入传感器组号)
-uint8 RG(uint8 e) { LOOP(4, MARCO_RG_F) }
+uint8 RG(uint8 e) { LOOP(4, MARCO_RG_F) return 1; }
 // 红外发射控制(传入传感器组号)
 void IR_ON(uint8 n) {
   A0 = (n)&0x01, A1 = (n)&0x02, A2 = (n)&0x04;
@@ -127,7 +127,7 @@ void beep() {
     ;
   BEEP = 1;
 }
-void straight(uint8 l) {
+void _straight(uint8 l) {
   while (l--) {
     if (I1)
       break;
@@ -149,54 +149,81 @@ void unit(uint8 u) {
   for (a = 0; a < 50000; a++)
     ;
   if (u == 0)
-    straight(10);
-  if (u == 1)
+    _straight(10);
+  if (u == 1) {
     MOVE(TURNRIGHT, 25, 25);
+  }
   if (u == 2) {
     MOVE(TURNLEFT, 50, 50);
     while (I1) {
       MOVE(TURNLEFT, 1, 1);
     }
   }
-  if (u == 3)
+  if (u == 3) {
     MOVE(TURNLEFT, 25, 25);
+  }
 }
-void maze(uint8 order) {
-  switch (order) {
-  case 0: {
-    beep();
-    unit(ROUND);
-    return;
-    break;
+#define E 0
+#define R 1
+#define W 2
+#define EN 3
+#define N 4
+#define WN 5
+#define mazeOrder(u)                                                           \
+  {                                                                            \
+    switch (u) {                                                               \
+    case R: {                                                                  \
+      beep();                                                                  \
+      unit(ROUND);                                                             \
+      break;                                                                   \
+    }                                                                          \
+    case E: {                                                                  \
+      unit(RIGHT);                                                             \
+      break;                                                                   \
+    }                                                                          \
+    case N: {                                                                  \
+      unit(STRAIGHT);                                                          \
+      break;                                                                   \
+    }                                                                          \
+    case W: {                                                                  \
+      unit(LEFT);                                                              \
+      break;                                                                   \
+    }                                                                          \
+    case EN: {                                                                 \
+      unit(RIGHT);                                                             \
+      unit(STRAIGHT);                                                          \
+      break;                                                                   \
+    }                                                                          \
+    case WN: {                                                                 \
+      unit(LEFT);                                                              \
+      unit(STRAIGHT);                                                          \
+      break;                                                                   \
+    }                                                                          \
+    }                                                                          \
   }
-  case 1: {
-    unit(LEFT);
-    unit(STRAIGHT);
-    break;
+uint8 maze(uint8 o) {
+  mazeOrder(o);
+  if (o != R) {
+    if (I1 && I3 && I4) {
+      maze(R);
+    } else {
+      if (!I3) {
+        mazeOrder(maze(EN));
+      }
+      if (!I1) {
+        mazeOrder(maze(N));
+      }
+      if (!I4) {
+        mazeOrder(maze(WN));
+      }
+    }
   }
-  case 2: {
-    unit(RIGHT);
-    unit(STRAIGHT);
-    break;
-  }
-  default: { unit(STRAIGHT); }
-  }
-  if (I1 && I3 && I4) {
-    maze(0);
-  }
-  if (!I4)
-    maze(2);
-  if (!I3 && I4) {
-    maze(1);
-  }
-  if (!I1) {
-    maze(-1);
-  }
+  return o - 3;
 }
 void main() {
   initT2(SCAN_DELAY);
   initT0_1(4, 4);
-  maze(-1);
+  maze(N);
   while (1) {
     P0 = 0;
   };
