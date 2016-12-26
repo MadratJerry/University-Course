@@ -2,10 +2,7 @@
 
 // 预设参数
 #define SCAN_DELAY 10000
-#define FORWARD 0xE7
-#define RETREAT 0xDB
-#define TURNRIGHT 0xEB
-#define TURNLEFT 0xD7
+#define UNIT_DELAY 50000
 
 // 宏循环
 #define LOOP_0(f) f##(0)
@@ -16,20 +13,6 @@
 #define LOOP_HELPER(n, f) LOOP_##n(f)
 #define LOOP(n, f) LOOP_HELPER(n, f)
 #define CMD(n, f) f##(n)
-
-// 宏展开
-#define MARCO_RG_F(n)                                                          \
-  if (e == n)                                                                  \
-    return I##n = (R##n ? 0 : 1);
-#define MARCO_LED_F(n)                                                         \
-  if (e == n)                                                                  \
-    return LED##n = s;
-#define MARCO_M_F(n)                                                           \
-  if (e == n)                                                                  \
-    M##n = s;
-#define MARCO_LED_DEFINE(n) sbit LED##n = P0 ^ ##n;
-#define MARCO_I_DEFINE(n) bit I##n = 0;
-#define MARCO_M_DEFINE(n) sbit M##n = P2 ^ ##n;
 
 // 类型重命名
 typedef bit bool;
@@ -44,11 +27,17 @@ sfr T2MOD = 0xc9;
 // 蜂鸣器
 sbit BEEP = P2 ^ 4;
 
+// 最大值与最小值
 uint8 min(uint8 x, uint8 y) { return x < y ? x : y; }
 uint8 max(uint8 x, uint8 y) { return x > y ? x : y; }
+
 // 定义LED全局变量
+#define MARCO_LED_DEFINE(n) sbit LED##n = P0 ^ ##n;
 LOOP(4, MARCO_LED_DEFINE)
 // LED控制(序号, 赋值)
+#define MARCO_LED_F(n)                                                         \
+  if (e == n)                                                                  \
+    return LED##n = s;
 uint8 LED(uint8 e, uint8 s) { LOOP(4, MARCO_LED_F) return -1; }
 
 // 红外地址接口定义
@@ -62,8 +51,12 @@ sbit R2 = P2 ^ 7;
 sbit R3 = P3 ^ 6;
 sbit R4 = P3 ^ 7;
 // 定义红外传感器检测状态全局位变量
+#define MARCO_I_DEFINE(n) bit I##n = 0;
 LOOP(4, MARCO_I_DEFINE)
 // 红外接收控制(传入传感器组号)
+#define MARCO_RG_F(n)                                                          \
+  if (e == n)                                                                  \
+    return I##n = (R##n ? 0 : 1);
 uint8 RG(uint8 e) { LOOP(4, MARCO_RG_F) return 1; }
 // 红外发射控制(传入传感器组号)
 void IR_ON(uint8 n) {
@@ -79,13 +72,18 @@ void scan() interrupt 5 {
   IR_ON(n);
   n = (n + 1) % 6;
 }
+
 // 定义电机引脚控制变量定义 0 1 左电机 2 3 右电机
+#define MARCO_M_DEFINE(n) sbit M##n = P2 ^ ##n;
 LOOP(3, MARCO_M_DEFINE)
 // 电机脉冲记录
 uint8 mL = 0, mR = 0;
 void mCountL() interrupt 1 { mL++; }
 void mCountR() interrupt 3 { mR++; }
 // 电机引脚控制(序号, 赋值)
+#define MARCO_M_F(n)                                                           \
+  if (e == n)                                                                  \
+    M##n = s;
 void M(uint8 e, uint8 s) { LOOP(3, MARCO_M_F) }
 // 电机控制(控制代码)
 void CM(uint8 c) {
@@ -94,6 +92,10 @@ void CM(uint8 c) {
     M(i, c % 2);
 }
 // 移动控制(控制代码, 电机单个单元转动次数)
+#define FORWARD 0xE7
+#define RETREAT 0xDB
+#define TURNRIGHT 0xEB
+#define TURNLEFT 0xD7
 void MOVE(uint8 c, uint8 lL, uint8 lR) {
   mL = mR = 0;
   do {
@@ -112,7 +114,7 @@ void initT2(uint16 us) {
   TH2 = RCAP2H = (65536 - us) / 256;
   TR2 = ET2 = 1;
 }
-//初始化定时器T0 T1
+// 初始化定时器T0 T1
 void initT0_1(uint8 l, uint8 r) {
   TMOD = 0x66;
   TH0 = TL0 = 256 - l;
@@ -120,6 +122,7 @@ void initT0_1(uint8 l, uint8 r) {
   EA = ET0 = ET1 = 1;
   TR0 = TR1 = 1;
 }
+// 吱一声
 void beep() {
   uint16 i;
   BEEP = 0;
@@ -127,6 +130,8 @@ void beep() {
     ;
   BEEP = 1;
 }
+
+// 小车前进(距离)
 void _straight(uint8 l) {
   while (l--) {
     if (I1)
@@ -140,13 +145,15 @@ void _straight(uint8 l) {
     }
   }
 }
+
+// 小车单元行为(单元行为代码)
 #define STRAIGHT 0
 #define RIGHT 1
 #define ROUND 2
 #define LEFT 3
 void unit(uint8 u) {
   uint16 a = 0;
-  for (a = 0; a < 50000; a++)
+  for (a = 0; a < UNIT_DELAY; a++)
     ;
   if (u == 0)
     _straight(10);
@@ -163,44 +170,39 @@ void unit(uint8 u) {
     MOVE(TURNLEFT, 25, 25);
   }
 }
+
+// 迷宫移动指令(指令代码)
 #define E 0
 #define R 1
 #define W 2
 #define EN 3
 #define N 4
 #define WN 5
-#define mazeOrder(u)                                                           \
-  {                                                                            \
-    switch (u) {                                                               \
-    case R: {                                                                  \
-      beep();                                                                  \
-      unit(ROUND);                                                             \
-      break;                                                                   \
-    }                                                                          \
-    case E: {                                                                  \
-      unit(RIGHT);                                                             \
-      break;                                                                   \
-    }                                                                          \
-    case N: {                                                                  \
-      unit(STRAIGHT);                                                          \
-      break;                                                                   \
-    }                                                                          \
-    case W: {                                                                  \
-      unit(LEFT);                                                              \
-      break;                                                                   \
-    }                                                                          \
-    case EN: {                                                                 \
-      unit(RIGHT);                                                             \
-      unit(STRAIGHT);                                                          \
-      break;                                                                   \
-    }                                                                          \
-    case WN: {                                                                 \
-      unit(LEFT);                                                              \
-      unit(STRAIGHT);                                                          \
-      break;                                                                   \
-    }                                                                          \
-    }                                                                          \
+void mazeOrder(uint8 u) {
+  if (u == R) {
+    beep();
+    unit(ROUND);
   }
+  if (u == E) {
+    unit(RIGHT);
+  }
+  if (u == N) {
+    unit(STRAIGHT);
+  }
+  if (u == W) {
+    unit(LEFT);
+  }
+  if (u == EN) {
+    unit(RIGHT);
+    unit(STRAIGHT);
+  }
+  if (u == WN) {
+    unit(LEFT);
+    unit(STRAIGHT);
+  }
+}
+
+// 迷宫递归遍历函数(迷宫移动指令)
 uint8 maze(uint8 o) {
   mazeOrder(o);
   if (o != R) {
