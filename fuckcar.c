@@ -30,6 +30,7 @@ sbit BEEP = P2 ^ 4;
 // 最大值与最小值
 uint8 min(uint8 x, uint8 y) { return x < y ? x : y; }
 uint8 max(uint8 x, uint8 y) { return x > y ? x : y; }
+int8 abs(int8 x) { return x < 0 ? -x : x; }
 
 // 定义LED全局变量
 #define MARCO_LED_DEFINE(n) sbit LED##n = P0 ^ ##n;
@@ -172,61 +173,79 @@ void unit(uint8 u) {
 }
 
 // 迷宫移动指令(指令代码)
-#define E 0
-#define R 1
-#define W 2
-#define EN 3
-#define N 4
-#define WN 5
-void mazeOrder(uint8 u) {
-  if (u == R) {
+#define N (1 << 0)
+#define E (1 << 1)
+#define S (1 << 2)
+#define W (1 << 3)
+#define MAZE_HEIGHT 8
+#define MAZE_WIDTH 8
+uint8 map[MAZE_HEIGHT][MAZE_WIDTH] = {0};
+uint8 code turn[4] = {E, S, W, N};
+void setStep(uint8 x, uint8 y, uint8 s) { map[x][y] = (map[x][y] & 0xf0) + s; }
+void msMOVE(uint8 *x, uint8 *y, uint8 d, uint8 s) {
+  if (d == N)
+    (*x)++;
+  if (d == E)
+    (*y)++;
+  if (d == S)
+    (*x)--;
+  if (d == W)
+    (*y)--;
+  setStep(*x, *y, s);
+}
+// 拆墙
+void breakWall(uint8 x, uint8 y, uint8 d) {
+  map[x][y] = (map[x][y] & 0xf0 | (d << 4));
+}
+int getIndex(uint8 u) {
+  int8 d = 0;
+  for (d = 0; d < 4; d++)
+    if (turn[d] == u)
+      break;
+  return (d + 1) % 4;
+}
+void mazeOrder(uint8 u, int8 *h) {
+  int8 d = getIndex(u);
+  if (abs(d - *h) == 2) {
     beep();
     unit(ROUND);
   }
-  if (u == E) {
+  if (abs(d - *h) == 1) {
     unit(RIGHT);
   }
-  if (u == N) {
-    unit(STRAIGHT);
-  }
-  if (u == W) {
+  if (abs(d - *h) == 3) {
     unit(LEFT);
   }
-  if (u == EN) {
-    unit(RIGHT);
-    unit(STRAIGHT);
-  }
-  if (u == WN) {
-    unit(LEFT);
-    unit(STRAIGHT);
-  }
+  unit(STRAIGHT);
+  *h = d;
 }
-
 // 迷宫递归遍历函数(迷宫移动指令)
-uint8 maze(uint8 o) {
-  mazeOrder(o);
-  if (o != R) {
-    if (I1 && I3 && I4) {
-      maze(R);
-    } else {
-      if (!I3) {
-        mazeOrder(maze(EN));
-      }
-      if (!I1) {
-        mazeOrder(maze(N));
-      }
-      if (!I4) {
-        mazeOrder(maze(WN));
-      }
+int8 maze(uint8 o) {
+  static int8 h = 0;
+  static uint8 x = 0, y = 0, nx, ny, d, s = 0, i;
+  s++;
+  mazeOrder(o, &h);
+  msMOVE(&x, &y, o, s);
+  if (!I3)
+    breakWall(x, y, turn[(1 + h + 3) % 4]);
+  if (!I1)
+    breakWall(x, y, turn[(0 + h + 3) % 4]);
+  if (!I4)
+    breakWall(x, y, turn[(3 + h + 3) % 4]);
+  for (i = 0; i < 4; i++) {
+    nx = x, ny = y;
+    msMOVE(&nx, &ny, o, 0);
+    if ((map[x][y] & (turn[i] << 4)) && !(map[nx][ny] & 0x0f)) {
+      maze(turn[i]);
     }
   }
-  return o - 3;
+  mazeOrder(turn[(getIndex(o) + 1) % 4], &h);
+  s--;
 }
 void main() {
   initT2(SCAN_DELAY);
   initT0_1(4, 4);
   maze(N);
-  while (1) {
-    P0 = 0;
-  };
+  while (1)
+    ;
 }
