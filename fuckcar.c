@@ -2,7 +2,7 @@
 
 // 预设参数
 #define SCAN_DELAY 10000
-#define UNIT_DELAY 50000
+#define UNIT_DELAY 1000
 
 // 宏循环
 #define LOOP_0(f) f##(0)
@@ -38,8 +38,8 @@ LOOP(4, MARCO_LED_DEFINE)
 // LED控制(序号, 赋值)
 #define MARCO_LED_F(n)                                                         \
   if (e == n)                                                                  \
-    return LED##n = s;
-uint8 LED(uint8 e, uint8 s) { LOOP(4, MARCO_LED_F) return -1; }
+    return e, LED##n = s;
+int8 LED(uint8 e, uint8 s) { LOOP(4, MARCO_LED_F) return -1; }
 
 // 红外地址接口定义
 sbit A0 = P1 ^ 2;
@@ -54,6 +54,24 @@ sbit R4 = P3 ^ 7;
 // 定义红外传感器检测状态全局位变量
 #define MARCO_I_DEFINE(n) bit I##n = 0;
 LOOP(4, MARCO_I_DEFINE)
+// 障碍物检测(序号)
+#define FO 0
+#define RO 1
+#define FR 2
+#define LO 3
+#define FL 4
+uint8 IG(uint8 e) {
+  if (e == FO)
+    return I1;
+  if (e == RO)
+    return I4;
+  if (e == LO)
+    return I3;
+  if (e == FR)
+    return I2;
+  if (e == FL)
+    return I0;
+}
 // 红外接收控制(传入传感器组号)
 #define MARCO_RG_F(n)                                                          \
   if (e == n)                                                                  \
@@ -61,8 +79,8 @@ LOOP(4, MARCO_I_DEFINE)
 uint8 RG(uint8 e) { LOOP(4, MARCO_RG_F) return 1; }
 // 红外发射控制(传入传感器组号)
 void IR_ON(uint8 n) {
-  A0 = (n)&0x01, A1 = (n)&0x02, A2 = (n)&0x04;
-  if ((n) == 5)
+  A0 = n & 0x01, A1 = n & 0x02, A2 = n & 0x04;
+  if (n == 5)
     A0 = A1 = A2 = 1;
 }
 // 红外接收扫描
@@ -108,42 +126,34 @@ void MOVE(uint8 c, uint8 lL, uint8 lR) {
   CM(0xf);
 }
 
+// 延时(ms)  延时时间=[(2*R5+3)*R6+3]*R7+5
+void delay_ms(uint16 ms) {
+  uint8 i, j, k;
+  while (ms--)
+    for (i = 5; i > 0; i--)
+      for (j = 4; j > 0; j--)
+        for (k = 23; k > 0; k--)
+          ;
+}
 //初始化定时器T2
 void initT2(uint16 us) {
-  EA = 1;
   TL2 = RCAP2L = (65536 - us) % 256;
   TH2 = RCAP2H = (65536 - us) / 256;
-  TR2 = ET2 = 1;
+  EA = TR2 = ET2 = 1;
 }
-// 初始化定时器T0 T1
-void initT0_1(uint8 l, uint8 r) {
+// 初始化定时器T0 T1(1单位所需脉冲数)
+void initT0_1(uint8 u) {
   TMOD = 0x66;
-  TH0 = TL0 = 256 - l;
-  TH1 = TL1 = 256 - r;
-  EA = ET0 = ET1 = 1;
-  TR0 = TR1 = 1;
+  TH0 = TL0 = TH1 = TL1 = 256 - u;
+  EA = ET0 = ET1 = TR0 = TR1 = 1;
 }
-// 吱一声
-void beep() {
-  uint16 i;
-  BEEP = 0;
-  for (i = 0; i < 30000; i++)
-    ;
-  BEEP = 1;
-}
-
-// 小车前进(距离)
-void _straight(uint8 l) {
-  while (l--) {
-    if (I1)
-      break;
-    MOVE(FORWARD, 5, 5);
-    while (I0 || I2) {
-      if (I0 && !I2)
-        MOVE(FORWARD, 1, 0);
-      if (!I0 && I2)
-        MOVE(FORWARD, 0, 1);
-    }
+// 吱一声(间隔毫秒数，次数)
+void beep(uint16 ms, uint16 n) {
+  while (n--) {
+    BEEP = 0;
+    delay_ms(ms);
+    BEEP = 1;
+    delay_ms(ms);
   }
 }
 
@@ -152,100 +162,82 @@ void _straight(uint8 l) {
 #define RIGHT 1
 #define ROUND 2
 #define LEFT 3
+#define UNIT 10 //单位距离
+#define TURN 25 //单位转向
 void unit(uint8 u) {
-  uint16 a = 0;
-  for (a = 0; a < UNIT_DELAY; a++)
-    ;
+  uint8 l = UNIT;
+  delay_ms(UNIT_DELAY);
   if (u == 0)
-    _straight(10);
-  if (u == 1) {
-    MOVE(TURNRIGHT, 25, 25);
-  }
-  if (u == 2) {
-    MOVE(TURNLEFT, 50, 50);
-    while (I1) {
-      MOVE(TURNLEFT, 1, 1);
+    while (l--) {
+      if (IG(FO))
+        break;
+      MOVE(FORWARD, 5, 5);
+      while (IG(FL) || IG(FR)) {
+        if (IG(FL) && !IG(FR))
+          MOVE(FORWARD, 1, 0);
+        if (!IG(FL) && IG(FR))
+          MOVE(FORWARD, 0, 1);
+      }
     }
+  if (u == 1)
+    MOVE(TURNRIGHT, TURN, TURN);
+  if (u == 2) {
+    MOVE(TURNLEFT, TURN * 2, TURN * 2);
+    while (IG(FO))
+      MOVE(TURNLEFT, 1, 1);
   }
-  if (u == 3) {
-    MOVE(TURNLEFT, 25, 25);
-  }
+  if (u == 3)
+    MOVE(TURNLEFT, TURN, TURN);
 }
 
 // 迷宫移动指令(指令代码)
-#define N (1 << 0)
-#define E (1 << 1)
-#define S (1 << 2)
-#define W (1 << 3)
+#define N 0
+#define E 1
+#define S 2
+#define W 3
 #define MAZE_HEIGHT 8
 #define MAZE_WIDTH 8
 uint8 map[MAZE_HEIGHT][MAZE_WIDTH] = {0};
-uint8 code turn[4] = {E, S, W, N};
 void setStep(uint8 x, uint8 y, uint8 s) { map[x][y] = (map[x][y] & 0xf0) + s; }
-void msMOVE(uint8 *x, uint8 *y, uint8 d, uint8 s) {
-  if (d == N)
-    (*x)++;
-  if (d == E)
-    (*y)++;
-  if (d == S)
-    (*x)--;
-  if (d == W)
-    (*y)--;
+void msMOVE(uint8 *x, uint8 *y, int8 d, uint8 s) {
+  *x -= (d - 1) % 2;
+  *y -= (d - 2) % 2;
   setStep(*x, *y, s);
 }
 // 拆墙
 void breakWall(uint8 x, uint8 y, uint8 d) {
-  map[x][y] = (map[x][y] & 0xf0 | (d << 4));
+  map[x][y] = (map[x][y] & 0xf0 | (1 << (4 + d)));
 }
-int getIndex(uint8 u) {
-  int8 d = 0;
-  for (d = 0; d < 4; d++)
-    if (turn[d] == u)
-      break;
-  return (d + 1) % 4;
-}
-void mazeOrder(uint8 u, int8 *h) {
-  int8 d = getIndex(u);
-  if (abs(d - *h) == 2) {
-    beep();
-    unit(ROUND);
-  }
-  if (abs(d - *h) == 1) {
-    unit(RIGHT);
-  }
-  if (abs(d - *h) == 3) {
-    unit(LEFT);
-  }
-  unit(STRAIGHT);
+// 迷宫指令(迷宫方向，小车朝向)
+void mazeOrder(int8 d, int8 *h) {
+  unit(abs(d - *h));
+  unit(abs(d - *h) ? 0 : 4);
   *h = d;
 }
 // 迷宫递归遍历函数(迷宫移动指令)
-int8 maze(uint8 o) {
-  static int8 h = 0;
-  static uint8 x = 0, y = 0, nx, ny, d, s = 0, i;
-  s++;
+void maze(uint8 o) {
+  int8 i;
+  static int8 h = 0, x = 0, y = 0, nx, ny, d, s = 0;
+  msMOVE(&x, &y, o, ++s);
   mazeOrder(o, &h);
-  msMOVE(&x, &y, o, s);
-  if (!I3)
-    breakWall(x, y, turn[(1 + h + 3) % 4]);
-  if (!I1)
-    breakWall(x, y, turn[(0 + h + 3) % 4]);
-  if (!I4)
-    breakWall(x, y, turn[(3 + h + 3) % 4]);
+  for (i = 0; i < 3; i++)
+    if (!IG((i + 3) % 4))
+      breakWall(x, y, ((i + h + 3) % 4));
   for (i = 0; i < 4; i++) {
     nx = x, ny = y;
-    msMOVE(&nx, &ny, o, 0);
-    if ((map[x][y] & (turn[i] << 4)) && !(map[nx][ny] & 0x0f)) {
-      maze(turn[i]);
-    }
+    msMOVE(&nx, &ny, ((i + 1) % 4), 0);
+    if ((map[x][y] & (1 << (((i + 1) % 4) + 4))) && !(map[nx][ny] & 0x0f) &&
+        nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH)
+      maze((i + 1) % 4);
   }
-  mazeOrder(turn[(getIndex(o) + 1) % 4], &h);
-  s--;
+  beep(1000, 1);
+  mazeOrder((o + 2) % 4, &h);
+  msMOVE(&x, &y, (o + 2) % 4, --s);
 }
 void main() {
   initT2(SCAN_DELAY);
-  initT0_1(4, 4);
+  initT0_1(4);
   maze(N);
   while (1)
-    ;
+    P0 = 0;
 }
