@@ -162,7 +162,7 @@ void beep(uint16 ms, uint16 n) {
 #define RIGHT 1
 #define ROUND 2
 #define LEFT 3
-#define UNIT 10 //单位距离
+#define UNIT 15 //单位距离
 #define TURN 25 //单位转向
 void unit(uint8 u) {
   uint8 l = UNIT;
@@ -171,13 +171,13 @@ void unit(uint8 u) {
     while (l--) {
       if (IG(FO))
         break;
-      MOVE(FORWARD, 5, 5);
-      while (IG(FL) || IG(FR)) {
-        if (IG(FL) && !IG(FR))
-          MOVE(FORWARD, 1, 0);
-        if (!IG(FL) && IG(FR))
-          MOVE(FORWARD, 0, 1);
-      }
+      MOVE(FORWARD, 3, 3);
+      if (IG(FL) && !IG(FR))
+        // MOVE(FORWARD, 1, 0);
+        MOVE(TURNRIGHT, 1, 1);
+      if (!IG(FL) && IG(FR))
+        // MOVE(FORWARD, 0, 1);
+        MOVE(TURNLEFT, 1, 1);
     }
   if (u == 1)
     MOVE(TURNRIGHT, TURN, TURN);
@@ -199,10 +199,11 @@ void unit(uint8 u) {
 #define MAZE_WIDTH 8
 uint8 map[MAZE_HEIGHT][MAZE_WIDTH] = {0};
 void setStep(uint8 x, uint8 y, uint8 s) { map[x][y] = (map[x][y] & 0xf0) + s; }
-void msMOVE(uint8 *x, uint8 *y, int8 d, uint8 s) {
+void msMOVE(int8 *x, int8 *y, int8 d, uint8 s) {
   *x -= (d - 1) % 2;
   *y -= (d - 2) % 2;
-  setStep(*x, *y, s);
+  if (*x >= 0 && *x < MAZE_HEIGHT && *y >= 0 && *y < MAZE_WIDTH)
+    setStep(*x, *y, s);
 }
 // 拆墙
 void breakWall(uint8 x, uint8 y, uint8 d) {
@@ -210,14 +211,14 @@ void breakWall(uint8 x, uint8 y, uint8 d) {
 }
 // 迷宫指令(迷宫方向，小车朝向)
 void mazeOrder(int8 d, int8 *h) {
-  unit(abs(d - *h));
-  unit(abs(d - *h) ? 0 : 4);
+  unit((d - *h + 4) % 4);
+  unit(((d - *h + 4) % 4) ? 0 : 4);
   *h = d;
 }
 // 迷宫递归遍历函数(迷宫移动指令)
-void maze(uint8 o) {
+void maze(int8 o) compact reentrant {
   int8 i;
-  static int8 h = 0, x = 0, y = 0, nx, ny, d, s = 0;
+  static int8 h = 0, x = 0, y = 0, nx, ny, s = 0;
   msMOVE(&x, &y, o, ++s);
   mazeOrder(o, &h);
   for (i = 0; i < 3; i++)
@@ -225,12 +226,12 @@ void maze(uint8 o) {
       breakWall(x, y, ((i + h + 3) % 4));
   for (i = 0; i < 4; i++) {
     nx = x, ny = y;
-    msMOVE(&nx, &ny, ((i + 1) % 4), 0);
-    if ((map[x][y] & (1 << (((i + 1) % 4) + 4))) && !(map[nx][ny] & 0x0f) &&
-        nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH)
-      maze((i + 1) % 4);
+    msMOVE(&nx, &ny, i, 0);
+    if (nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH &&
+        (map[x][y] & (1 << (i + 4))) && !(map[nx][ny] & 0x0f))
+      maze(i);
   }
-  beep(1000, 1);
+  beep(250, 4);
   mazeOrder((o + 2) % 4, &h);
   msMOVE(&x, &y, (o + 2) % 4, --s);
 }
