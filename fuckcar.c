@@ -187,10 +187,26 @@ void maze(int8 o) compact reentrant {
   mazeOrder((o + 2) % 4, &h);
   msMOVE(&x, &y, (o + 2) % 4, --s);
 }
+// 最佳路
+void bestPath(int8 x, int8 y) compact reentrant {
+  int8 i;
+  static int8 nx, ny, h = 2;
+  if (x == 0 && y == 0) return;
+  for (i = 0; i < 4; i++) {
+    nx = x, ny = y;
+    msMOVE(&nx, &ny, i, 0);
+    if (nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH &&
+        step[nx][ny] == step[x][y] - 1)
+        break;
+  }
+  bestPath(nx, ny);
+  mazeOrder((i+2) % 4, &h);
+}
 void main() {
   step[0][0] = 1;
   initT2(SCAN_DELAY);
   initT0_1(4);
   maze(N);
+  bestPath(7, 7);
   while (1) P0 = 0;
 }
