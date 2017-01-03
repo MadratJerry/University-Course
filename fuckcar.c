@@ -152,14 +152,14 @@ void unit(uint8 u) {
 #define W 3
 #define MAZE_HEIGHT 8
 #define MAZE_WIDTH 8
-uint8 map[MAZE_HEIGHT][MAZE_WIDTH] = {0};
-void setStep(uint8 x, uint8 y, uint8 s) { map[x][y] = (map[x][y] & 0xf0) + s; }
+uint8 pdata map[MAZE_HEIGHT][MAZE_WIDTH] = {0}, step[MAZE_HEIGHT][MAZE_WIDTH] = {0};
+void setStep(uint8 x, uint8 y, uint8 s) { step[x][y] = s; }
 void msMOVE(int8 *x, int8 *y, int8 d, uint8 s) {
   *x -= (d - 1) % 2, *y -= (d - 2) % 2;
-  if (*x >= 0 && *x < MAZE_HEIGHT && *y >= 0 && *y < MAZE_WIDTH) setStep(*x, *y, s);
+  if (*x >= 0 && *x < MAZE_HEIGHT && *y >= 0 && *y < MAZE_WIDTH && s > 0) setStep(*x, *y, s);
 }
 // 拆墙
-void breakWall(uint8 x, uint8 y, uint8 d) { map[x][y] = (map[x][y] & 0xf0 | (1 << (4 + d))); }
+void breakWall(uint8 x, uint8 y, uint8 d) { map[x][y] = (map[x][y] | (1 << d)); }
 // 迷宫指令(迷宫方向，小车朝向)
 void mazeOrder(int8 d, int8 *h) {
   unit((d - *h + 4) % 4);
@@ -169,17 +169,18 @@ void mazeOrder(int8 d, int8 *h) {
 // 迷宫递归遍历函数(迷宫移动指令)
 void maze(int8 o) compact reentrant {
   int8 i;
-  static int8 h = 0, x = 0, y = 0, nx, ny, s = 0;
+  static int8 h = 0, x = 0, y = 0, nx, ny, s = 1;
   msMOVE(&x, &y, o, ++s);
   mazeOrder(o, &h);
   for (i = 0; i < 3; i++) 
     if (!IG((i + 3) % 4))
       breakWall(x, y, ((i + h + 3) % 4));
+  breakWall(x, y, (o + 2) % 4);
   for (i = 0; i < 4; i++) {
     nx = x, ny = y;
     msMOVE(&nx, &ny, i, 0);
     if (nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH &&
-        (map[x][y] & (1 << (i + 4))) && !(map[nx][ny] & 0x0f))
+        (map[x][y] & (1 << i)) && !step[nx][ny])
       maze(i);
   }
   beep(250, 4);
@@ -187,6 +188,7 @@ void maze(int8 o) compact reentrant {
   msMOVE(&x, &y, (o + 2) % 4, --s);
 }
 void main() {
+  step[0][0] = 1;
   initT2(SCAN_DELAY);
   initT0_1(4);
   maze(N);
