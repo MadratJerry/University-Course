@@ -1,7 +1,7 @@
 #include <reg52.h>
 // 预设参数
 #define SCAN_DELAY 10000
-#define UNIT_DELAY 1000
+#define UNIT_DELAY 500
 // 宏循环
 #define LOOP_0(f) f##(0)
 #define LOOP_1(f) LOOP_0(f) f##(1)
@@ -127,7 +127,7 @@ void beep(uint16 ms, uint16 n) {
 #define ROUND 2
 #define LEFT 3
 #define UNIT 15 //单位距离
-#define TURN 25 //单位转向
+#define TURN 20 //单位转向
 void unit(uint8 u) {
   uint8 l = UNIT;
   delay_ms(UNIT_DELAY);
@@ -135,8 +135,8 @@ void unit(uint8 u) {
     while (l--) {
       if (IG(FO)) break;
       MOVE(FORWARD, 3, 3);
-      if (IG(FL) && !IG(FR)) MOVE(TURNRIGHT, 1, 1);
-      if (!IG(FL) && IG(FR)) MOVE(TURNLEFT, 1, 1);
+      if (IG(FL) && !IG(FR)) MOVE(TURNRIGHT, 1, 0);
+      if (!IG(FL) && IG(FR)) MOVE(TURNLEFT, 0, 1);
     }
   if (u == 1) MOVE(TURNRIGHT, TURN, TURN);
   if (u == 2) {
@@ -162,8 +162,9 @@ void msMOVE(int8 *x, int8 *y, int8 d, uint8 s) {
 void breakWall(uint8 x, uint8 y, uint8 d) { map[x][y] = (map[x][y] | (1 << d)); }
 // 迷宫指令(迷宫方向，小车朝向)
 void mazeOrder(int8 d, int8 *h) {
+  beep(250, 1);
   unit((d - *h + 4) % 4);
-  unit(((d - *h + 4) % 4) ? 0 : 4);
+  if ((d - *h + 4) % 4) unit(0);
   *h = d;
 }
 // 迷宫递归遍历函数(迷宫移动指令)
@@ -183,7 +184,7 @@ void maze(int8 o) compact reentrant {
         (map[x][y] & (1 << i)) && !step[nx][ny])
       maze(i);
   }
-  beep(250, 4);
+  beep(100, 2);
   mazeOrder((o + 2) % 4, &h);
   msMOVE(&x, &y, (o + 2) % 4, --s);
 }
@@ -196,7 +197,7 @@ void bestPath(int8 x, int8 y) compact reentrant {
     nx = x, ny = y;
     msMOVE(&nx, &ny, i, 0);
     if (nx >= 0 && nx < MAZE_HEIGHT && ny >= 0 && ny < MAZE_WIDTH &&
-        step[nx][ny] == step[x][y] - 1)
+        (map[x][y] & (1 << i)) && step[nx][ny] == step[x][y] - 1)
         break;
   }
   bestPath(nx, ny);
