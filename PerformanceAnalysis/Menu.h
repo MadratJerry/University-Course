@@ -12,30 +12,41 @@
 
 class Menu {
 private:
-    Menu *parent;
+    std::string content;
 public:
-    Menu();
+    Menu(std::string content);
+
+    virtual ~Menu();
+
+    virtual std::string getContent();
+
+    void setContent(std::string content);
 };
 
 class LeafMenu : public Menu {
 private:
-    std::string content;
-    std::function<int()> method;
+    std::function<int()> fn;
 public:
-    LeafMenu(std::string content, const std::function<int()> &method);
+    LeafMenu(std::string content, const std::function<int()> &fn);
 
     virtual ~LeafMenu();
 
-    std::string getContent();
+    void call();
 };
 
-class ParentMenu : public LeafMenu {
+class ParentMenu : public Menu {
 private:
-    std::vector<LeafMenu *> v;
+    std::vector<Menu *> v;
 public:
-    ParentMenu(std::string content, const std::function<int()> &method, std::initializer_list<LeafMenu *> list);
+    ParentMenu(std::string content, std::initializer_list<Menu *> list);
 
     virtual ~ParentMenu();
+
+    void run();
+
+    void displayMenu();
+
+    unsigned long getMenuSize();
 };
 
 #endif //DATASTRUCTURELAB_MENU_H

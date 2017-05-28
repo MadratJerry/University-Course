@@ -13,12 +13,13 @@ int test() {
 }
 
 int main() {
-    ParentMenu b("1", []() { return 1; },
-                 {new ParentMenu("1-1", test,
-                                 {new ParentMenu("1-1-1", test,
+    ParentMenu a("1",
+                 {new ParentMenu("1-1",
+                                 {new ParentMenu("1-1-1",
                                                  {new LeafMenu("1-1-1-1", test)})}),
-                  new ParentMenu("1-2", test,
+                  new ParentMenu("1-2",
                                  {new LeafMenu("1-2-1", test)})
                  });
+    a.run();
     return 0;
 }
