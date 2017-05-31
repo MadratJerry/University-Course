@@ -29,6 +29,8 @@ private:
 public:
     LeafMenu(std::string content, const std::function<int()> &fn);
 
+    LeafMenu(std::string content);
+
     virtual ~LeafMenu();
 
     void call();
@@ -39,6 +41,8 @@ private:
     std::vector<Menu *> v;
 public:
     ParentMenu(std::string content, std::initializer_list<Menu *> list);
+
+    ParentMenu(std::initializer_list<Menu *> list);
 
     virtual ~ParentMenu();
 

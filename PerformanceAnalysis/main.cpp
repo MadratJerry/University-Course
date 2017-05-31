@@ -13,13 +13,11 @@ int test() {
 }
 
 int main() {
-    ParentMenu a("1",
-                 {new ParentMenu("1-1",
-                                 {new ParentMenu("1-1-1",
-                                                 {new LeafMenu("1-1-1-1", test)})}),
-                  new ParentMenu("1-2",
-                                 {new LeafMenu("1-2-1", test)})
-                 });
+    ParentMenu a{new LeafMenu("Add"),
+                 new LeafMenu("Search"),
+                 new LeafMenu("Analysis"),
+                 new LeafMenu("Full View")
+    };
     a.run();
     return 0;
 }

@@ -30,6 +30,8 @@ void LeafMenu::call() {
     this->fn();
 }
 
+LeafMenu::LeafMenu(std::string content) : LeafMenu::LeafMenu(content, []() {return 1;}) {}
+
 ParentMenu::ParentMenu(std::string content, std::initializer_list<Menu *> list)
         : Menu(content) {
     for (auto item : list)
@@ -64,3 +66,5 @@ void ParentMenu::displayMenu() {
         std::cout << i + 1 << ". " << v[i]->getContent() << std::endl;
     std::cout << 0 << ". " << "Quit" << std::endl;
 }
+
+ParentMenu::ParentMenu(std::initializer_list<Menu *> list) : ParentMenu::ParentMenu("", list) {}
