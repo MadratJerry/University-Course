@@ -6,21 +6,21 @@
 #include "Menu.h"
 #include <iostream>
 
-Menu::Menu(std::string content) {
+Menu::Menu(const std::string &content) {
     setContent(content);
 }
 
-std::string Menu::getContent() {
+const std::string &Menu::getContent() const {
     return this->content;
 }
 
-void Menu::setContent(std::string content) {
+void Menu::setContent(const std::string &content) {
     this->content = content;
 }
 
 Menu::~Menu() {}
 
-LeafMenu::LeafMenu(std::string content, const std::function<int()> &fn) : Menu(content) {
+LeafMenu::LeafMenu(const std::string &content, const std::function<int()> &fn) : Menu(content) {
     this->fn = fn;
 }
 
@@ -30,9 +30,9 @@ void LeafMenu::call() {
     this->fn();
 }
 
-LeafMenu::LeafMenu(std::string content) : LeafMenu::LeafMenu(content, []() {return 1;}) {}
+LeafMenu::LeafMenu(const std::string &content) : LeafMenu::LeafMenu(content, []() { return 1; }) {}
 
-ParentMenu::ParentMenu(std::string content, std::initializer_list<Menu *> list)
+ParentMenu::ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list)
         : Menu(content) {
     for (auto item : list)
         v.push_back(item);
@@ -53,6 +53,8 @@ void ParentMenu::run() {
             if (typeid(*v[c - 1]) == typeid(*this))
                 ((ParentMenu *) v[c - 1])->run();
             else ((LeafMenu *) v[c - 1])->call();
+        } else {
+            std::cout << "Wrong choice, please choose again!" << std::endl;
         }
     } while (c != 0);
 }

@@ -14,22 +14,22 @@ class Menu {
 private:
     std::string content;
 public:
-    Menu(std::string content);
+    Menu(const std::string &content);
 
     virtual ~Menu();
 
-    virtual std::string getContent();
+    virtual const std::string &getContent() const;
 
-    void setContent(std::string content);
+    void setContent(const std::string &content);
 };
 
 class LeafMenu : public Menu {
 private:
     std::function<int()> fn;
 public:
-    LeafMenu(std::string content, const std::function<int()> &fn);
+    LeafMenu(const std::string &content, const std::function<int()> &fn);
 
-    LeafMenu(std::string content);
+    LeafMenu(const std::string &content);
 
     virtual ~LeafMenu();
 
@@ -40,7 +40,7 @@ class ParentMenu : public Menu {
 private:
     std::vector<Menu *> v;
 public:
-    ParentMenu(std::string content, std::initializer_list<Menu *> list);
+    ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list);
 
     ParentMenu(std::initializer_list<Menu *> list);
 

@@ -3,5 +3,5 @@ project(PerformanceAnalysis)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES main.cpp Menu.cpp Menu.h)
+set(SOURCE_FILES main.cpp Menu.cpp Menu.h Analyzer.cpp Analyzer.h)
 add_executable(PerformanceAnalysis ${SOURCE_FILES})
