@@ -3,5 +3,7 @@ project(PerformanceAnalysis)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES main.cpp Menu.cpp Menu.h Analyzer.cpp Analyzer.h Student.cpp Student.h)
+include_directories(../lib)
+set(SOURCE_FILES main.cpp Analyzer.cpp Analyzer.h Student.cpp Student.h)
 add_executable(PerformanceAnalysis ${SOURCE_FILES})
+target_link_libraries(PerformanceAnalysis Menu)
