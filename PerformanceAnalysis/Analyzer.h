@@ -8,10 +8,12 @@
 
 
 #include <string>
+#include <vector>
 
 class Analyzer {
 private:
     std::string fileName;
+    std::vector<std::string> v;
 public:
     Analyzer(const std::string &fileName);
 

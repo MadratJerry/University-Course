@@ -59,7 +59,7 @@ void ParentMenu::run() {
     } while (c != 0);
 }
 
-unsigned long ParentMenu::getMenuSize() {
+unsigned long ParentMenu::getMenuSize() const {
     return v.size();
 }
 

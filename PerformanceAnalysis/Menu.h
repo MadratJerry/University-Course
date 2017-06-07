@@ -50,7 +50,7 @@ public:
 
     void displayMenu();
 
-    unsigned long getMenuSize();
+    unsigned long getMenuSize() const;
 };
 
 #endif //DATASTRUCTURELAB_MENU_H
