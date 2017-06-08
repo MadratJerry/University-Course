@@ -21,7 +21,7 @@ private:
     Score *score;
 
 public:
-    Student(unsigned int id, const std::string name, const std::vector<std::string> &v);
+    Student(unsigned int id, const std::string &name, const std::vector<std::string> &v);
 
     ~Student();
 
@@ -32,6 +32,11 @@ public:
     unsigned int getId() const;
 
     void setId(unsigned int id);
+
+    void setScore(const std::string &name, float score);
+
+    float getScore(const std::string &name);
+
 };
 
 class Student::Score {
@@ -42,7 +47,7 @@ public:
 
     void setScore(const std::string &name, float score);
 
-    float getScore(const std::string name);
+    float getScore(const std::string &name);
 };
 
 #endif //DATASTRUCTURELAB_STUDENT_H

@@ -7,6 +7,7 @@
 #define DATASTRUCTURELAB_ANALYZER_H
 
 
+#include "Student.h"
 #include <string>
 #include <vector>
 
@@ -14,16 +15,18 @@ class Analyzer {
 private:
     std::string fileName;
     std::vector<std::string> v;
-public:
-    Analyzer(const std::string &fileName);
-
-    const std::string &getFileName() const;
-
-    void setFileName(const std::string &fileName);
+    std::vector<Student *> list;
 
     void loadData();
 
+public:
+    explicit Analyzer(const std::string &fileName);
+
+    ~Analyzer();
+
     void storeData();
+
+    void print();
 };
 
 

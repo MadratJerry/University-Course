@@ -5,24 +5,50 @@
 
 #include "Analyzer.h"
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
-const std::string &Analyzer::getFileName() const {
-    return fileName;
-}
+using namespace std;
 
-void Analyzer::setFileName(const std::string &fileName) {
-    Analyzer::fileName = fileName;
-}
-
-Analyzer::Analyzer(const std::string &fileName) {
-    setFileName(fileName);
-}
+Analyzer::Analyzer(const string &fileName) : fileName{fileName} { loadData(); }
 
 void Analyzer::loadData() {
-    std::ifstream fin("input.txt", std::ios::in);
-    std::string str;
-    std::getline(fin, str);
-    str = str.data();
-    std::cout << str.length() << std::endl;
+    ifstream fin(fileName, std::ios::in);
+    string str;
+    getline(fin, str);
+    istringstream iss(str);
+    string courseName;
+    iss >> courseName >> courseName;
+    while (iss >> courseName)
+        v.push_back(courseName);
+    while (true) {
+        unsigned int id;
+        string name;
+        float score;
+        if (!(fin >> id >> name))
+            goto END_READ;
+        Student *newStu = new Student(id, name, v);
+        for (auto name: v) {
+            if (!(fin >> score))
+                goto END_READ;
+            newStu->setScore(name, score);
+        }
+        list.push_back(newStu);
+    }
+    END_READ:
+
+    fin.close();
+}
+
+Analyzer::~Analyzer() {
+    for (auto i : list)
+        delete i;
+}
+
+void Analyzer::print() {
+    for (auto i : list) {
+        cout << i->getId() << " " << i->getName();
+        for (auto j : v)
+            cout << " " << i->getScore(j);
+    }
 }
