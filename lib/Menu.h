@@ -42,7 +42,7 @@ private:
 public:
     ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list);
 
-    ParentMenu(std::initializer_list<Menu *> list);
+    ParentMenu(const std::initializer_list<Menu *> &list);
 
     virtual ~ParentMenu();
 

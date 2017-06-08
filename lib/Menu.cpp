@@ -53,7 +53,7 @@ void ParentMenu::run() {
             if (typeid(*v[c - 1]) == typeid(*this))
                 ((ParentMenu *) v[c - 1])->run();
             else ((LeafMenu *) v[c - 1])->call();
-        } else {
+        } else if (c != 0) {
             std::cout << "Wrong choice, please choose again!" << std::endl;
         }
     } while (c != 0);
@@ -69,4 +69,4 @@ void ParentMenu::displayMenu() {
     std::cout << 0 << ". " << "Quit" << std::endl;
 }
 
-ParentMenu::ParentMenu(std::initializer_list<Menu *> list) : ParentMenu::ParentMenu("", list) {}
+ParentMenu::ParentMenu(const std::initializer_list<Menu *> &list) : ParentMenu::ParentMenu("", list) {}
