@@ -10,13 +10,12 @@
 using namespace std;
 
 int main() {
-    ParentMenu mainMenu{new LeafMenu{"Add"},
+    Analyzer alr("input.txt");
+    ParentMenu mainMenu{new LeafMenu{"Add", [&]() { alr.add(); }},
                         new LeafMenu{"Search"},
                         new LeafMenu{"Analysis"},
-                        new LeafMenu{"Full View"}
+                        new LeafMenu{"Full View", [&]() { alr.print(); }}
     };
-//    mainMenu.run();
-    Analyzer a("input.txt");
-    a.print();
+    mainMenu.run();
     return 0;
 }

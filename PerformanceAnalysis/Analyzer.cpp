@@ -50,5 +50,36 @@ void Analyzer::print() {
         cout << i->getId() << " " << i->getName();
         for (auto j : v)
             cout << " " << i->getScore(j);
+        cout << endl;
     }
+}
+
+void Analyzer::add() {
+    cout << "Please input the new student information: " << endl;
+    unsigned int id;
+    string name;
+    cin >> id >> name;
+    Student *newStu = new Student(id, name, v);
+    for (auto i : v) {
+        float score;
+        cin >> score;
+        newStu->setScore(i, score);
+    }
+    list.push_back(newStu);
+    storeData();
+}
+
+void Analyzer::storeData() {
+    ofstream fout(fileName, ios::out);
+    fout << "id" << " " << "name";
+    for (auto i : v)
+        fout << " " << i;
+    fout << endl;
+    for (auto i : list){
+        fout << i->getId() <<" " <<  i->getName();
+        for (auto j : v)
+            fout << " " << i->getScore(j);
+        fout << endl;
+    }
+    fout.close();
 }

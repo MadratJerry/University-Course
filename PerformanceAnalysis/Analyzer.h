@@ -19,14 +19,16 @@ private:
 
     void loadData();
 
+    void storeData();
+
 public:
     explicit Analyzer(const std::string &fileName);
 
     ~Analyzer();
 
-    void storeData();
-
     void print();
+
+    void add();
 };
 
 
