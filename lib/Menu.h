@@ -25,9 +25,9 @@ public:
 
 class LeafMenu : public Menu {
 private:
-    std::function<int()> fn;
+    std::function<void()> fn;
 public:
-    LeafMenu(const std::string &content, const std::function<int()> &fn);
+    LeafMenu(const std::string &content, const std::function<void()> &fn);
 
     LeafMenu(const std::string &content);
 
@@ -39,6 +39,10 @@ public:
 class ParentMenu : public Menu {
 private:
     std::vector<Menu *> v;
+    unsigned long maxMenuSize = 4;
+
+    void displayMenu();
+
 public:
     ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list);
 
@@ -47,10 +51,6 @@ public:
     virtual ~ParentMenu();
 
     void run();
-
-    void displayMenu();
-
-    unsigned long getMenuSize() const;
 };
 
 #endif //DATASTRUCTURELAB_MENU_H
