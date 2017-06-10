@@ -10,12 +10,12 @@
 using namespace std;
 
 int main() {
-    Analyzer alr("input.txt");
-    ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
-                        new LeafMenu{"Search"},
-                        new LeafMenu{"Analysis"},
-                        new LeafMenu{"Full View", [&]() { alr.Print(); }}
-    };
-    main_menu.Run();
-    return 0;
+  Analyzer alr("input.txt");
+  ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
+                       new LeafMenu{"Search"},
+                       new LeafMenu{"Analysis"},
+                       new LeafMenu{"Full View", [&]() { alr.Print(); }}
+  };
+  main_menu.Run();
+  return 0;
 }

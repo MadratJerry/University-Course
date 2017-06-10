@@ -6,30 +6,28 @@
 #ifndef DATASTRUCTURELAB_ANALYZER_H
 #define DATASTRUCTURELAB_ANALYZER_H
 
-
 #include "Student.h"
 #include <string>
 #include <vector>
 
 class Analyzer {
-private:
-    std::string file_name_;
-    std::vector<std::string> course_names_;
-    std::vector<Student *> list_;
+ private:
+  std::string file_name_;
+  std::vector<std::string> course_names_;
+  std::vector<Student *> list_;
 
-    void LoadData();
+  void LoadData();
 
-    void StoreData();
+  void StoreData();
 
-public:
-    explicit Analyzer(const std::string &file_name);
+ public:
+  explicit Analyzer(const std::string &file_name);
 
-    ~Analyzer();
+  ~Analyzer();
 
-    void Print();
+  void Print();
 
-    void Add();
+  void Add();
 };
-
 
 #endif //DATASTRUCTURELAB_ANALYZER_H
