@@ -11,46 +11,46 @@
 #include <functional>
 
 class Menu {
-private:
-    std::string content;
-public:
-    Menu(const std::string &content);
+ private:
+  std::string content_;
+ public:
+  Menu(const std::string &content);
 
-    virtual ~Menu();
+  virtual ~Menu();
 
-    virtual const std::string &getContent() const;
+  virtual const std::string &content() const;
 
-    void setContent(const std::string &content);
+  void set_content(const std::string &content);
 };
 
 class LeafMenu : public Menu {
-private:
-    std::function<void()> fn;
-public:
-    LeafMenu(const std::string &content, const std::function<void()> &fn);
+ private:
+  std::function<void()> fn_;
+ public:
+  LeafMenu(const std::string &content, const std::function<void()> &fn);
 
-    LeafMenu(const std::string &content);
+  LeafMenu(const std::string &content);
 
-    virtual ~LeafMenu();
+  virtual ~LeafMenu();
 
-    void call();
+  void Call();
 };
 
 class ParentMenu : public Menu {
-private:
-    std::vector<Menu *> v;
-    unsigned long maxMenuSize = 4;
+ private:
+  std::vector<Menu *> menu_list_;
+  unsigned long max_content_size_ = 4;
 
-    void displayMenu();
+  void DisplayMenu();
 
-public:
-    ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list);
+ public:
+  ParentMenu(const std::string &content, const std::initializer_list<Menu *> &list);
 
-    ParentMenu(const std::initializer_list<Menu *> &list);
+  ParentMenu(const std::initializer_list<Menu *> &list);
 
-    virtual ~ParentMenu();
+  virtual ~ParentMenu();
 
-    void run();
+  void Run();
 };
 
 #endif //DATASTRUCTURELAB_MENU_H

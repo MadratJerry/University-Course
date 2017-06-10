@@ -12,7 +12,7 @@ TEST(basic_check, test_basic_format) {
     std::stringstream ss;
     std::cin.rdbuf(ss.rdbuf());
     ss << "0" << std::endl;
-    main.run();
+    main.Run();
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "---------\n"
             "|1. wow |\n"

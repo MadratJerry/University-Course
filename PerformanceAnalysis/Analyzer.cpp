@@ -10,30 +10,30 @@
 
 using namespace std;
 
-Analyzer::Analyzer(const string &fileName) : fileName{fileName} { loadData(); }
+Analyzer::Analyzer(const string &file_name) : file_name_{file_name} { LoadData(); }
 
-void Analyzer::loadData() {
-    ifstream fin(fileName, std::ios::in);
+void Analyzer::LoadData() {
+    ifstream fin(file_name_, std::ios::in);
     string str;
     getline(fin, str);
     istringstream iss(str);
     string courseName;
     iss >> courseName >> courseName;
     while (iss >> courseName)
-        v.push_back(courseName);
+        course_names_.push_back(courseName);
     while (true) {
         unsigned int id;
         string name;
         float score;
         if (!(fin >> id >> name))
             goto END_READ;
-        Student *newStu = new Student(id, name, v);
-        for (auto name: v) {
+        Student *newStu = new Student(id, name, course_names_);
+        for (auto name: course_names_) {
             if (!(fin >> score))
                 goto END_READ;
-            newStu->setScore(name, score);
+            newStu->set_score(name, score);
         }
-        list.push_back(newStu);
+        list_.push_back(newStu);
     }
     END_READ:
 
@@ -41,44 +41,44 @@ void Analyzer::loadData() {
 }
 
 Analyzer::~Analyzer() {
-    for (auto i : list)
+    for (auto i : list_)
         delete i;
 }
 
-void Analyzer::print() {
-    for (auto i : list) {
-        cout << i->getId() << " " << i->getName();
-        for (auto j : v)
-            cout << " " << i->getScore(j);
+void Analyzer::Print() {
+    for (auto i : list_) {
+        cout << i->id() << " " << i->name();
+        for (auto j : course_names_)
+            cout << " " << i->score(j);
         cout << endl;
     }
 }
 
-void Analyzer::add() {
+void Analyzer::Add() {
     cout << "Please input the new student information: " << endl;
     unsigned int id;
     string name;
     cin >> id >> name;
-    Student *newStu = new Student(id, name, v);
-    for (auto i : v) {
+    Student *newStu = new Student(id, name, course_names_);
+    for (auto i : course_names_) {
         float score;
         cin >> score;
-        newStu->setScore(i, score);
+        newStu->set_score(i, score);
     }
-    list.push_back(newStu);
-    storeData();
+    list_.push_back(newStu);
+    StoreData();
 }
 
-void Analyzer::storeData() {
-    ofstream fout(fileName, ios::out);
+void Analyzer::StoreData() {
+    ofstream fout(file_name_, ios::out);
     fout << "id" << " " << "name";
-    for (auto i : v)
+    for (auto i : course_names_)
         fout << " " << i;
     fout << endl;
-    for (auto i : list){
-        fout << i->getId() <<" " <<  i->getName();
-        for (auto j : v)
-            fout << " " << i->getScore(j);
+    for (auto i : list_){
+        fout << i->id() <<" " << i->name();
+        for (auto j : course_names_)
+            fout << " " << i->score(j);
         fout << endl;
     }
     fout.close();

@@ -13,22 +13,22 @@
 
 class Analyzer {
 private:
-    std::string fileName;
-    std::vector<std::string> v;
-    std::vector<Student *> list;
+    std::string file_name_;
+    std::vector<std::string> course_names_;
+    std::vector<Student *> list_;
 
-    void loadData();
+    void LoadData();
 
-    void storeData();
+    void StoreData();
 
 public:
-    explicit Analyzer(const std::string &fileName);
+    explicit Analyzer(const std::string &file_name);
 
     ~Analyzer();
 
-    void print();
+    void Print();
 
-    void add();
+    void Add();
 };
 
 

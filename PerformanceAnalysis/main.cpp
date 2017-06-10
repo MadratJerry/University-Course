@@ -11,11 +11,11 @@ using namespace std;
 
 int main() {
     Analyzer alr("input.txt");
-    ParentMenu mainMenu{new LeafMenu{"Add", [&]() { alr.add(); }},
+    ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
                         new LeafMenu{"Search"},
                         new LeafMenu{"Analysis"},
-                        new LeafMenu{"Full View", [&]() { alr.print(); }}
+                        new LeafMenu{"Full View", [&]() { alr.Print(); }}
     };
-    mainMenu.run();
+    main_menu.Run();
     return 0;
 }
