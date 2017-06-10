@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(PerformanceAnalysis)
 add_subdirectory(PhoneNumberList)
+add_subdirectory(EightQueen)
 add_subdirectory(lib)
 add_subdirectory(stlite)
 add_subdirectory(tests)
