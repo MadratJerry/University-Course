@@ -6,6 +6,7 @@
 #include "Analyzer.h"
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <iostream>
 
 using namespace std;
@@ -71,30 +72,46 @@ void Analyzer::Add() {
 }
 
 void Analyzer::StoreData() {
-  StoreData(input_file_name_, list_);
+  StoreData(input_file_name_, list_, course_names_);
 }
 
-void Analyzer::SortByCourseName(const string &name) {
+void Analyzer::SortBy(const string &name) {
   vector<Student *> list_copy(list_.size());
   partial_sort_copy(list_.begin(),
                     list_.end(),
                     list_copy.begin(),
                     list_copy.end(),
-                    [&](Student *x, Student *y) { return x->score(name) > y->score(name); });
-  StoreData("sort_by_course_name.txt", list_copy);
+                    [&](Student *x, Student *y) {
+                      if (x->score(name) == y->score(name)) return x->id() < y->id();
+                      else return x->score(name) > y->score(name);
+                    });
+  StoreData("sort_by_" + (name == "" ? "average" : name) + ".txt", list_copy, name);
 }
 
-void Analyzer::StoreData(const std::string &output_file_name, const std::vector<Student *> &list) {
+void Analyzer::StoreData(const std::string &output_file_name,
+                         const std::vector<Student *> &list,
+                         const std::vector<std::string> &names) {
   ofstream fout(output_file_name, ios::out);
   fout << "id" << " " << "name";
-  for (auto i : course_names_)
+  for (auto i : names)
     fout << " " << i;
   fout << endl;
   for (auto i : list) {
     fout << i->id() << " " << i->name();
-    for (auto j : course_names_)
-      fout << " " << i->score(j);
+    for (auto j : names)
+      fout << " " << fixed << setprecision(2) << i->score(j);
     fout << endl;
   }
   fout.close();
+}
+
+const std::vector<std::string> &Analyzer::course_names() const {
+  return course_names_;
+}
+
+void Analyzer::StoreData(const std::string &output_file_name,
+                         const std::vector<Student *> &list,
+                         const std::string &name) {
+  vector<std::string> v{name};
+  StoreData(output_file_name, list, v);
 }

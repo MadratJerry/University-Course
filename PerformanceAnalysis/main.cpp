@@ -14,8 +14,13 @@ int main() {
   ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
                        new LeafMenu{"Search"},
                        new ParentMenu{"Analysis", {
-                           new LeafMenu{"Sort by each course score"},
-                           new LeafMenu{"Sort by average score"}
+                           new LeafMenu{"Sort by each course score", [&]() {
+                             for (auto i : alr.course_names())
+                               alr.SortBy(i);
+                           }},
+                           new LeafMenu{"Sort by average score", [&]() {
+                             alr.SortBy("");
+                           }}
                        }},
                        new LeafMenu{"Full View", [&]() { alr.Print(); }}
   };

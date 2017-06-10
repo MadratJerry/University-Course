@@ -41,14 +41,13 @@ class Student {
 class Student::Score {
  private:
   std::map<std::string, float> scores_;
+  float score_sum_;
  public:
   Score(const std::vector<std::string> &v);
 
   void set_score(const std::string &name, float score);
 
   float score(const std::string &name);
-
-  float AverageScore(const std::vector<std::string> &v);
 };
 
 #endif //DATASTRUCTURELAB_STUDENT_H
