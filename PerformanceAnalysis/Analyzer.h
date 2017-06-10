@@ -12,7 +12,7 @@
 
 class Analyzer {
  private:
-  std::string file_name_;
+  std::string input_file_name_;
   std::vector<std::string> course_names_;
   std::vector<Student *> list_;
 
@@ -20,14 +20,18 @@ class Analyzer {
 
   void StoreData();
 
+  void StoreData(const std::string &output_file_name, const std::vector<Student *> &list);
+
  public:
-  explicit Analyzer(const std::string &file_name);
+  explicit Analyzer(const std::string &input_file_name);
 
   ~Analyzer();
 
   void Print();
 
   void Add();
+
+  void SortByCourseName(const std::string &name);
 };
 
 #endif //DATASTRUCTURELAB_ANALYZER_H

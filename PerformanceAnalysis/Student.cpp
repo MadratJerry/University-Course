@@ -43,13 +43,20 @@ float Student::score(const std::string &name) {
 
 Student::Score::Score(const std::vector<std::string> &v) {
   for (auto i : v)
-    course_name_[i] = 0;
+    scores_[i] = 0;
 }
 
 void Student::Score::set_score(const std::string &name, float score) {
-  course_name_[name] = score;
+  scores_[name] = score;
 }
 
 float Student::Score::score(const std::string &name) {
-  return course_name_[name];
+  return scores_[name];
+}
+
+float Student::Score::AverageScore(const std::vector<std::string> &v) {
+  float sum = 0;
+  for (auto i:v)
+    sum += scores_[i];
+  return sum / v.size();
 }

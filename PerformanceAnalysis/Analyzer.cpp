@@ -10,10 +10,11 @@
 
 using namespace std;
 
-Analyzer::Analyzer(const string &file_name) : file_name_{file_name} { LoadData(); }
+Analyzer::Analyzer(const std::string &input_file_name)
+    : input_file_name_{input_file_name} { LoadData(); }
 
 void Analyzer::LoadData() {
-  ifstream fin(file_name_, std::ios::in);
+  ifstream fin(input_file_name_, std::ios::in);
   string str;
   getline(fin, str);
   istringstream iss(str);
@@ -70,12 +71,26 @@ void Analyzer::Add() {
 }
 
 void Analyzer::StoreData() {
-  ofstream fout(file_name_, ios::out);
+  StoreData(input_file_name_, list_);
+}
+
+void Analyzer::SortByCourseName(const string &name) {
+  vector<Student *> list_copy(list_.size());
+  partial_sort_copy(list_.begin(),
+                    list_.end(),
+                    list_copy.begin(),
+                    list_copy.end(),
+                    [&](Student *x, Student *y) { return x->score(name) > y->score(name); });
+  StoreData("sort_by_course_name.txt", list_copy);
+}
+
+void Analyzer::StoreData(const std::string &output_file_name, const std::vector<Student *> &list) {
+  ofstream fout(output_file_name, ios::out);
   fout << "id" << " " << "name";
   for (auto i : course_names_)
     fout << " " << i;
   fout << endl;
-  for (auto i : list_) {
+  for (auto i : list) {
     fout << i->id() << " " << i->name();
     for (auto j : course_names_)
       fout << " " << i->score(j);

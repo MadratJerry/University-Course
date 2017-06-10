@@ -4,7 +4,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "../../lib/Menu.h"
+#include "Menu.h"
 
 TEST(basic_check, test_basic_format) {
   ParentMenu main{new LeafMenu{"wow"}};

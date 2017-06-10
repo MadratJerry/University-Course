@@ -13,7 +13,10 @@ int main() {
   Analyzer alr("input.txt");
   ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
                        new LeafMenu{"Search"},
-                       new LeafMenu{"Analysis"},
+                       new ParentMenu{"Analysis", {
+                           new LeafMenu{"Sort by each course score"},
+                           new LeafMenu{"Sort by average score"}
+                       }},
                        new LeafMenu{"Full View", [&]() { alr.Print(); }}
   };
   main_menu.Run();
