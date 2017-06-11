@@ -3,5 +3,5 @@ project(EightQueen)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cc)
 add_executable(EightQueen ${SOURCE_FILES})

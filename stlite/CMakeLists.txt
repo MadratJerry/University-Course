@@ -3,5 +3,5 @@ project(stdlite)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES list.cpp list.h container.cpp container.h vector.cpp vector.h)
+set(SOURCE_FILES list.cc list.h container.cc container.h vector.cc vector.h)
 add_library(stdlite ${SOURCE_FILES})

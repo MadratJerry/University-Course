@@ -35,7 +35,6 @@ class Student {
   void set_score(const std::string &name, float score);
 
   float score(const std::string &name);
-
 };
 
 class Student::Score {
