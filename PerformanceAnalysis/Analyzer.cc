@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <array>
 
 using namespace std;
 
@@ -75,17 +76,8 @@ void Analyzer::StoreData() {
   StoreData(input_file_name_, list_, course_names_);
 }
 
-void Analyzer::SortBy(const string &name) {
-  vector<Student *> list_copy(list_.size());
-  partial_sort_copy(list_.begin(),
-                    list_.end(),
-                    list_copy.begin(),
-                    list_copy.end(),
-                    [&](Student *x, Student *y) {
-                      if (x->score(name) == y->score(name)) return x->id() < y->id();
-                      else return x->score(name) > y->score(name);
-                    });
-  StoreData("sort_by_" + (name == "" ? "average" : name) + ".txt", list_copy, name);
+void Analyzer::SortBy(const std::string &name) {
+  StoreData("sort_by_" + (name == "" ? "average" : name) + ".txt", Sort(name), name);
 }
 
 void Analyzer::StoreData(const std::string &output_file_name,
@@ -114,4 +106,53 @@ void Analyzer::StoreData(const std::string &output_file_name,
                          const std::string &name) {
   vector<std::string> v{name};
   StoreData(output_file_name, list, v);
+}
+
+void Analyzer::Analysis() {
+  array<float, 4> limit{60, 70, 80, 90};
+  for (auto name : course_names_) {
+    cout << name << endl;
+    cout << "----" << endl;
+    cout << "Average: " << fixed << setprecision(2) << Average(name) << endl;
+    vector<Student *> v_sorted = Sort(name);
+    cout << "Highest score: " << (*v_sorted.begin())->score(name) << endl;
+    cout << "Lowest score: " << (*(v_sorted.end() - 1))->score(name) << endl;
+    cout.unsetf(ios::fixed);
+    array<unsigned int, limit.size() + 1> result{0};
+    for (auto item : v_sorted) {
+      auto score = item->score(name);
+      if (score < limit[0])
+        result[0]++;
+      for (int i = 0; i < limit.size() - 1; i++)
+        if (score >= limit[i] && score < limit[i + 1])
+          result[i + 1]++;
+      if (score >= limit[limit.size() - 1])
+        result[limit.size()]++;
+    }
+    cout << "< " << limit[0] << ": " << result[0] << endl;
+    for (int i = 0; i < limit.size() - 1; i++)
+      cout << limit[i] << "~" << limit[i + 1]-1 << ": " << result[i+1] << endl;
+    cout << ">= " << limit[limit.size() - 1] << ": " << result[limit.size()] << endl;
+    cout << endl;
+  }
+}
+
+const float Analyzer::Average(const std::string &name) const {
+  float average = 0;
+  for (auto i : list_)
+    average += i->score(name);
+  return average / list_.size();
+}
+
+const std::vector<Student *> Analyzer::Sort(const std::string &name) {
+  vector<Student *> list_copy(list_.size());
+  partial_sort_copy(list_.begin(),
+                    list_.end(),
+                    list_copy.begin(),
+                    list_copy.end(),
+                    [&](Student *x, Student *y) {
+                      if (x->score(name) == y->score(name)) return x->id() < y->id();
+                      else return x->score(name) > y->score(name);
+                    });
+  return list_copy;
 }

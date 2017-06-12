@@ -37,9 +37,16 @@ class Analyzer {
 
   void Add();
 
+  const std::vector<Student* > Sort(const std::string &name);
+
   void SortBy(const std::string &name);
 
   const std::vector<std::string> &course_names() const;
+
+  void Analysis();
+
+  const float Average(const std::string &name) const;
+
 };
 
 #endif //DATASTRUCTURELAB_ANALYZER_H

@@ -22,7 +22,7 @@ int main() {
                              alr.SortBy("");
                            }}
                        }},
-                       new LeafMenu{"Full View", [&]() { alr.Print(); }}
+                       new LeafMenu{"Full View", [&]() { alr.Analysis(); }}
   };
   main_menu.Run();
   return 0;
