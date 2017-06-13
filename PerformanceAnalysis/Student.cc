@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 const std::string &Student::name() const {
   return name_;
 }
@@ -56,4 +58,11 @@ void Student::Score::set_score(const std::string &name, float score) {
 
 float Student::Score::score(const std::string &name) {
   return scores_[name];
+}
+
+void Student::PrintWithScore(const std::vector<std::string> &course_name) {
+  cout << id_ << " " << name_;
+  for (auto item : course_name)
+    cout << " " << item;
+  cout << endl;
 }

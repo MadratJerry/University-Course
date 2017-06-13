@@ -35,6 +35,8 @@ class Student {
   void set_score(const std::string &name, float score);
 
   float score(const std::string &name);
+
+  void PrintWithScore(const std::vector<std::string> &course_name);
 };
 
 class Student::Score {

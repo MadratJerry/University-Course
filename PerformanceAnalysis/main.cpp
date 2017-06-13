@@ -12,7 +12,7 @@ using namespace std;
 int main() {
   Analyzer alr("input.txt");
   ParentMenu main_menu{new LeafMenu{"Add", [&]() { alr.Add(); }},
-                       new LeafMenu{"Search"},
+                       new LeafMenu{"Search", [&]() { alr.Search(); }},
                        new ParentMenu{"Analysis", {
                            new LeafMenu{"Sort by each course score", [&]() {
                              for (auto i : alr.course_names())

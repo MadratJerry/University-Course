@@ -35,6 +35,10 @@ class Analyzer {
 
   void Print();
 
+  void Search();
+
+  long Search(const std::string &name);
+
   void Add();
 
   const std::vector<Student* > Sort(const std::string &name);

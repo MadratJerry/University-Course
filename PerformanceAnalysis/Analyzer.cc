@@ -131,7 +131,7 @@ void Analyzer::Analysis() {
     }
     cout << "< " << limit[0] << ": " << result[0] << endl;
     for (int i = 0; i < limit.size() - 1; i++)
-      cout << limit[i] << "~" << limit[i + 1]-1 << ": " << result[i+1] << endl;
+      cout << limit[i] << "~" << limit[i + 1] - 1 << ": " << result[i + 1] << endl;
     cout << ">= " << limit[limit.size() - 1] << ": " << result[limit.size()] << endl;
     cout << endl;
   }
@@ -155,4 +155,38 @@ const std::vector<Student *> Analyzer::Sort(const std::string &name) {
                       else return x->score(name) > y->score(name);
                     });
   return list_copy;
+}
+
+void Analyzer::Search() {
+  cout << "Input the name: ";
+  string name;
+  cin >> name;
+  long at = Search(name);
+  if (at == -1)
+    cout << "No such a name." << endl;
+  else {
+    long i = at, j = at + 1;
+    while (true) {
+      if (i >= 0 && list_.at(i)->name() == name)
+        list_.at(i--)->PrintWithScore(course_names_);
+      else if (j < list_.size() && list_.at(j)->name() == name)
+        list_.at(j--)->PrintWithScore(course_names_);
+      else break;
+    }
+  }
+}
+
+long Analyzer::Search(const std::string &name) {
+  sort(list_.begin(), list_.end(), [&](Student *x, Student *y) {
+    return x->name() < y->name();
+  });
+  unsigned long l = 0, r = list_.size() - 1;
+  while (l < r) {
+    unsigned long mid = l + (r - l) / 2;
+    auto item_name = list_.at(mid)->name();
+    if (item_name < name) r = mid - 1;
+    else if (item_name > name) l = mid + 1;
+    else return mid;
+  }
+  return -1;
 }
