@@ -5,5 +5,4 @@ include_directories(../../PerformanceAnalysis)
 
 add_executable(performance_analysis_tests sort_check.cc analysis_check.cc)
 
-target_link_libraries(performance_analysis_tests gtest gtest_main)
-target_link_libraries(performance_analysis_tests gtest Analyzer Student)
+target_link_libraries(performance_analysis_tests gtest gtest_main Analyzer Student)
