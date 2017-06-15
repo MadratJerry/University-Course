@@ -10,6 +10,7 @@
 #include <set>
 #include <stack>
 #include <vector>
+#include <algorithm>
 
 template<typename NameType, typename DistType>
 class Graph {
@@ -19,8 +20,11 @@ class Graph {
    private:
     DistType weight_;
     NameType dist_;
+    NameType src_;
    public:
-    Edge(const NameType &dist, const DistType &weight) : dist_{dist}, weight_{weight} {};
+    Edge(const NameType &src, const NameType &dist, const DistType &weight) : src_{src},
+                                                                              dist_{dist},
+                                                                              weight_{weight} {};
 
     bool operator<(const Edge &that) const {
       return dist_ < that.dist_;
@@ -29,6 +33,8 @@ class Graph {
     const NameType &dist() const { return dist_; };
 
     const DistType &weight() const { return weight_; };
+
+    const NameType &src() const { return src_; };
   };
 
   class Node {
@@ -55,7 +61,7 @@ class Graph {
   };
 
   void AddEdge(const NameType &src, const NameType &dist, const DistType &weight) {
-    edge_list_[src].insert(Edge(dist, weight));
+    edge_list_[src].insert(Edge(src, dist, weight));
     node_list_[dist].first++;
     node_list_[src].second++;
   }
@@ -106,7 +112,7 @@ class Graph {
     auto size = node_list_.size();
     DistType matrix[size][size];
     for (auto i = 0; i < size; i++)
-      for (auto j = 0; j < size;j ++)
+      for (auto j = 0; j < size; j++)
         matrix[i][j] = 0;
     for (auto i : edge_list_) {
       static size_type x = 0;
@@ -116,11 +122,33 @@ class Graph {
       }
       x++;
     }
-    for (auto i : matrix){
-      for (auto j = 0; j < node_list_.size(); j++){
+    for (auto i : matrix) {
+      for (auto j = 0; j < node_list_.size(); j++) {
         std::cout << i[j] << " ";
       }
       std::cout << std::endl;
+    }
+  }
+
+  void Kruskal() {
+    std::vector<Edge> v;
+    std::vector<Edge> s;
+    for (auto i : edge_list_) {
+      fa_[i.first] = i.first;
+      for (auto j : edge_list_[i.first])
+        v.push_back(j);
+    }
+    std::sort(v.begin(), v.end(), [&](const Edge &x, const Edge &y) { return x.weight() < y.weight(); });
+    for (auto e : v) {
+      auto src = e.src(), dist = e.dist();
+      if (!connected(src, dist)) {
+        Union(src, dist);
+        s.push_back(e);
+      }
+    }
+
+    for (auto e : s) {
+      std::cout << "<" << e.src() << "," << e.dist() << "> ";
     }
   }
 
@@ -128,6 +156,7 @@ class Graph {
   std::map<NameType, std::set<Edge>> edge_list_;
   std::map<NameType, std::pair<size_type, size_type>> node_list_;
   std::map<NameType, bool> hash_;
+  std::map<NameType, NameType> fa_;
 
   size_type dfs(const NameType &src, bool is_output) {
     size_type count = 0;
@@ -155,6 +184,24 @@ class Graph {
         }
     }
     return index;
+  }
+
+  NameType find(NameType p) {
+    while (p != fa_[p]) {
+      fa_[p] = fa_[fa_[p]];
+      p = fa_[p];
+    }
+    return p;
+  }
+
+  void Union(const NameType &p, const NameType &q) {
+    auto rp = find(p), rq = find(q);
+    if (rp == rq) return;
+    fa_[rp] = fa_[rq];
+  }
+
+  bool connected(const NameType &p, const NameType &q) {
+    return find(p) == find(q);
   }
 };
 

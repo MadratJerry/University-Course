@@ -163,3 +163,17 @@ TEST(basic_graph_check, test_AdjacencyMatrix) {
       "0 0 0 0 0 \n"
       "1 0 0 0 0 \n");
 }
+
+TEST(basic_graph_check, test_Kruskal) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input1 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.Kruskal();
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "<d,e> <d,i> <a,b> <g,i> <c,d> <e,h> <b,c> <e,f> ");
+}
