@@ -48,15 +48,6 @@ Analyzer::~Analyzer() {
     delete i;
 }
 
-void Analyzer::Print() {
-  for (auto i : list_) {
-    cout << i->id() << " " << i->name();
-    for (auto j : course_names_)
-      cout << " " << i->score(j);
-    cout << endl;
-  }
-}
-
 void Analyzer::Add() {
   cout << "Please input the new student information: " << endl;
   unsigned int id;
