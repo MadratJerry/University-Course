@@ -8,6 +8,8 @@
 
 #include <map>
 #include <set>
+#include <stack>
+#include <vector>
 
 template<typename NameType, typename DistType>
 class Graph {
@@ -18,7 +20,7 @@ class Graph {
     DistType weight_;
     NameType dist_;
    public:
-    Edge(NameType dist, DistType weight) : dist_{dist}, weight_{weight} {};
+    Edge(const NameType &dist, const DistType &weight) : dist_{dist}, weight_{weight} {};
 
     bool operator<(const Edge &that) const {
       return dist_ < that.dist_;
@@ -50,15 +52,53 @@ class Graph {
     }
   };
 
-  void AddEdge(NameType src, NameType dist, DistType weight) {
+  void AddEdge(const NameType &src, const NameType &dist, const DistType &weight) {
     edge_list_[src].insert(Edge(dist, weight));
     node_list_[dist].first++;
     node_list_[src].second++;
   }
 
-  void PrintInOut() {
-    for (auto i : node_list_) {
+  void PrintInOut() const {
+    for (auto i : node_list_)
       std::cout << i.first << " " << i.second.first << " " << i.second.second << std::endl;
+  }
+
+  void DFS(const NameType &src) {
+    std::stack<NameType> stack;
+    std::map<NameType, bool> hash;
+    stack.push(src);
+    while (!stack.empty()) {
+      auto top = stack.top();
+      if (!hash[top]) {
+        std::cout << top << " ";
+        hash[top] = true;
+      }
+      auto flag = false;
+      for (auto i : edge_list_[top])
+        if (!hash[i.dist()]) {
+          stack.push(i.dist());
+          flag = true;
+          break;
+        }
+      if (!flag)
+        stack.pop();
+    }
+  }
+
+  void BFS(const NameType &src) {
+    std::vector<NameType> vec;
+    std::map<NameType, bool> hash;
+    vec.push_back(src);
+    size_type index = 0;
+    while (index <= node_list_.size()) {
+      auto item = vec.at(index++);
+      if (!hash[item]) {
+        std::cout << item << " ";
+        hash[item] = true;
+      }
+      for (auto i : edge_list_[item])
+        if (!hash[i.dist()])
+          vec.push_back(i.dist());
     }
   }
 

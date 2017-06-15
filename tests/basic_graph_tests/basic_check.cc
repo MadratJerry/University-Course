@@ -37,7 +37,6 @@ TEST(basic_graph_check, test_in_out) {
   graph.Load(n, e);
   graph.PrintInOut();
   std::string output = testing::internal::GetCapturedStdout();
-  cout << output << endl;
   EXPECT_EQ(output, "a 0 3\n"
       "b 1 2\n"
       "c 1 2\n"
@@ -47,4 +46,32 @@ TEST(basic_graph_check, test_in_out) {
       "g 2 2\n"
       "h 3 1\n"
       "i 4 0\n");
+}
+
+TEST(basic_graph_check, test_DFS) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.DFS("a");
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "a b c d e f h i g ");
+}
+
+TEST(basic_graph_check, test_BFS) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.BFS("a");
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "a b f g c h i d ");
 }
