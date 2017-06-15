@@ -27,6 +27,8 @@ class Graph {
     };
 
     const NameType &dist() const { return dist_; };
+
+    const DistType &weight() const { return weight_; };
   };
 
   class Node {
@@ -98,6 +100,28 @@ class Graph {
 
   bool IsConnected() {
     return dfs((*node_list_.begin()).first, false) == node_list_.size();
+  }
+
+  void AdjacencyMatrix() {
+    auto size = node_list_.size();
+    DistType matrix[size][size];
+    for (auto i = 0; i < size; i++)
+      for (auto j = 0; j < size;j ++)
+        matrix[i][j] = 0;
+    for (auto i : edge_list_) {
+      static size_type x = 0;
+      for (auto j : edge_list_[i.first]) {
+        static size_type y = 0;
+        matrix[x][y] = j.weight();
+      }
+      x++;
+    }
+    for (auto i : matrix){
+      for (auto j = 0; j < node_list_.size(); j++){
+        std::cout << i[j] << " ";
+      }
+      std::cout << std::endl;
+    }
   }
 
  private:

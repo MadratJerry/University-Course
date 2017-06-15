@@ -145,3 +145,21 @@ TEST(basic_graph_check, test_Find) {
   std::string output = testing::internal::GetCapturedStdout();
   EXPECT_EQ(output, "Has a\n");
 }
+
+TEST(basic_graph_check, test_AdjacencyMatrix) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input2 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.AdjacencyMatrix();
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "1 0 0 0 0 \n"
+      "2 0 0 0 0 \n"
+      "0 0 0 0 0 \n"
+      "0 0 0 0 0 \n"
+      "1 0 0 0 0 \n");
+}
