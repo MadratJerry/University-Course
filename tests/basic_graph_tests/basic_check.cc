@@ -8,7 +8,7 @@
 
 using  namespace std;
 
-string input = "9 15\n"
+string input1 = "9 15\n"
     "a b c d e f g h i\n"
     "a b 2\n"
     "a g 15\n"
@@ -26,11 +26,17 @@ string input = "9 15\n"
     "g i 2\n"
     "h i 4";
 
+string input2 ="5 3\n"
+    "a b c d f\n"
+    "a b 1\n"
+    "b c 2\n"
+    "e f 1";
+
 TEST(basic_graph_check, test_in_out) {
   testing::internal::CaptureStdout();
   std::stringstream ss;
   std::cin.rdbuf(ss.rdbuf());
-  ss << input << std::endl;
+  ss << input1 << std::endl;
   Graph<string, int>::size_type n, e;
   cin >> n >> e;
   Graph<string, int> graph;
@@ -48,11 +54,11 @@ TEST(basic_graph_check, test_in_out) {
       "i 4 0\n");
 }
 
-TEST(basic_graph_check, test_DFS) {
+TEST(basic_graph_check, test_DFS_1) {
   testing::internal::CaptureStdout();
   std::stringstream ss;
   std::cin.rdbuf(ss.rdbuf());
-  ss << input << std::endl;
+  ss << input1 << std::endl;
   Graph<string, int>::size_type n, e;
   cin >> n >> e;
   Graph<string, int> graph;
@@ -62,16 +68,80 @@ TEST(basic_graph_check, test_DFS) {
   EXPECT_EQ(output, "a b c d e f h i g ");
 }
 
-TEST(basic_graph_check, test_BFS) {
+TEST(basic_graph_check, test_DFS_2) {
   testing::internal::CaptureStdout();
   std::stringstream ss;
   std::cin.rdbuf(ss.rdbuf());
-  ss << input << std::endl;
+  ss << input2 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.DFS("a");
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "a b c e f ");
+}
+
+TEST(basic_graph_check, test_BFS_1) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input1 << std::endl;
   Graph<string, int>::size_type n, e;
   cin >> n >> e;
   Graph<string, int> graph;
   graph.Load(n, e);
   graph.BFS("a");
   std::string output = testing::internal::GetCapturedStdout();
-  EXPECT_EQ(output, "a b f g c h i d ");
+  EXPECT_EQ(output, "a b f g c h i d e ");
+}
+
+TEST(basic_graph_check, test_BFS_2) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input2 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.BFS("a");
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "a b c e f ");
+}
+
+TEST(basic_graph_check, test_Connected_1) {
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input1 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  EXPECT_TRUE(graph.IsConnected());
+}
+
+TEST(basic_graph_check, test_Connected_2) {
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input2 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  EXPECT_FALSE(graph.IsConnected());
+}
+
+TEST(basic_graph_check, test_Find) {
+  testing::internal::CaptureStdout();
+  std::stringstream ss;
+  std::cin.rdbuf(ss.rdbuf());
+  ss << input1 << std::endl;
+  Graph<string, int>::size_type n, e;
+  cin >> n >> e;
+  Graph<string, int> graph;
+  graph.Load(n, e);
+  graph.Find("a");
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "Has a\n");
 }

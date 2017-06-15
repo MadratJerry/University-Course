@@ -58,53 +58,80 @@ class Graph {
     node_list_[src].second++;
   }
 
+  void Print() {
+    for (auto i : edge_list_) {
+      std::cout << i.first;
+      for (auto j : edge_list_[i.first])
+        std::cout << " " << j.dist();
+      std::cout << std::endl;
+    }
+  }
+
   void PrintInOut() const {
     for (auto i : node_list_)
       std::cout << i.first << " " << i.second.first << " " << i.second.second << std::endl;
   }
 
   void DFS(const NameType &src) {
-    std::stack<NameType> stack;
-    std::map<NameType, bool> hash;
-    stack.push(src);
-    while (!stack.empty()) {
-      auto top = stack.top();
-      if (!hash[top]) {
-        std::cout << top << " ";
-        hash[top] = true;
-      }
-      auto flag = false;
-      for (auto i : edge_list_[top])
-        if (!hash[i.dist()]) {
-          stack.push(i.dist());
-          flag = true;
-          break;
-        }
-      if (!flag)
-        stack.pop();
+    hash_.clear();
+    size_type count = dfs(src, true);
+    while (count != node_list_.size()) {
+      for (auto i : node_list_)
+        if (!hash_[i.first])
+          count += dfs(i.first, true);
     }
   }
 
   void BFS(const NameType &src) {
-    std::vector<NameType> vec;
-    std::map<NameType, bool> hash;
-    vec.push_back(src);
-    size_type index = 0;
-    while (index <= node_list_.size()) {
-      auto item = vec.at(index++);
-      if (!hash[item]) {
-        std::cout << item << " ";
-        hash[item] = true;
-      }
-      for (auto i : edge_list_[item])
-        if (!hash[i.dist()])
-          vec.push_back(i.dist());
+    hash_.clear();
+    size_type count = bfs(src);
+    while (count != node_list_.size()) {
+      for (auto i : node_list_)
+        if (!hash_[i.first])
+          count += bfs(i.first);
     }
+  }
+
+  void Find(const NameType &x) const {
+    std::cout << (edge_list_.find(x) == edge_list_.end() ? "No " : "Has ") << x << std::endl;
+  }
+
+  bool IsConnected() {
+    return dfs((*node_list_.begin()).first, false) == node_list_.size();
   }
 
  private:
   std::map<NameType, std::set<Edge>> edge_list_;
   std::map<NameType, std::pair<size_type, size_type>> node_list_;
+  std::map<NameType, bool> hash_;
+
+  size_type dfs(const NameType &src, bool is_output) {
+    size_type count = 0;
+    if (is_output)
+      std::cout << src << " ";
+    hash_[src] = true;
+    for (auto i : edge_list_[src])
+      if (!hash_[i.dist()])
+        count += dfs(i.dist(), is_output);
+    return count + 1;
+  }
+
+  size_type bfs(const NameType &src) {
+    std::vector<NameType> vec;
+    vec.push_back(src);
+    hash_[src] = true;
+    size_type index = 0;
+    while (index < vec.size()) {
+      auto item = vec.at(index++);
+      std::cout << item << " ";
+      for (auto i : edge_list_[item])
+        if (!hash_[i.dist()]) {
+          vec.push_back(i.dist());
+          hash_[i.dist()] = true;
+        }
+    }
+    return index;
+  }
 };
 
 #endif //DATASTRUCTURELAB_GRAPH_H
