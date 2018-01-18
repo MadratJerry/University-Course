@@ -1,0 +1,19 @@
+language: node_js
+env:
+  global:
+    - NODE_ENV=production
+cache: yarn
+node_js:
+  - 8
+install:
+  - yarn
+script:
+  - yarn run build
+
+deploy:
+  local_dir: public
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
