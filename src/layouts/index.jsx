@@ -8,19 +8,23 @@ import './index.css'
 const TemplateWrapper = ({ children }) => (
   <div>
     <Helmet
-      title="Gatsby Default Starter"
+      title="算法设计与分析课程设计"
       meta={[
-        { name: 'description', content: 'Sample' },
-        { name: 'keywords', content: 'sample, something' },
+        {
+          name: 'description',
+          content:
+            'Curriculum Design of Introduction to The Design and Analysis of Algorithms',
+        },
+        {
+          name: 'keywords',
+          content: 'algorithms, visualization, curriculum design',
+        },
       ]}
     />
     <Header />
     <div
       style={{
         margin: '0 auto',
-        maxWidth: 960,
-        padding: '0px 1.0875rem 1.45rem',
-        paddingTop: 0,
       }}
     >
       {children()}

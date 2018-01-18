@@ -1,17 +1,19 @@
 {
-  "name":
-    "Curriculum-Design-of-Introduction-to-The-Design-and-Analysis-of-Algorithms",
-  "description":
-    "Curriculum Design of Introduction to The Design and Analysis of Algorithms",
+  "name": "Curriculum-Design-of-Introduction-to-The-Design-and-Analysis-of-Algorithms",
+  "description": "Curriculum Design of Introduction to The Design and Analysis of Algorithms",
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "gatsby": "^1.9.158",
     "gatsby-link": "^1.6.34",
     "gatsby-plugin-react-helmet": "^2.0.3",
-    "react-helmet": "^5.2.0"
+    "material-ui": "^1.0.0-beta.29",
+    "react-helmet": "^5.2.0",
+    "react-swipeable-views": "^0.12.12"
   },
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "license": "MIT",
   "main": "n/a",
   "scripts": {

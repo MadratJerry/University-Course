@@ -5,13 +5,12 @@ const Header = () => (
   <div
     style={{
       background: 'rebeccapurple',
-      marginBottom: '1.45rem',
     }}
   >
     <div
       style={{
-        margin: '0 auto',
-        maxWidth: 960,
+        display: 'flex',
+        justifyContent: 'center',
         padding: '1.45rem 1.0875rem',
       }}
     >
@@ -23,7 +22,7 @@ const Header = () => (
             textDecoration: 'none',
           }}
         >
-          Gatsby
+          算法设计与分析课程设计
         </Link>
       </h1>
     </div>
