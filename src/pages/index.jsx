@@ -5,6 +5,7 @@ import SwipeableViews from 'react-swipeable-views'
 import AppBar from 'material-ui/AppBar'
 import Tabs, { Tab } from 'material-ui/Tabs'
 import Typography from 'material-ui/Typography'
+import A from './A'
 
 function TabContainer({ children, dir }) {
   return (
@@ -44,7 +45,11 @@ class IndexPage extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color="default">
+        <AppBar
+          position="static"
+          color="default"
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
@@ -62,7 +67,9 @@ class IndexPage extends React.Component {
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
-          <TabContainer dir={theme.direction}>A</TabContainer>
+          <TabContainer dir={theme.direction}>
+            <A />
+          </TabContainer>
           <TabContainer dir={theme.direction}>B</TabContainer>
           <TabContainer dir={theme.direction}>C</TabContainer>
         </SwipeableViews>
