@@ -15,7 +15,7 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "build": "npx gatsby build",
+    "build": "npx gatsby build --prefix-paths",
     "develop": "npx gatsby develop",
     "format": "npx prettier --write \"src/**/*.jsx\"",
     "test": "echo \"Error: no test specified\" && exit 1"
