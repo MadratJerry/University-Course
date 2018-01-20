@@ -15,16 +15,9 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import './index.css'
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
   },
 })
 
@@ -39,7 +32,6 @@ class A1 extends React.Component {
 
   n = 0
 
-  getCorner(n) {}
   async solve(l, r) {
     const { b, m, N } = this.state
     b.fill(0)[this.n++] = 1
@@ -153,4 +145,4 @@ class A1 extends React.Component {
   }
 }
 
-export default withStyles(styles)(A1)
+export default withStyles()(A1)

@@ -8,6 +8,7 @@ import ExpansionPanel, {
 import Typography from 'material-ui/Typography'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import A1 from './A1'
+import A2 from './A2'
 
 const styles = theme => ({
   root: {
@@ -26,7 +27,7 @@ const styles = theme => ({
 
 class ControlledExpansionPanels extends React.Component {
   state = {
-    expanded: 'A1',
+    expanded: 'A2',
   }
 
   handleChange = panel => (event, expanded) => {
@@ -44,6 +45,10 @@ class ControlledExpansionPanels extends React.Component {
         <A1
           expanded={expanded === 'A1'}
           handleChange={this.handleChange('A1')}
+        />
+        <A2
+          expanded={expanded === 'A2'}
+          handleChange={this.handleChange('A2')}
         />
       </div>
     )
