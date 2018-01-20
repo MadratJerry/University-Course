@@ -41,7 +41,10 @@ class ControlledExpansionPanels extends React.Component {
 
     return (
       <div className={classes.root}>
-        <A1 expanded={expanded} handleChange={this.handleChange} />
+        <A1
+          expanded={expanded === 'A1'}
+          handleChange={this.handleChange('A1')}
+        />
       </div>
     )
   }

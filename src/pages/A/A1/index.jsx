@@ -10,6 +10,7 @@ import Button from 'material-ui/Button'
 import Input, { InputLabel } from 'material-ui/Input'
 import { FormControl, FormHelperText } from 'material-ui/Form'
 import Select from 'material-ui/Select'
+import { MenuItem } from 'material-ui/Menu'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import './index.css'
 
@@ -28,34 +29,64 @@ const styles = theme => ({
 })
 
 class A1 extends React.Component {
-  num = 0
+  pre = 3
+
   state = {
-    m: [],
+    m: [0, 0, 0, 1],
+    b: [0],
     N: 2,
-    x: 0,
-    y: 0,
   }
 
-  initialMatrix(n, x, y) {
-    n = 2 ** n
-    let a = new Array(n).fill([]).map(e => new Array(n).fill(0))
-    this.setState({
-      m: a,
-      N: n,
-      x,
-      y,
-    })
+  n = 0
+
+  getCorner(n) {}
+  async solve(l, r) {
+    const { b, m, N } = this.state
+    b.fill(0)[this.n++] = 1
+    this.setState({ b })
+    let unit = (r - l + 1) / 4,
+      s
+    for (s = 0; s < 4; s++)
+      if (m.slice(l + unit * s, l + unit * (s + 1)).filter(e => e).length) break
+    new Array(0, 1, 2, 3)
+      .filter(e => e != s)
+      .forEach(e => (m[l + e * unit + (3 - e) * (unit - 1) / 3] = 1))
+    this.setState({ m })
+    if (unit == 1) return
+    for (let i = 0; i < 4; i++) {
+      await new Promise((solve, reject) => setTimeout(() => solve(), 500))
+      await this.solve(l + unit * i, l + unit * (i + 1) - 1)
+    }
   }
 
-  solve(x, y, n) {}
+  createMatrix(l, r) {
+    const { m, b } = this.state
+    let unit = (r - l + 1) / 4
 
-  async componentDidMount() {}
-
-  createMatrix(n) {
-    if (n < 2) return <div key={this.num++} />
+    if (l == r)
+      return (
+        <div
+          key={l}
+          className={m[l] ? 'cover' : ''}
+          onClick={() => {
+            m[this.pre] = 0
+            m[l] = !m[l]
+            this.pre = l
+            this.setState({ m })
+          }}
+        >
+          <span style={{ color: 'red', fontSize: 8 }}>{l}</span>
+        </div>
+      )
     return (
-      <div key={this.num}>
-        {new Array(4).fill(0).map((e, i) => this.createMatrix(n / 2))}
+      <div
+        key={l}
+        id={this.num++}
+        style={{ border: b[this.num - 1] ? '2px solid red' : null }}
+      >
+        {new Array(4).fill(0).map((e, i) => {
+          return this.createMatrix(l + unit * i, l + unit * (i + 1) - 1)
+        })}
       </div>
     )
   }
@@ -66,35 +97,53 @@ class A1 extends React.Component {
     const { classes, expanded, handleChange } = this.props
 
     return (
-      <ExpansionPanel
-        expanded={expanded === 'A1'}
-        onChange={handleChange('A1')}
-      >
+      <ExpansionPanel expanded={expanded} onChange={handleChange}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>A1:Tromino 谜题</Typography>
+          <Typography>Tromino 谜题</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div
-            className="box"
+            className="matrix"
             style={{ width: this.state.N * 25, height: this.state.N * 25 }}
           >
-            {this.createMatrix(this.state.N)}
+            {this.createMatrix(0, this.state.N ** 2 - 1)}
           </div>
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor="age-native-simple">n</InputLabel>
             <Select
-              native
               value={Math.log2(this.state.N)}
-              onChange={(e, i) => this.setState({ N: 2 ** e.target.value })}
+              onChange={(e, i) =>
+                this.setState({ N: 2 ** e.target.value }, () => {
+                  this.pre = this.state.N ** 2 - 1
+                  this.setState({
+                    m: new Array(this.state.N ** 2 - 1).fill(0).concat([1]),
+                    b: new Array(
+                      (n => {
+                        let sum = 0
+                        for (let i = 0; i < n * 2; i += 2) sum += 2 ** i
+                        return sum
+                      })(Math.log2(this.state.N)),
+                    ).fill(0),
+                  })
+                })
+              }
               input={<Input id="age-native-simple" />}
             >
               {[1, 2, 3, 4, 5].map(e => (
-                <option value={e} key={e}>
+                <MenuItem value={e} key={e}>
                   {e}
-                </option>
+                </MenuItem>
               ))}
             </Select>
-            <Button raised color="primary" className={classes.button}>
+            <Button
+              raised
+              color="primary"
+              className={classes.button}
+              onClick={() => {
+                this.n = 0
+                this.solve(0, this.state.N ** 2 - 1).then(() => {})
+              }}
+            >
               开始
             </Button>
           </FormControl>
