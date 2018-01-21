@@ -6,6 +6,7 @@ import AppBar from 'material-ui/AppBar'
 import Tabs, { Tab } from 'material-ui/Tabs'
 import Typography from 'material-ui/Typography'
 import A from './A'
+import B from './B'
 
 function TabContainer({ children, dir }) {
   return (
@@ -70,7 +71,9 @@ class IndexPage extends React.Component {
           <TabContainer dir={theme.direction}>
             <A />
           </TabContainer>
-          <TabContainer dir={theme.direction}>B</TabContainer>
+          <TabContainer dir={theme.direction}>
+            <B />
+          </TabContainer>
           <TabContainer dir={theme.direction}>C</TabContainer>
         </SwipeableViews>
       </div>

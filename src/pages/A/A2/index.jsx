@@ -33,10 +33,6 @@ class Point {
   xy() {
     return [this.x, this.y]
   }
-
-  toString() {
-    return 'wow'
-  }
 }
 
 class Line {
@@ -58,10 +54,6 @@ class Line {
   getPoint(n) {
     return new Line(this.p1, this.length * n, this.angle).p2
   }
-
-  toString() {
-    console.log('wow')
-  }
 }
 
 class A2 extends React.Component {
@@ -78,10 +70,7 @@ class A2 extends React.Component {
   }
 
   drawTree(ctx, o, length, angle) {
-    if (length < 1) {
-      console.log(`wow${this.state.length}`)
-      return
-    }
+    if (length < 1) return
     let line = new Line(o, length, angle)
     this.drawLine(ctx, line)
     this.drawTree(

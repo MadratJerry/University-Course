@@ -7,8 +7,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel'
 import Typography from 'material-ui/Typography'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import A1 from './A1'
-import A2 from './A2'
+import B2 from './B2'
 
 const styles = theme => ({
   root: {
@@ -25,9 +24,9 @@ const styles = theme => ({
   },
 })
 
-class A extends React.Component {
+class B extends React.Component {
   state = {
-    expanded: 'A1',
+    expanded: 'B2',
   }
 
   handleChange = panel => (event, expanded) => {
@@ -42,21 +41,17 @@ class A extends React.Component {
 
     return (
       <div className={classes.root}>
-        <A1
-          expanded={expanded === 'A1'}
-          handleChange={this.handleChange('A1')}
-        />
-        <A2
-          expanded={expanded === 'A2'}
-          handleChange={this.handleChange('A2')}
+        <B2
+          expanded={expanded === 'B2'}
+          handleChange={this.handleChange('B2')}
         />
       </div>
     )
   }
 }
 
-A.propTypes = {
+B.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(A)
+export default withStyles(styles)(B)
