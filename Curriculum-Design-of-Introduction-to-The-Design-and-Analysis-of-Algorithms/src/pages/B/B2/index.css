@@ -1,0 +1,20 @@
+.box {
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+  border: 1px solid gray;
+  margin: 2px;
+}
+
+.line {
+  display: flex;
+  justify-content: center;
+}
+
+.choose {
+  border: 1px solid red;
+}
+
+.path {
+  border: 2px solid purple;
+}
