@@ -12,7 +12,7 @@ class BufferedReaderString {
     }
 
     String getString() {
-        return string + "\n";
+        return string;
     }
 
     BufferedReader getSource() {

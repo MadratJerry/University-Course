@@ -14,19 +14,14 @@ public class OrderedInputStream extends InputStream implements Iterable<String> 
         this.v = new Vector<>();
         for (InputStream stream : v)
             this.v.add(new BufferedReader(new InputStreamReader(stream)));
-        q = new PriorityQueue<>(v.size(), new Comparator<BufferedReaderString>() {
-            @Override
-            public int compare(BufferedReaderString o1, BufferedReaderString o2) {
-                return Integer.parseInt(o1.getString()) - Integer.parseInt(o2.getString());
-            }
-        });
+        q = new PriorityQueue<>(v.size(), Comparator.comparingInt(o -> Integer.parseInt(o.getString())));
         for (BufferedReader reader : this.v)
             q.add(new BufferedReaderString(reader.readLine(), reader));
         i = iterator();
     }
 
     @Override
-    public int read() throws IOException {
+    public int read() {
         if (current == null) {
             if (i.hasNext()) current = i.next();
             else return -1;
@@ -67,7 +62,7 @@ public class OrderedInputStream extends InputStream implements Iterable<String> 
             if (!hasNext()) return null;
             BufferedReaderString brs = q.remove();
             source = brs.getSource();
-            return brs.getString();
+            return brs.getString() == null ? null : brs.getString() + "\n";
         }
     }
 }
