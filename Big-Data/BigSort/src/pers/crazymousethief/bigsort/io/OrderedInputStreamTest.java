@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static pers.crazymousethief.bigsort.io.util.Helper.convertArrayToString;
+import static pers.crazymousethief.bigsort.io.util.Helper.convertStreamToString;
+import static pers.crazymousethief.bigsort.io.util.Helper.getRandomOrderedArray;
 
 class OrderedInputStreamTest {
 
@@ -16,20 +19,20 @@ class OrderedInputStreamTest {
 
     @Test
     void singleStreamTest() throws IOException {
-        streamTest(1);
+        createStreamTest(1);
     }
 
     @Test
     void doubleStreamTest() throws IOException {
-        streamTest(2);
+        createStreamTest(2);
     }
 
     @Test
     void multipleStreamTest() throws IOException {
-        streamTest(100);
+        createStreamTest(100);
     }
 
-    private void streamTest(int number) throws IOException {
+    private void createStreamTest(int number) throws IOException {
         var v = new Vector<InputStream>();
         var list = new ArrayList<int[]>();
         for (int i = 0; i < number; i++)
@@ -43,32 +46,5 @@ class OrderedInputStreamTest {
             a[i] = list.get(i / MAX_SIZE)[i % MAX_SIZE];
         Arrays.sort(a);
         assertEquals(convertArrayToString(a), convertStreamToString(new OrderedInputStream(v)));
-    }
-
-    private int[] getRandomOrderedArray(int size) {
-        int[] a = new int[size];
-        for (int i = 0; i < a.length; i++) a[i] = (int) (Math.random() * Integer.MAX_VALUE);
-        Arrays.sort(a);
-        return a;
-    }
-
-
-    private String convertStreamToString(OrderedInputStream stream) throws IOException {
-        StringBuilder sb;
-        try (var s = new BufferedReader(new InputStreamReader(stream))) {
-            String number;
-            sb = new StringBuilder();
-            while ((number = s.readLine()) != null) {
-                sb.append(number).append("\n");
-            }
-        }
-        return sb.toString();
-    }
-
-    private String convertArrayToString(int[] a) {
-        var sb = new StringBuilder();
-        for (var number : a)
-            sb.append(number).append("\n");
-        return sb.toString();
     }
 }
