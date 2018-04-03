@@ -18,7 +18,7 @@ public class Single {
         merge(targetFileName);
     }
 
-    private static void separate(String fileName, int splitSize) throws IOException {
+    public static void separate(String fileName, int splitSize) throws IOException {
         int[] a = new int[splitSize];
         try (var reader = Helper.getFileReader(fileName)) {
             String text;
@@ -35,7 +35,7 @@ public class Single {
         }
     }
 
-    private static void merge(String fileName) throws IOException {
+    public static void merge(String fileName) throws IOException {
         var v = new Vector<InputStream>();
         for (int i = 0; i < id; i++)
             v.add(new FileInputStream(i + ".txt"));
