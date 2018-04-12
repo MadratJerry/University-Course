@@ -4,72 +4,74 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Proxy {
-    private static int id = 0;
-    private static final Map<Thread, ProxyThread> threadMap = new HashMap<>();
-    private static final ArrayList<Thread> threads = new ArrayList<>();
+    private static final ArrayList<Socket> sockets = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         new Thread(() -> {
             try (var server = new ServerSocket(17325)) {
-                int id = 0;
                 while (true) {
                     Socket socket = server.accept();
-                    System.out.println("Start " + id);
-                    var thread = new Thread(new ProxyThread(socket));
-                    threads.add(thread);
-                    thread.start();
+                    sockets.add(socket);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
+
         var reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            var str = reader.readLine();
-            switch (str) {
+            printf("> ");
+            var orders = reader.readLine().split(" ");
+            switch (orders[0]) {
                 case "ls":
-                    threads.removeIf(thread -> {
-                        if (!thread.isAlive()) threadMap.remove(thread);
-                        return !thread.isAlive();
+                    sockets.removeIf((socket) -> {
+                        try {
+                            socket.sendUrgentData(0xFF);
+                        } catch (Exception e) {
+                            return true;
+                        }
+                        return false;
                     });
-                    for (var thread : threads) {
-                        System.out.println(thread.getName());
+                    for (var i = 0; i < sockets.size(); i++) {
+                        printfln("%d %s", i, sockets.get(i).getRemoteSocketAddress());
+                    }
+                    break;
+                case "put":
+                    if (orders.length != 3) {
+                        printfln("Unexpected arguments");
+                    } else {
+                        var fileName = orders[1];
+                        var socket = sockets.get(Integer.parseInt(orders[2]));
+                        new Thread(() -> {
+                            try {
+                                var input = new BufferedInputStream(new FileInputStream(fileName));
+                                var output = new BufferedOutputStream(socket.getOutputStream());
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                while ((length = input.read(buffer)) != -1) {
+                                    output.write(buffer, 0, length);
+                                }
+                                output.flush();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
                     }
                     break;
                 default:
-                    System.out.println("Unknown command");
+                    printfln("Unknown command");
                     break;
             }
         }
     }
 
-    private static class ProxyThread implements Runnable {
-        private Socket socket;
-        private Thread thread;
-
-        ProxyThread(Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            thread = Thread.currentThread();
-            threadMap.put(thread, this);
-            try (var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 var writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
-            ) {
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    private static void printf(String order, Object... args) {
+        System.out.printf(order, args);
     }
 
+    private static void printfln(String order, Object... args) {
+        printf(order.concat("\n"), args);
+    }
 }
