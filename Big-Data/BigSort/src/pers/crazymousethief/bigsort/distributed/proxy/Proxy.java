@@ -2,12 +2,12 @@ package pers.crazymousethief.bigsort.distributed.proxy;
 
 import pers.crazymousethief.bigsort.distributed.SocketBlock;
 import pers.crazymousethief.bigsort.distributed.node.NodeBlock;
+import pers.crazymousethief.bigsort.io.util.Helper;
 
+import java.beans.JavaBean;
 import java.io.*;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Proxy {
     private static final ArrayList<SocketBlock> socketBlocks = new ArrayList<>();
@@ -26,67 +26,89 @@ public class Proxy {
             }
         }).start();
 
-        command();
-    }
-
-    private static void command() throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
+
         while (true) {
             printf("> ");
             var orders = reader.readLine().split(" ");
-            switch (orders[0]) {
-                case "":
-                    break;
-                case "ls":
-                    socketBlocks.removeIf((socket) -> {
+            var argList = new String[orders.length - 1];
+            System.arraycopy(orders, 1, argList, 0, orders.length - 1);
+            if (command(orders[0], argList)) break;
+        }
+
+        System.exit(0);
+    }
+
+    private static boolean command(String order, String... args) {
+        boolean exit = false;
+        switch (order) {
+            case "":
+                break;
+            case "ls":
+                refresh();
+                for (var i = 0; i < socketBlocks.size(); i++) {
+                    var socketBlock = socketBlocks.get(i);
+                    printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getState());
+                }
+                break;
+            case "put":
+                if (args.length != 2) {
+                    printfln("Unexpected arguments");
+                } else {
+                    var fileName = args[0];
+                    var socketBlock = socketBlocks.get(Integer.parseInt(args[1]));
+                    new Thread(() -> {
                         try {
-                            socket.getSocket().sendUrgentData(0xFF);
-                        } catch (Exception e) {
-                            socketBlockMap.remove(socket);
-                            return true;
-                        }
-                        return false;
-                    });
-                    for (var i = 0; i < socketBlocks.size(); i++) {
-                        var socketBlock = socketBlocks.get(i);
-                        try {
-                            var writer = socketBlock.getOutputStreamWriter();
-                            writer.write("STATE\n");
-                            writer.flush();
-                            socketBlockMap.replace(socketBlock, (NodeBlock) socketBlock.getObjectInputStream().readObject());
+                            var input = new BufferedInputStream(new FileInputStream(fileName));
+                            var output = new BufferedOutputStream(socketBlock.getOutputStream());
+                            byte[] buffer = new byte[1024];
+                            int length;
+                            while ((length = input.read(buffer)) != -1) {
+                                output.write(buffer, 0, length);
+                            }
+                            output.flush();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getState());
-                    }
-                    break;
-                case "put":
-                    if (orders.length != 3) {
-                        printfln("Unexpected arguments");
-                    } else {
-                        var fileName = orders[1];
-                        var socketBlock = socketBlocks.get(Integer.parseInt(orders[2]));
-                        new Thread(() -> {
-                            try {
-                                var input = new BufferedInputStream(new FileInputStream(fileName));
-                                var output = new BufferedOutputStream(socketBlock.getOutputStream());
-                                byte[] buffer = new byte[1024];
-                                int length;
-                                while ((length = input.read(buffer)) != -1) {
-                                    output.write(buffer, 0, length);
-                                }
-                                output.flush();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }).start();
-                    }
-                    break;
-                default:
-                    printfln("Unknown command");
-                    break;
-            }
+                    }).start();
+                }
+                break;
+            case "exit":
+                exit = true;
+                break;
+            default:
+                printfln("Unknown command");
+                break;
         }
+
+        return exit;
+    }
+
+    private static void refresh() {
+        socketBlocks.removeIf((socketBlock) -> {
+            try {
+                socketBlock.getSocket().sendUrgentData(0xFF);
+            } catch (Exception e) {
+                socketBlockMap.remove(socketBlock);
+                return true;
+            }
+            return false;
+        });
+        for (SocketBlock socketBlock : socketBlocks) {
+            socketBlockMap.replace(socketBlock, getState(socketBlock));
+        }
+    }
+
+    private static NodeBlock getState(SocketBlock socketBlock) {
+        try {
+            var writer = socketBlock.getOutputStreamWriter();
+            writer.write("STATE\n");
+            writer.flush();
+            return (NodeBlock) socketBlock.getObjectInputStream().readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static void printf(String order, Object... args) {
