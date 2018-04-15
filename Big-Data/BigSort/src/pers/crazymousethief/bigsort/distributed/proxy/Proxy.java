@@ -4,10 +4,12 @@ import pers.crazymousethief.bigsort.distributed.SocketBlock;
 import pers.crazymousethief.bigsort.distributed.node.NodeBlock;
 import pers.crazymousethief.bigsort.io.util.Helper;
 
-import java.beans.JavaBean;
 import java.io.*;
 import java.net.ServerSocket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 public class Proxy {
     private static final ArrayList<SocketBlock> socketBlocks = new ArrayList<>();
@@ -39,7 +41,7 @@ public class Proxy {
         System.exit(0);
     }
 
-    private static boolean command(String order, String... args) {
+    private static boolean command(String order, String... args) throws IOException {
         boolean exit = false;
         switch (order) {
             case "":
@@ -49,6 +51,24 @@ public class Proxy {
                 for (var i = 0; i < socketBlocks.size(); i++) {
                     var socketBlock = socketBlocks.get(i);
                     printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getState());
+                }
+                break;
+            case "separate":
+                if (args.length != 1) {
+                    printfln("Unexpected arguments");
+                } else {
+                    refresh();
+                    int[] i = {0};
+                    Helper.separate(3, new FileInputStream(args[0]), () -> {
+                        OutputStream stream = null;
+                        try {
+                            stream = socketBlocks.get(i[0]++).getOutputStream();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        i[0] %= socketBlocks.size();
+                        return stream;
+                    });
                 }
                 break;
             case "put":

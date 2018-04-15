@@ -3,8 +3,12 @@ package pers.crazymousethief.bigsort.single;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pers.crazymousethief.bigsort.Generator;
+import pers.crazymousethief.bigsort.io.util.Helper;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 class SingleTest {
     private static String fileName = "numbers.txt";
@@ -13,11 +17,6 @@ class SingleTest {
     @BeforeAll
     static void init() throws IOException {
         Generator.main(new String[]{"numbers.txt", size + ""});
-    }
-
-    @Test
-    void separateTest() throws IOException {
-        Single.separate(fileName, size / 10);
     }
 
     @Test

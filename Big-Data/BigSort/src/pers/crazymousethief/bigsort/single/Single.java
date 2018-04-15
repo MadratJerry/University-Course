@@ -1,10 +1,10 @@
 package pers.crazymousethief.bigsort.single;
 
 import pers.crazymousethief.bigsort.io.OrderedInputStream;
+import pers.crazymousethief.bigsort.io.util.Helper;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Vector;
 
 public class Single {
@@ -13,26 +13,17 @@ public class Single {
     public static void main(String[] args) throws IOException {
         String sourceFileName = args[0];
         String targetFileName = args[1];
-        int splitSize = Integer.parseInt(args[2]);
-        separate(sourceFileName, splitSize);
-        merge(targetFileName);
-    }
-
-    public static void separate(String fileName, int splitSize) throws IOException {
-        int[] a = new int[splitSize];
-        try (var reader = Helper.getFileReader(fileName)) {
-            String text;
-            int index = 0;
-            while ((text = reader.readLine()) != null) {
-                a[index++] = Integer.parseInt(text);
-                if (index == splitSize) {
-                    Helper.save(a, index);
-                    index = 0;
-                }
+        long splitSize = Integer.parseInt(args[2]);
+        Helper.separate(splitSize, new FileInputStream(sourceFileName), () -> {
+            OutputStream stream = null;
+            try {
+                stream = new FileOutputStream(id++ + ".txt");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            if (index > 0)
-                Helper.save(a, index);
-        }
+            return stream;
+        });
+        merge(targetFileName);
     }
 
     public static void merge(String fileName) throws IOException {
@@ -40,26 +31,14 @@ public class Single {
         for (int i = 0; i < id; i++)
             v.add(new FileInputStream(i + ".txt"));
         var stream = new OrderedInputStream(v);
-        Helper.inputStreamToWriter(stream, Helper.getFileWriter(fileName));
+        Util.inputStreamToWriter(stream, Util.getFileWriter(fileName));
         for (int i = 0; i < id; i++)
             new File(i + ".txt").delete();
     }
 
-    private static class Helper {
-        static BufferedReader getFileReader(String fileName) throws IOException {
-            return new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
-        }
-
+    private static class Util {
         static BufferedWriter getFileWriter(String fileName) throws IOException {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8));
-        }
-
-        static void save(int[] a, int limit) throws IOException {
-            Arrays.sort(a);
-            try (BufferedWriter output = Helper.getFileWriter(id++ + ".txt")) {
-                for (int i = 0; i < limit; i++)
-                    output.write(Integer.toString(a[i]).concat("\n"));
-            }
         }
 
         static void inputStreamToWriter(InputStream stream, BufferedWriter writer) throws IOException {

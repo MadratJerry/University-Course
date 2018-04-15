@@ -1,9 +1,6 @@
 package pers.crazymousethief.bigsort.io.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 
 public class Helper {
@@ -32,5 +29,29 @@ public class Helper {
         for (var number : a)
             sb.append(number).append("\n");
         return sb.toString();
+    }
+
+    public static BufferedReader getBufferedReader(InputStream stream) {
+        return new BufferedReader(new InputStreamReader(stream));
+    }
+
+    public static BufferedWriter getBufferedWriter(OutputStream stream) {
+        return new BufferedWriter(new OutputStreamWriter(stream));
+    }
+
+    public static void separate(long splitSize, InputStream stream, Infinite<OutputStream> infinite) throws IOException {
+        var itr = new InfiniteIterator<OutputStream>(infinite);
+        var reader = Helper.getBufferedReader(stream);
+        String text = reader.readLine();
+        while (itr.hasNext()) {
+            if (text == null) break;
+            int index = 0;
+            var writer = Helper.getBufferedWriter(itr.next());
+            do {
+                writer.write(text.concat("\n"));
+            }
+            while ((text = reader.readLine()) != null && ++index != splitSize);
+            writer.flush();
+        }
     }
 }
