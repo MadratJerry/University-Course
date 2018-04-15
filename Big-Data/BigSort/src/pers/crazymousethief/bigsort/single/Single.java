@@ -1,6 +1,7 @@
 package pers.crazymousethief.bigsort.single;
 
 import pers.crazymousethief.bigsort.io.OrderedInputStream;
+import pers.crazymousethief.bigsort.io.SortOutputStream;
 import pers.crazymousethief.bigsort.io.util.Helper;
 
 import java.io.*;
@@ -17,7 +18,7 @@ public class Single {
         Helper.separate(splitSize, new FileInputStream(sourceFileName), () -> {
             OutputStream stream = null;
             try {
-                stream = new FileOutputStream(id++ + ".txt");
+                stream = new SortOutputStream(splitSize, new FileOutputStream(id++ + ".txt"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
