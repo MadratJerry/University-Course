@@ -2,14 +2,17 @@ package pers.crazymousethief.bigsort.distributed.node;
 
 import pers.crazymousethief.bigsort.distributed.SocketBlock;
 import pers.crazymousethief.bigsort.io.BufferInputStream;
+import pers.crazymousethief.bigsort.io.util.Helper;
 import pers.crazymousethief.bigsort.single.Single;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.util.Vector;
 
 public class Node {
     private static NodeBlock nodeBlock;
-    private static long splitSize = 5000;
+    private static long splitSize = 100000;
+    private static int count;
 
     public static void main(String[] args) throws IOException {
         var socket = new Socket("localhost", 17325);
@@ -24,7 +27,6 @@ public class Node {
             while (true) {
                 String data;
                 while ((data = reader.readLine()) != null) {
-                    System.out.println(data);
                     switch (data) {
                         case "STATE":
                             output.writeObject(nodeBlock);
@@ -35,7 +37,7 @@ public class Node {
                             nodeBlock.setSocketState(NodeBlock.SocketState.RECEIVING);
                             new Thread(() -> {
                                 try {
-                                    Single.separate(splitSize, stream, nodeBlock.getId());
+                                    count = Single.separate(splitSize, stream, nodeBlock.getId());
                                     nodeBlock.setSort(true);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -45,6 +47,15 @@ public class Node {
                         case "END":
                             stream.flush();
                             nodeBlock.setSocketState(NodeBlock.SocketState.FREE);
+                            break;
+                        case "GET":
+                            var v = new Vector<InputStream>();
+                            for (int i = 0; i < count; i++)
+                                v.add(new FileInputStream(nodeBlock.getId() + "_" + i + ".txt"));
+                            Helper.merge(v, socketBlock.getOutputStream());
+                            socketBlock.getBufferedWriter().write("\n");
+                            socketBlock.getBufferedWriter().flush();
+                            System.out.println("MERGED");
                             break;
                         default:
                             if (nodeBlock.getSocketSocketState().equals(NodeBlock.SocketState.RECEIVING)) {

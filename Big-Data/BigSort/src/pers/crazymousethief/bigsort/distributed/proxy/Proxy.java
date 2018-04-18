@@ -2,18 +2,22 @@ package pers.crazymousethief.bigsort.distributed.proxy;
 
 import pers.crazymousethief.bigsort.distributed.SocketBlock;
 import pers.crazymousethief.bigsort.distributed.node.NodeBlock;
+import pers.crazymousethief.bigsort.io.OrderedInputStream;
 import pers.crazymousethief.bigsort.io.util.Helper;
+import pers.crazymousethief.bigsort.single.Single;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class Proxy {
     private static final ArrayList<SocketBlock> socketBlocks = new ArrayList<>();
     private static final Map<SocketBlock, NodeBlock> socketBlockMap = new HashMap<>();
     private static int id = 0;
+    private static int splitSize = 300000;
 
     public static void main(String[] args) throws IOException {
         new Thread(() -> {
@@ -64,7 +68,7 @@ public class Proxy {
                 } else {
                     refresh();
                     int[] i = {0};
-                    Helper.separate(10000, new FileInputStream(args[0]), () -> {
+                    Helper.separate(splitSize, new FileInputStream(args[0]), () -> {
                         OutputStream stream = null;
                         try {
                             stream = socketBlocks.get(i[0]++).getOutputStream();
@@ -75,6 +79,18 @@ public class Proxy {
                         return stream;
                     });
                 }
+                break;
+            case "merge":
+                refresh();
+                for (var socketBlock : socketBlocks) {
+                    sendOrder("GET", socketBlock.getOutputStreamWriter());
+                }
+                var v = new Vector<InputStream>();
+                for (var socketBlock : socketBlocks) {
+                    socketBlock.getInputStream().read();
+                    v.add(socketBlock.getInputStream());
+                }
+                Helper.merge(v, new FileOutputStream("result.txt"));
                 break;
             case "sort":
                 if (args.length != 1) {

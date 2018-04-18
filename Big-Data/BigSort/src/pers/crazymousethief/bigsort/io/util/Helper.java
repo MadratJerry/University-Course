@@ -1,7 +1,11 @@
 package pers.crazymousethief.bigsort.io.util;
 
+import pers.crazymousethief.bigsort.io.OrderedInputStream;
+
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Vector;
 
 public class Helper {
 
@@ -52,5 +56,24 @@ public class Helper {
             } while ((text = reader.readLine()) != null && ++index != splitSize);
             writer.flush();
         }
+    }
+
+    public static BufferedWriter getFileWriter(String fileName) throws IOException {
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8));
+    }
+
+    public static void inputStreamToWriter(InputStream stream, BufferedWriter writer) throws IOException {
+        try (var reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            String text;
+            while ((text = reader.readLine()) != null) {
+                writer.write(text.concat("\n"));
+            }
+            writer.flush();
+        }
+    }
+
+    public static void merge(Vector<InputStream> v, OutputStream stream) throws IOException {
+        var writer = Helper.getBufferedWriter(stream);
+        Helper.inputStreamToWriter(new OrderedInputStream(v), writer);
     }
 }

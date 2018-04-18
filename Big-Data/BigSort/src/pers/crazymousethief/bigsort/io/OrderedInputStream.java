@@ -13,11 +13,22 @@ public class OrderedInputStream extends InputStream implements Iterable<String> 
     private String current = null;
     private int pos = 0;
 
+    private String filter(String str) {
+        var sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            var c = str.charAt(i);
+            if (c >= '0' && c <= '9') sb.append(c);
+
+        }
+        return sb.toString();
+    }
+
+
     public OrderedInputStream(Vector<InputStream> v) throws IOException {
         this.v = new Vector<>();
         for (InputStream stream : v)
             this.v.add(new BufferedReader(new InputStreamReader(stream)));
-        q = new PriorityQueue<>(v.size(), Comparator.comparingInt(o -> Integer.parseInt(o.getString())));
+        q = new PriorityQueue<>(v.size(), Comparator.comparingInt(o -> Integer.parseInt(filter(o.getString()))));
         for (BufferedReader reader : this.v)
             q.add(new BufferedReaderString(reader.readLine(), reader));
         i = iterator();
@@ -51,7 +62,7 @@ public class OrderedInputStream extends InputStream implements Iterable<String> 
             try {
                 while (q.size() < v.size()) {
                     number = source.readLine();
-                    if (number == null) v.remove(source);
+                    if (number == null || number.equals("")) v.remove(source);
                     else q.add(new BufferedReaderString(number, source));
                 }
             } catch (Exception e) {
