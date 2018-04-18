@@ -9,11 +9,11 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 public class Proxy {
     private static final ArrayList<SocketBlock> socketBlocks = new ArrayList<>();
     private static final Map<SocketBlock, NodeBlock> socketBlockMap = new HashMap<>();
+    private static boolean isSending = false;
 
     public static void main(String[] args) throws IOException {
         new Thread(() -> {
@@ -50,7 +50,7 @@ public class Proxy {
                 refresh();
                 for (var i = 0; i < socketBlocks.size(); i++) {
                     var socketBlock = socketBlocks.get(i);
-                    printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getState());
+                    printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getSocketSocketState());
                 }
                 break;
             case "separate":
@@ -69,6 +69,22 @@ public class Proxy {
                         i[0] %= socketBlocks.size();
                         return stream;
                     });
+                }
+                break;
+            case "sort":
+                if (args.length != 1) {
+                    printfln("Unexpected arguments");
+                } else {
+                    refresh();
+                    for (var socketBlock : socketBlocks) {
+                        sendOrder("START", socketBlock.getOutputStreamWriter());
+                    }
+                    isSending = true;
+                    command("separate", args[0]);
+                    for (var socketBlock : socketBlocks) {
+                        sendOrder("END", socketBlock.getOutputStreamWriter());
+                    }
+                    isSending = false;
                 }
                 break;
             case "put":
@@ -104,7 +120,13 @@ public class Proxy {
         return exit;
     }
 
+    private static void sendOrder(String order, OutputStreamWriter writer) throws IOException {
+        writer.write(order.concat("\n"));
+        writer.flush();
+    }
+
     private static void refresh() {
+        if (isSending) return;
         socketBlocks.removeIf((socketBlock) -> {
             try {
                 socketBlock.getSocket().sendUrgentData(0xFF);
@@ -121,9 +143,7 @@ public class Proxy {
 
     private static NodeBlock getState(SocketBlock socketBlock) {
         try {
-            var writer = socketBlock.getOutputStreamWriter();
-            writer.write("STATE\n");
-            writer.flush();
+            sendOrder("STATE", socketBlock.getOutputStreamWriter());
             return (NodeBlock) socketBlock.getObjectInputStream().readObject();
         } catch (Exception e) {
             e.printStackTrace();

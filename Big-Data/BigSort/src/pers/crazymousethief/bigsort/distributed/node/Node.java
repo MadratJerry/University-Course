@@ -1,5 +1,9 @@
 package pers.crazymousethief.bigsort.distributed.node;
 
+import pers.crazymousethief.bigsort.io.BufferInputStream;
+import pers.crazymousethief.bigsort.io.util.Helper;
+import pers.crazymousethief.bigsort.single.Single;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -8,6 +12,7 @@ public class Node {
 
     public static void main(String[] args) throws IOException {
         var socket = new Socket("localhost", 17325);
+        var stream = new BufferInputStream();
         try (var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              var writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
              var output = new ObjectOutputStream(socket.getOutputStream())) {
@@ -20,8 +25,24 @@ public class Node {
                             output.writeObject(nodeBlock);
                             output.flush();
                             break;
+                        case "START":
+                            nodeBlock.setSocketState(NodeBlock.SocketState.RECEIVING);
+                            new Thread(() -> {
+                                try {
+                                    Single.separate(3, stream);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
+                            break;
+                        case "END":
+                            stream.flush();
+                            nodeBlock.setSocketState(NodeBlock.SocketState.FREE);
+                            break;
                         default:
-                            System.out.println(data);
+                            if (nodeBlock.getSocketSocketState().equals(NodeBlock.SocketState.RECEIVING)) {
+                                stream.write(data.concat("\n"));
+                            }
                             break;
                     }
                 }

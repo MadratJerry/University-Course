@@ -2,14 +2,25 @@ package pers.crazymousethief.bigsort.distributed.node;
 
 import java.io.Serializable;
 
-enum State {
-    FREE
-}
-
 public class NodeBlock implements Serializable {
-    private State state = State.FREE;
+    private SocketState socketSocketState = SocketState.FREE;
+    private boolean isSorted = false;
 
-    public State getState() {
-        return state;
+    public SocketState getSocketSocketState() {
+        return socketSocketState;
+    }
+
+    public void setSocketState(SocketState state) {
+        this.socketSocketState = state;
+    }
+
+    public enum SocketState {
+        FREE,
+        RECEIVING,
+        SENDING,
+    }
+
+    public boolean isSort() {
+        return isSorted;
     }
 }

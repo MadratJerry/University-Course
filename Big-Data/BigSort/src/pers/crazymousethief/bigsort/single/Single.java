@@ -3,6 +3,7 @@ package pers.crazymousethief.bigsort.single;
 import pers.crazymousethief.bigsort.io.OrderedInputStream;
 import pers.crazymousethief.bigsort.io.SortOutputStream;
 import pers.crazymousethief.bigsort.io.util.Helper;
+import pers.crazymousethief.bigsort.io.util.Infinite;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +16,12 @@ public class Single {
         String sourceFileName = args[0];
         String targetFileName = args[1];
         long splitSize = Integer.parseInt(args[2]);
-        Helper.separate(splitSize, new FileInputStream(sourceFileName), () -> {
+        separate(splitSize, new FileInputStream(sourceFileName));
+        merge(targetFileName);
+    }
+
+    public static void separate(long splitSize, InputStream inputStream) throws IOException {
+        Helper.separate(splitSize, inputStream, () -> {
             OutputStream stream = null;
             try {
                 stream = new SortOutputStream(splitSize, new FileOutputStream(id++ + ".txt"));
@@ -24,7 +30,6 @@ public class Single {
             }
             return stream;
         });
-        merge(targetFileName);
     }
 
     public static void merge(String fileName) throws IOException {
