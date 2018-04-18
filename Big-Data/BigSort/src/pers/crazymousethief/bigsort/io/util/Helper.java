@@ -49,8 +49,7 @@ public class Helper {
             var writer = Helper.getBufferedWriter(itr.next());
             do {
                 writer.write(text.concat("\n"));
-            }
-            while ((text = reader.readLine()) != null && ++index != splitSize);
+            } while ((text = reader.readLine()) != null && ++index != splitSize);
             writer.flush();
         }
     }

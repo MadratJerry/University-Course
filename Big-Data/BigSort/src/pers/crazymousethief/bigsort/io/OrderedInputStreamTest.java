@@ -2,16 +2,16 @@ package pers.crazymousethief.bigsort.io;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pers.crazymousethief.bigsort.io.util.Helper.convertArrayToString;
-import static pers.crazymousethief.bigsort.io.util.Helper.convertStreamToString;
-import static pers.crazymousethief.bigsort.io.util.Helper.getRandomOrderedArray;
+import static pers.crazymousethief.bigsort.io.util.Helper.*;
 
 class OrderedInputStreamTest {
 
