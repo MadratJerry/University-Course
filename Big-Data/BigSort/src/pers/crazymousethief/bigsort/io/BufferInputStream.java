@@ -12,7 +12,7 @@ public class BufferInputStream extends InputStream {
     private int pos = 0;
 
     @Override
-    public synchronized int read() throws IOException {
+    public int read() throws IOException {
         if (buf == null) return -1;
         if (pos == buf.length()) {
             synchronized (writeLock) {

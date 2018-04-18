@@ -13,15 +13,17 @@ import java.util.Map;
 public class Proxy {
     private static final ArrayList<SocketBlock> socketBlocks = new ArrayList<>();
     private static final Map<SocketBlock, NodeBlock> socketBlockMap = new HashMap<>();
-    private static boolean isSending = false;
+    private static int id = 0;
 
     public static void main(String[] args) throws IOException {
         new Thread(() -> {
             try (var server = new ServerSocket(17325)) {
                 while (true) {
                     SocketBlock socketBlock = new SocketBlock(server.accept());
+                    var nodeBlock = new NodeBlock(id++);
+                    setState(socketBlock, nodeBlock);
                     socketBlocks.add(socketBlock);
-                    socketBlockMap.put(socketBlock, new NodeBlock());
+                    socketBlockMap.put(socketBlock, nodeBlock);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -37,7 +39,6 @@ public class Proxy {
             System.arraycopy(orders, 1, argList, 0, orders.length - 1);
             if (command(orders[0], argList)) break;
         }
-
         System.exit(0);
     }
 
@@ -50,7 +51,11 @@ public class Proxy {
                 refresh();
                 for (var i = 0; i < socketBlocks.size(); i++) {
                     var socketBlock = socketBlocks.get(i);
-                    printfln("%d %s %s", i, socketBlock.getSocket().getRemoteSocketAddress(), socketBlockMap.get(socketBlock).getSocketSocketState());
+                    printfln("%d #%d %s %s %s", i,
+                            socketBlockMap.get(socketBlock).getId(),
+                            socketBlock.getSocket().getRemoteSocketAddress(),
+                            socketBlockMap.get(socketBlock).getSocketSocketState(),
+                            socketBlockMap.get(socketBlock).isSort());
                 }
                 break;
             case "separate":
@@ -59,7 +64,7 @@ public class Proxy {
                 } else {
                     refresh();
                     int[] i = {0};
-                    Helper.separate(3, new FileInputStream(args[0]), () -> {
+                    Helper.separate(10000, new FileInputStream(args[0]), () -> {
                         OutputStream stream = null;
                         try {
                             stream = socketBlocks.get(i[0]++).getOutputStream();
@@ -79,12 +84,10 @@ public class Proxy {
                     for (var socketBlock : socketBlocks) {
                         sendOrder("START", socketBlock.getOutputStreamWriter());
                     }
-                    isSending = true;
                     command("separate", args[0]);
                     for (var socketBlock : socketBlocks) {
                         sendOrder("END", socketBlock.getOutputStreamWriter());
                     }
-                    isSending = false;
                 }
                 break;
             case "put":
@@ -126,7 +129,6 @@ public class Proxy {
     }
 
     private static void refresh() {
-        if (isSending) return;
         socketBlocks.removeIf((socketBlock) -> {
             try {
                 socketBlock.getSocket().sendUrgentData(0xFF);
@@ -149,6 +151,16 @@ public class Proxy {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static void setState(SocketBlock socketBlock, NodeBlock nodeBlock) {
+        try {
+            var output = socketBlock.getObjectOutputStream();
+            output.writeObject(nodeBlock);
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void printf(String order, Object... args) {

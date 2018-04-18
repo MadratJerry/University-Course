@@ -9,6 +9,8 @@ public class SocketBlock {
     private ObjectOutputStream objectOutputStream;
     private OutputStreamWriter outputStreamWriter;
     private InputStreamReader inputStreamReader;
+    private BufferedWriter bufferedWriter;
+    private BufferedReader bufferedReader;
 
     public SocketBlock(Socket socket) {
         this.socket = socket;
@@ -46,4 +48,13 @@ public class SocketBlock {
                 outputStreamWriter = new OutputStreamWriter(socket.getOutputStream()) : outputStreamWriter;
     }
 
+    public BufferedWriter getBufferedWriter() throws IOException {
+        return bufferedWriter == null ?
+                bufferedWriter = new BufferedWriter(getOutputStreamWriter()) : bufferedWriter;
+    }
+
+    public BufferedReader getBufferedReader() throws IOException {
+        return bufferedReader == null ?
+                bufferedReader = new BufferedReader(getInputStreamReader()) : bufferedReader;
+    }
 }

@@ -1,21 +1,26 @@
 package pers.crazymousethief.bigsort.distributed.node;
 
+import pers.crazymousethief.bigsort.distributed.SocketBlock;
 import pers.crazymousethief.bigsort.io.BufferInputStream;
-import pers.crazymousethief.bigsort.io.util.Helper;
 import pers.crazymousethief.bigsort.single.Single;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
 
 public class Node {
-    private static final NodeBlock nodeBlock = new NodeBlock();
+    private static NodeBlock nodeBlock;
+    private static long splitSize = 5000;
 
     public static void main(String[] args) throws IOException {
         var socket = new Socket("localhost", 17325);
+        var socketBlock = new SocketBlock(socket);
         var stream = new BufferInputStream();
-        try (var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             var writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-             var output = new ObjectOutputStream(socket.getOutputStream())) {
+        try (var reader = socketBlock.getBufferedReader();
+             var writer = socketBlock.getBufferedWriter();
+             var input = socketBlock.getObjectInputStream();
+             var output = socketBlock.getObjectOutputStream()) {
+            nodeBlock = (NodeBlock) socketBlock.getObjectInputStream().readObject();
+            System.out.println("#" + nodeBlock.getId());
             while (true) {
                 String data;
                 while ((data = reader.readLine()) != null) {
@@ -24,13 +29,15 @@ public class Node {
                         case "STATE":
                             output.writeObject(nodeBlock);
                             output.flush();
+                            output.reset();
                             break;
                         case "START":
                             nodeBlock.setSocketState(NodeBlock.SocketState.RECEIVING);
                             new Thread(() -> {
                                 try {
-                                    Single.separate(3, stream);
-                                } catch (IOException e) {
+                                    Single.separate(splitSize, stream, nodeBlock.getId());
+                                    nodeBlock.setSort(true);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }).start();
