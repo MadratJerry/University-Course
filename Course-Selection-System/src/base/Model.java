@@ -8,8 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
-    public <T> List<T> query(String sql, Object[] paramsValue, Class<T> classObject) {
+public abstract class Model {
+    protected static <T> List<T> query(Class<T> classObject, String sql, Object... paramsValue) {
         List<T> list = new ArrayList<>();
         try {
             Connection connection = Database.getConnection();
