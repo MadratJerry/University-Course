@@ -5,9 +5,6 @@ import base.Model;
 import java.util.List;
 
 public class Student extends Model {
-    public static void main(String... args) {
-        System.out.println(findOneById("11503070301").getStudentName());
-    }
 
     public static StudentBean findOneById(String id) {
         return findOneById(StudentBean.class, id);
@@ -24,5 +21,9 @@ public class Student extends Model {
 
     public static List<StudentBean> findAll() {
         return query(StudentBean.class, "SELECT studentId, studentBirth, studentName,studentGender FROM student");
+    }
+
+    public static boolean deleteOneById(String id) {
+        return deleteOneById(StudentBean.class, id);
     }
 }

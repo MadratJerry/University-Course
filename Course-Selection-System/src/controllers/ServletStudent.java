@@ -18,20 +18,19 @@ public class ServletStudent extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo();
-        String id = "";
-        if (path != null) id = path.substring(1);
-        if (id.equals("")) {
-            response.getWriter().println(
-                    JSON.toJSON(Student.findAll()));
+        String id = request.getPathInfo().substring(1);
+        StudentBean studentBean = Student.findOneById(id);
+        if (studentBean == null) {
+            response.setStatus(404);
         } else {
-            StudentBean studentBean = Student.findOneById(id);
-            if (studentBean == null) {
-                response.setStatus(404);
-            } else {
-                response.getWriter().println(
-                        JSON.toJSON(studentBean));
-            }
+            response.getWriter().println(
+                    JSON.toJSON(studentBean));
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getPathInfo().substring(1);
+        response.setStatus(Student.deleteOneById(id) ? 200 : 404);
     }
 }
