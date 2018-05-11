@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import { Layout, Menu, Icon, Avatar, Dropdown } from 'antd'
+import Student from './Student'
 import { GlobalContext } from '../Context'
 import './Dashboard.css'
 
 const { Header, Content, Sider } = Layout
+const SubMenu = Menu.SubMenu
 
 const menu = (
   <Menu>
@@ -28,13 +31,18 @@ const menu = (
 class Dashboard extends Component {
   state = {
     collapsed: false,
-    name: 'wow',
   }
+
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     })
   }
+
+  handleMenuClick = ({ key }) => {
+    this.props.history.replace(`${this.props.match.url}/${key}`)
+  }
+
   render() {
     return (
       <GlobalContext.Consumer>
@@ -42,11 +50,19 @@ class Dashboard extends Component {
           <Layout style={{ height: '100%' }}>
             <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
               <div className="logo" />
-              <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                <Menu.Item key="1">
-                  <Icon type="user" />
-                  <span>nav 1</span>
-                </Menu.Item>
+              <Menu theme="dark" mode="inline" defaultOpenKeys={['sub1']} onClick={this.handleMenuClick}>
+                <SubMenu
+                  key="sub1"
+                  title={
+                    <span>
+                      <Icon type="user" />
+                      <span>用户管理</span>
+                    </span>
+                  }
+                >
+                  <Menu.Item key="student">学生管理</Menu.Item>
+                  <Menu.Item key="teacher">教师管理</Menu.Item>
+                </SubMenu>
                 <Menu.Item key="2">
                   <Icon type="video-camera" />
                   <span>nav 2</span>
@@ -79,7 +95,9 @@ class Dashboard extends Component {
                 </Dropdown>
               </Header>
               <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-                Content
+                <Switch>
+                  <Route path={`${this.props.match.url}/student`} component={Student} />
+                </Switch>
               </Content>
             </Layout>
           </Layout>
