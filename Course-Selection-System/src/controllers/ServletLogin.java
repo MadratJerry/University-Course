@@ -27,7 +27,7 @@ public class ServletLogin extends HttpServlet {
             if (username.length() == 11) {
                 isCorrect = Student.loginCheck(username, password);
                 authority = Authority.STUDENT;
-                user = JSON.toJSONString(Student.findStudentById(username));
+                user = JSON.toJSONString(Student.findOneById(username));
             } else if (username.length() == 8) {
                 isCorrect = Teacher.loginCheck(username, password);
                 authority = Authority.TEACHER;

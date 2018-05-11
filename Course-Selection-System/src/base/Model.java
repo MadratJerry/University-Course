@@ -35,4 +35,10 @@ public abstract class Model {
         }
         return list;
     }
+
+    protected static <T> T findOneById(Class<T> classObject, String id) {
+        String name = classObject.getSimpleName().split("Bean")[0].toLowerCase();
+        List<T> list = query(classObject, "SELECT * FROM " + name + " WHERE " + name + "Id = ? ", id);
+        return list.isEmpty() ? null : list.get(0);
+    }
 }
