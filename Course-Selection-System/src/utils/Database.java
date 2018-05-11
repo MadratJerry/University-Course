@@ -1,6 +1,5 @@
 package utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +12,8 @@ public class Database {
     static {
         properties = new Properties();
         try {
-            properties.load(new FileInputStream("jdbc.properties"));
+            properties.load(Database.class.getClassLoader()
+                    .getResourceAsStream("jdbc.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

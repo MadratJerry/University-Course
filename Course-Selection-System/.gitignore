@@ -90,4 +90,4 @@ fabric.properties
 .idea/httpRequests
 
 # Project
-jdbc.properties
+resources/jdbc.properties
