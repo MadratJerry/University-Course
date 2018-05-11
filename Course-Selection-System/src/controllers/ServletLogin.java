@@ -17,7 +17,7 @@ import java.io.IOException;
 @WebServlet(name = "ServletLogin", urlPatterns = "/login")
 public class ServletLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JSONObject jsonObject = ServletJSON.getJSON(request);
+        JSONObject jsonObject = ServletJSON.parse(request);
         String username = jsonObject.getString("username");
         String password = jsonObject.getString("password");
         Authority authority = Authority.STUDENT;

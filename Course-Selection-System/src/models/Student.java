@@ -26,4 +26,8 @@ public class Student extends Model {
     public static boolean deleteOneById(String id) {
         return deleteOneById(StudentBean.class, id);
     }
+
+    public static boolean insertOne(StudentBean bean) {
+        return insertOne(StudentBean.class, bean);
+    }
 }
