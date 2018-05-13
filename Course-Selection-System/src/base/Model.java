@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,25 +59,14 @@ public abstract class Model {
 
     public <T extends Model> boolean updateOneById(String id, T bean) {
         String name = this.getClass().getSimpleName().toLowerCase();
-        ArrayList<Object> params = new ArrayList<>();
-        ArrayList<Field> columnList = new ArrayList<>(Arrays.asList(this.getClass().getDeclaredFields()));
-        columnList.removeIf((f) -> {
-            try {
-                Object param = new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(bean);
-                if (param == null) {
-                    return true;
-                } else {
-                    params.add(param);
-                    return false;
-                }
-            } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-                e.printStackTrace();
-                return true;
-            }
-        });
+        HashMap<Field, Object> map = getKVMap(bean);
+        List<Object> params = new ArrayList<>(map.values());
         params.add(id);
-        return update(String.format("UPDATE %s SET %s WHERE %sId = ?", name,
-                columnList.stream().map((c) -> c.getName() + " = ?").collect(Collectors.joining(",")), name),
+        return update(
+                String.format("UPDATE %s SET %s WHERE %sId = ?",
+                        name,
+                        map.keySet().stream().map((c) -> c.getName() + " = ?").collect(Collectors.joining(",")),
+                        name),
                 params.toArray()) != 0;
     }
 
@@ -98,17 +87,24 @@ public abstract class Model {
 
     public <T extends Model> boolean insertOne(T bean) {
         String name = this.getClass().getSimpleName().toLowerCase();
-        ArrayList<Field> columnList = new ArrayList<>(Arrays.asList(this.getClass().getDeclaredFields()));
-        Object[] params = columnList.stream().map((f) -> {
+        HashMap<Field, Object> map = getKVMap(bean);
+        return update(String.format("INSERT INTO %s (%s) VALUES (%s)", name,
+                map.keySet().stream().map(Field::getName).collect(Collectors.joining(", ")),
+                map.keySet().stream().map((s) -> "?").collect(Collectors.joining(", "))),
+                map.values().toArray()) != 0;
+    }
+
+    private <T extends Model> HashMap<Field, Object> getKVMap(T bean) {
+        HashMap<Field, Object> map = new HashMap<>();
+        for (Field f : this.getClass().getDeclaredFields()) {
             try {
-                return new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(bean);
-            } catch (IllegalAccessException | IntrospectionException | InvocationTargetException e) {
+                Object param = new PropertyDescriptor(f.getName(), this.getClass()).getReadMethod().invoke(bean);
+                if (param != null)
+                    map.put(f, param);
+            } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
                 e.printStackTrace();
             }
-            return null;
-        }).toArray();
-        return update(String.format("INSERT INTO %s (%s) VALUES (%s)", name,
-                columnList.stream().map(Field::getName).collect(Collectors.joining(", ")),
-                columnList.stream().map((s) -> "?").collect(Collectors.joining(", "))), params) != 0;
+        }
+        return map;
     }
 }
