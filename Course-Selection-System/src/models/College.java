@@ -1,8 +1,8 @@
 package models;
 
-import base.H;
+import base.Model;
 
-public class College extends H {
+public class College extends Model {
     private String collegeId;
     private String collegeName;
     private String collegeHeadId;

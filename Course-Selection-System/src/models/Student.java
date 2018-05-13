@@ -2,32 +2,63 @@ package models;
 
 import base.Model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Student extends Model {
+    private String studentId;
+    private String studentName;
+    private String studentGender;
+    private Date studentBirth;
+    private String studentPassword;
 
-    public static StudentBean findOneById(String id) {
-        return findOneById(StudentBean.class, id);
+    public String getStudentId() {
+        return studentId;
     }
 
-    public static boolean loginCheck(String username, String password) {
-        StudentBean student = findOneById(username);
-        if (student == null) {
-            return false;
-        } else {
-            return student.getStudentPassword().equals(password);
-        }
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
-    public static List<StudentBean> findAll() {
-        return query(StudentBean.class, "SELECT studentId, studentBirth, studentName,studentGender FROM student");
+    public String getStudentName() {
+        return studentName;
     }
 
-    public static boolean deleteOneById(String id) {
-        return deleteOneById(StudentBean.class, id);
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
-    public static boolean insertOne(StudentBean bean) {
-        return insertOne(StudentBean.class, bean);
+    public String getStudentGender() {
+        return studentGender;
     }
+
+    public void setStudentGender(String studentGender) {
+        this.studentGender = studentGender;
+    }
+
+    public Date getStudentBirth() {
+        return studentBirth;
+    }
+
+    public void setStudentBirth(Date studentBirth) {
+        this.studentBirth = studentBirth;
+    }
+
+    public String getStudentPassword() {
+        return studentPassword;
+    }
+
+    public void setStudentPassword(String studentPassword) {
+        this.studentPassword = studentPassword;
+    }
+
+    public String getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(String majorId) {
+        this.majorId = majorId;
+    }
+
+    private String majorId;
 }

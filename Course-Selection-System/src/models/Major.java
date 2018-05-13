@@ -1,10 +1,8 @@
 package models;
 
-import base.Model;
+import base.OldModel;
 
-import java.util.List;
-
-public class Major extends Model {
+public class Major extends OldModel {
     public static MajorBean findMajorById(String id) {
         return findOneById(MajorBean.class, id);
     }

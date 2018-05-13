@@ -1,10 +1,10 @@
 package models;
 
-import base.Model;
+import base.OldModel;
 
 import java.util.List;
 
-public class Teacher extends Model {
+public class Teacher extends OldModel {
     public static TeacherBean findOneById(String id) {
         return findOneById(TeacherBean.class, id);
     }

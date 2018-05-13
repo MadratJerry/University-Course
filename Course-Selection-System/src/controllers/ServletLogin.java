@@ -2,7 +2,7 @@ package controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import models.Student;
+import models.OldStudent;
 import models.Teacher;
 import utils.ServletJSON;
 
@@ -25,9 +25,9 @@ public class ServletLogin extends HttpServlet {
         Object user = null;
         if (username != null && password != null) {
             if (username.length() == 11) {
-                isCorrect = Student.loginCheck(username, password);
+                isCorrect = OldStudent.loginCheck(username, password);
                 authority = Authority.STUDENT;
-                user = JSON.toJSONString(Student.findOneById(username));
+                user = JSON.toJSONString(OldStudent.findOneById(username));
             } else if (username.length() == 8) {
                 isCorrect = Teacher.loginCheck(username, password);
                 authority = Authority.TEACHER;
