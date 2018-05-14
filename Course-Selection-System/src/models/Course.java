@@ -2,20 +2,16 @@ package models;
 
 import base.Model;
 
+import java.util.Date;
+
 public class Course extends Model {
     private String courseId;
     private String courseName;
-    private int courseHour;
-    private double courseCredit;
+    private Integer courseHour;
+    private Double courseCredit;
     private String courseSummary;
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
+    private String teacherId;
+    private Date courseBeginTime;
 
     public String getCourseId() {
         return courseId;
@@ -25,19 +21,27 @@ public class Course extends Model {
         this.courseId = courseId;
     }
 
-    public int getCourseHour() {
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public Integer getCourseHour() {
         return courseHour;
     }
 
-    public void setCourseHour(int courseHour) {
+    public void setCourseHour(Integer courseHour) {
         this.courseHour = courseHour;
     }
 
-    public double getCourseCredit() {
+    public Double getCourseCredit() {
         return courseCredit;
     }
 
-    public void setCourseCredit(double courseCredit) {
+    public void setCourseCredit(Double courseCredit) {
         this.courseCredit = courseCredit;
     }
 
@@ -47,5 +51,21 @@ public class Course extends Model {
 
     public void setCourseSummary(String courseSummary) {
         this.courseSummary = courseSummary;
+    }
+
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public Date getCourseBeginTime() {
+        return courseBeginTime;
+    }
+
+    public void setCourseBeginTime(Date courseBeginTime) {
+        this.courseBeginTime = courseBeginTime;
     }
 }
