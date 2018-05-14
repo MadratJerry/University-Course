@@ -1,5 +1,5 @@
-package models;
+package models.methods;
 
-public interface LoginCheck {
+public interface ILoginCheck {
     boolean loginCheck(String username, String password);
 }

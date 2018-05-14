@@ -1,10 +1,11 @@
 package models;
 
 import base.Model;
+import models.methods.ILoginCheck;
 
 import java.util.Date;
 
-public class Teacher extends Model implements LoginCheck {
+public class Teacher extends Model implements ILoginCheck {
     private String teacherId;
     private String teacherName;
     private String teacherGender;
