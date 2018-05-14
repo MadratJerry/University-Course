@@ -1,7 +1,6 @@
 package controllers;
 
 import com.alibaba.fastjson.JSON;
-import models.OldStudent;
 import models.Student;
 import utils.ServletJSON;
 
@@ -24,6 +23,6 @@ public class ServletStudents extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println(JSON.toJSON(OldStudent.findAll()));
+        response.getWriter().println(JSON.toJSON(new Student().findAll()));
     }
 }

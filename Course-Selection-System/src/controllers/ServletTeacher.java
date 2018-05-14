@@ -22,8 +22,8 @@ public class ServletTeacher extends HttpServlet {
         String id = "";
         if (path != null) id = path.substring(1);
         if (id.equals("")) {
-            response.getWriter().println(
-                    JSON.toJSON(Teacher.findAll()));
+//            response.getWriter().println(
+//                    JSON.toJSON(Teacher.findAll()));
         } else {
             TeacherBean teacherBean = Teacher.findOneById(id);
             if (teacherBean == null) {

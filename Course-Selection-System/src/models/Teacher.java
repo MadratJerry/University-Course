@@ -2,8 +2,6 @@ package models;
 
 import base.OldModel;
 
-import java.util.List;
-
 public class Teacher extends OldModel {
     public static TeacherBean findOneById(String id) {
         return findOneById(TeacherBean.class, id);
@@ -18,7 +16,4 @@ public class Teacher extends OldModel {
         }
     }
 
-    public static List<StudentBean> findAll() {
-        return query(StudentBean.class, "SELECT teacherId, teacherBirth, teacherGender, teacherName, teacherPhone, collegeId FROM teacher");
-    }
 }

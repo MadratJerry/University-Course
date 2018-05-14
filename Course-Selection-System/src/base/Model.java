@@ -70,6 +70,10 @@ public abstract class Model {
                 params.toArray()) != 0;
     }
 
+    public <T extends Model> List<T> findAll() {
+        return query(String.format("SELECT * FROM %s", this.getClass().getSimpleName().toLowerCase()));
+    }
+
     public <T extends Model> T findOneById(String id) {
         String name = this.getClass().getSimpleName().toLowerCase();
         List<T> list = query(String.format("SELECT * FROM %s WHERE %sId = ?", name, name), id);

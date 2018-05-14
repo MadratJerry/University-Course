@@ -3,14 +3,23 @@ package models;
 import base.Model;
 
 import java.util.Date;
-import java.util.List;
 
-public class Student extends Model {
+public class Student extends Model implements LoginCheck {
     private String studentId;
     private String studentName;
     private String studentGender;
     private Date studentBirth;
     private String studentPassword;
+
+    @Override
+    public boolean loginCheck(String username, String password) {
+        Student student = new Student().findOneById(username);
+        if (student == null) {
+            return false;
+        } else {
+            return student.getStudentPassword().equals(password);
+        }
+    }
 
     public String getStudentId() {
         return studentId;
