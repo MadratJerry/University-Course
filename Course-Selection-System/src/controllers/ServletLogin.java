@@ -30,7 +30,7 @@ public class ServletLogin extends HttpServlet {
                 authority = Authority.STUDENT;
                 user = JSON.toJSONString(student.findOneById(username));
             } else if (username.length() == 8) {
-                isCorrect = Teacher.loginCheck(username, password);
+                isCorrect = new Teacher().loginCheck(username, password);
                 authority = Authority.TEACHER;
             } else {
                 authority = Authority.ADMIN;

@@ -2,7 +2,7 @@ package controllers;
 
 import com.alibaba.fastjson.JSON;
 import models.Teacher;
-import models.TeacherBean;
+import utils.ServletJSON;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,21 +17,26 @@ public class ServletTeacher extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getPathInfo().substring(1);
+        Teacher teacher = ServletJSON.parse(request, Teacher.class);
+        new Teacher().updateOneById(id, teacher);
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getPathInfo();
-        String id = "";
-        if (path != null) id = path.substring(1);
-        if (id.equals("")) {
-//            response.getWriter().println(
-//                    JSON.toJSON(Teacher.findAll()));
+        String id = request.getPathInfo().substring(1);
+        Teacher teacher = new Teacher().findOneById(id);
+        if (teacher == null) {
+            response.setStatus(404);
         } else {
-            TeacherBean teacherBean = Teacher.findOneById(id);
-            if (teacherBean == null) {
-                response.setStatus(404);
-            } else {
-                response.getWriter().println(
-                        JSON.toJSON(teacherBean));
-            }
+            response.getWriter().println(JSON.toJSON(teacher));
         }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getPathInfo().substring(1);
+        response.setStatus(new Teacher().deleteOneById(id) ? 200 : 404);
     }
 }

@@ -1,19 +1,74 @@
 package models;
 
-import base.OldModel;
+import base.Model;
 
-public class Teacher extends OldModel {
-    public static TeacherBean findOneById(String id) {
-        return findOneById(TeacherBean.class, id);
-    }
+import java.util.Date;
 
-    public static boolean loginCheck(String username, String password) {
-        TeacherBean teacher = findOneById(username);
+public class Teacher extends Model implements LoginCheck {
+    private String teacherId;
+    private String teacherName;
+    private String teacherGender;
+    private Date teacherBirth;
+    private String teacherPassword;
+    private String teacherPhone;
+
+    @Override
+    public boolean loginCheck(String username, String password) {
+        Teacher teacher = new Teacher().findOneById(username);
         if (teacher == null) {
             return false;
         } else {
             return teacher.getTeacherPassword().equals(password);
         }
     }
+
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getTeacherGender() {
+        return teacherGender;
+    }
+
+    public void setTeacherGender(String teacherGender) {
+        this.teacherGender = teacherGender;
+    }
+
+    public Date getTeacherBirth() {
+        return teacherBirth;
+    }
+
+    public void setTeacherBirth(Date teacherBirth) {
+        this.teacherBirth = teacherBirth;
+    }
+
+    public String getTeacherPassword() {
+        return teacherPassword;
+    }
+
+    public void setTeacherPassword(String teacherPassword) {
+        this.teacherPassword = teacherPassword;
+    }
+
+    public String getTeacherPhone() {
+        return teacherPhone;
+    }
+
+    public void setTeacherPhone(String teacherPhone) {
+        this.teacherPhone = teacherPhone;
+    }
+
 
 }
