@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { Popconfirm, Button, Table, message } from 'antd'
 import EditableCell from './EditableCell'
 import './Student.css'
+import EditableForm from './EditableForm'
 
 class StudentTable extends Component {
   state = {
+    visible: false,
     dataSource: [],
     columns: [
       {
@@ -42,7 +44,12 @@ class StudentTable extends Component {
         dataIndex: 'operation',
         render: (text, record) => {
           return this.state.dataSource.length > 1 ? (
-            <Popconfirm title="确认删除吗？" onConfirm={() => this.onDelete(record.key)}>
+            <Popconfirm
+              title="确认删除吗？"
+              onConfirm={() => this.onDelete(record.key)}
+              okText="确认"
+              cancelText="取消"
+            >
               <Button>删除</Button>
             </Popconfirm>
           ) : null
@@ -53,18 +60,18 @@ class StudentTable extends Component {
   }
   async componentDidMount() {
     await this.fetchData()
-    const options = new Map((await (await fetch('/api/major')).json()).map(m => [m.majorId, m.majorName]))
-    const { columns } = this.state
-    columns[4].inputType.options = options
-    this.setState({ columns })
   }
-  async fetchData() {
+  fetchData = async () => {
     this.setState({
       dataSource: (await (await fetch('/api/student')).json()).map(e => {
         e.key = e.studentId
         return e
       }),
     })
+    const options = new Map((await (await fetch('/api/major')).json()).map(m => [m.majorId, m.majorName]))
+    const { columns } = this.state
+    columns[4].inputType.options = options
+    this.setState({ columns })
   }
   onCellChange = (key, dataIndex) => {
     return async value => {
@@ -73,33 +80,30 @@ class StudentTable extends Component {
         body: JSON.stringify({ [dataIndex]: value }),
       })
       if (result.ok && result.status === 200) message.success('修改成功！')
-      else message.error('修改出错！')
+      else message.error('修改失败！')
+      await this.fetchData()
     }
   }
-  onDelete = key => {
-    const dataSource = [...this.state.dataSource]
-    this.setState({ dataSource: dataSource.filter(item => item.key !== key) })
-  }
-  handleAdd = () => {
-    const { count, dataSource } = this.state
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`,
-    }
-    this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
-    })
+  onDelete = async key => {
+    const result = await fetch(`/api/student/${key}`, { method: 'DELETE' })
+    if (result.ok && result.status === 200) message.success('删除成功！')
+    else message.error('删除失败！')
+    await this.fetchData()
   }
   render() {
-    const { dataSource, columns } = this.state
+    const { dataSource, columns, visible } = this.state
     return (
       <div>
-        <Button className="editable-add-btn" onClick={this.handleAdd}>
+        <Button className="editable-add-btn" type="primary" onClick={() => this.setState({ visible: true })}>
           添加
         </Button>
+        <EditableForm
+          columns={columns.filter(({ title }) => title !== '操作')}
+          toggle={() => this.setState({ visible: !visible })}
+          onSuccess={this.fetchData}
+          visible={visible}
+          title="添加学生"
+        />
         <Table
           bordered
           dataSource={dataSource}

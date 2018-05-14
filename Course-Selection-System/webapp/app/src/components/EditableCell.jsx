@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Input, Icon, Select, DatePicker } from 'antd'
 import moment from 'moment'
 
-const Option = Select.Option
+const { Option } = Select
 const dateFormat = 'YYYY-MM-DD'
 
 class EditableCell extends Component {
