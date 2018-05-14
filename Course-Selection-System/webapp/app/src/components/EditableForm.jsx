@@ -11,7 +11,7 @@ class EditableForm extends Component {
         this.props.columns
           .filter(c => c.inputType.type === 'date')
           .forEach(c => (values[c.dataIndex] = values[c.dataIndex].format('x')))
-        const result = await fetch('/api/student', { method: 'POST', body: JSON.stringify(values) })
+        const result = await fetch(this.props.apiUrl, { method: 'POST', body: JSON.stringify(values) })
         if (result.ok && result.status === 200) {
           message.success('添加成功！')
           this.props.onSuccess()

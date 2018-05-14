@@ -2,31 +2,12 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { Layout, Menu, Icon, Avatar, Dropdown } from 'antd'
 import Student from './Student'
+import Teacher from './Teacher'
 import { GlobalContext } from '../Context'
 import './Dashboard.css'
 
 const { Header, Content, Sider } = Layout
 const SubMenu = Menu.SubMenu
-
-const menu = (
-  <Menu>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-        1st menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-        2nd menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item>
-      <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-        3rd menu item
-      </a>
-    </Menu.Item>
-  </Menu>
-)
 
 class Dashboard extends Component {
   state = {
@@ -43,7 +24,27 @@ class Dashboard extends Component {
     this.props.history.replace(`${this.props.match.url}/${key}`)
   }
 
+  handleClick = async ({ key }) => {
+    switch (key) {
+      case 'logout':
+        await fetch('/api/logout')
+        this.props.history.replace('/login')
+        break
+      default:
+        break
+    }
+  }
+
   render() {
+    const menu = (
+      <Menu onClick={this.handleClick}>
+        <Menu.Item>1st menu item</Menu.Item>
+        <Menu.Item>2nd menu item</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="logout">注销</Menu.Item>
+      </Menu>
+    )
+
     return (
       <GlobalContext.Consumer>
         {({ user }) => (
@@ -97,6 +98,7 @@ class Dashboard extends Component {
               <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
                 <Switch>
                   <Route path={`${this.props.match.url}/student`} component={Student} />
+                  <Route path={`${this.props.match.url}/teacher`} component={Teacher} />
                 </Switch>
               </Content>
             </Layout>

@@ -2,41 +2,45 @@ import React, { Component } from 'react'
 import { Popconfirm, Button, Table, message } from 'antd'
 import EditableCell from './EditableCell'
 import EditableForm from './EditableForm'
-import './Student.css'
 
-class StudentTable extends Component {
+class TeacherTable extends Component {
   state = {
     visible: false,
     dataSource: [],
     columns: [
       {
-        title: '学号',
-        dataIndex: 'studentId',
+        title: '工号',
+        dataIndex: 'teacherId',
         inputType: { type: 'input' },
       },
       {
         title: '姓名',
-        dataIndex: 'studentName',
+        dataIndex: 'teacherName',
         inputType: { type: 'input' },
       },
       {
         title: '性别',
-        dataIndex: 'studentGender',
+        dataIndex: 'teacherGender',
         inputType: { type: 'select', options: new Map([['男', '男'], ['女', '女']]) },
       },
       {
         title: '生日',
-        dataIndex: 'studentBirth',
+        dataIndex: 'teacherBirth',
         inputType: { type: 'date' },
       },
       {
         title: '专业',
-        dataIndex: 'majorId',
+        dataIndex: 'collegeId',
         inputType: { type: 'select', options: new Map() },
       },
       {
+        title: '手机',
+        dataIndex: 'teacherPhone',
+        inputType: { type: 'input' },
+      },
+      {
         title: '密码',
-        dataIndex: 'studentPassword',
+        dataIndex: 'teacherPassword',
         inputType: { type: 'password' },
       },
       {
@@ -63,19 +67,19 @@ class StudentTable extends Component {
   }
   fetchData = async () => {
     this.setState({
-      dataSource: (await (await fetch('/api/student')).json()).map(e => {
-        e.key = e.studentId
+      dataSource: (await (await fetch('/api/teacher')).json()).map(e => {
+        e.key = e.teacherId
         return e
       }),
     })
-    const options = new Map((await (await fetch('/api/major')).json()).map(m => [m.majorId, m.majorName]))
+    const options = new Map((await (await fetch('/api/college')).json()).map(m => [m.collegeId, m.collegeName]))
     const { columns } = this.state
     columns[4].inputType.options = options
     this.setState({ columns })
   }
   onCellChange = (key, dataIndex) => {
     return async value => {
-      const result = await fetch(`/api/student/${key}`, {
+      const result = await fetch(`/api/teacher/${key}`, {
         method: 'PUT',
         body: JSON.stringify({ [dataIndex]: value }),
       })
@@ -85,7 +89,7 @@ class StudentTable extends Component {
     }
   }
   onDelete = async key => {
-    const result = await fetch(`/api/student/${key}`, { method: 'DELETE' })
+    const result = await fetch(`/api/teacher/${key}`, { method: 'DELETE' })
     if (result.ok && result.status === 200) message.success('删除成功！')
     else message.error('删除失败！')
     await this.fetchData()
@@ -102,8 +106,8 @@ class StudentTable extends Component {
           toggle={() => this.setState({ visible: !visible })}
           onSuccess={this.fetchData}
           visible={visible}
-          title="添加学生"
-          apiUrl="/api/student"
+          title="添加老师"
+          apiUrl="/api/teacher"
         />
         <Table
           bordered
@@ -121,4 +125,4 @@ class StudentTable extends Component {
   }
 }
 
-export default StudentTable
+export default TeacherTable
