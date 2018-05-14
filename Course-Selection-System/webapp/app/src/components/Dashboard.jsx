@@ -3,6 +3,9 @@ import { Route, Switch } from 'react-router-dom'
 import { Layout, Menu, Icon, Avatar, Dropdown } from 'antd'
 import Student from './Student'
 import Teacher from './Teacher'
+import College from './College'
+import Major from './Major'
+import Course from './Course'
 import { GlobalContext } from '../Context'
 import './Dashboard.css'
 
@@ -64,13 +67,17 @@ class Dashboard extends Component {
                   <Menu.Item key="student">学生管理</Menu.Item>
                   <Menu.Item key="teacher">教师管理</Menu.Item>
                 </SubMenu>
-                <Menu.Item key="2">
+                <Menu.Item key="college">
                   <Icon type="video-camera" />
-                  <span>nav 2</span>
+                  <span>学院管理</span>
                 </Menu.Item>
-                <Menu.Item key="3">
+                <Menu.Item key="major">
                   <Icon type="upload" />
-                  <span>nav 3</span>
+                  <span>专业管理</span>
+                </Menu.Item>
+                <Menu.Item key="course">
+                  <Icon type="upload" />
+                  <span>课程管理</span>
                 </Menu.Item>
               </Menu>
             </Sider>
@@ -99,6 +106,9 @@ class Dashboard extends Component {
                 <Switch>
                   <Route path={`${this.props.match.url}/student`} component={Student} />
                   <Route path={`${this.props.match.url}/teacher`} component={Teacher} />
+                  <Route path={`${this.props.match.url}/college`} component={College} />
+                  <Route path={`${this.props.match.url}/major`} component={Major} />
+                  <Route path={`${this.props.match.url}/course`} component={Course} />
                 </Switch>
               </Content>
             </Layout>

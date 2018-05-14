@@ -45,7 +45,12 @@ class EditableCell extends Component {
           </Select>
         )
       case 'date':
-        return <DatePicker value={moment(new Date(this.state.value), dateFormat)} />
+        return (
+          <DatePicker
+            value={moment(new Date(this.state.value), dateFormat)}
+            onChange={v => this.handleChange(parseInt(v.format('x'), 10))}
+          />
+        )
       case 'password':
         return (
           <Input
