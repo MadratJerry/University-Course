@@ -21,7 +21,10 @@ public class ServletStudent extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getPathInfo().substring(1);
         Student student = ServletJSON.parse(request, Student.class);
-        new Student().updateOneById(id, student);
+        if (!new Student().updateOneById(id, student)) {
+            throw new IOException("Update error");
+        }
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

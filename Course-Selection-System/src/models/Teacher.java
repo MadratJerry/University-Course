@@ -12,6 +12,7 @@ public class Teacher extends Model implements ILoginCheck {
     private Date teacherBirth;
     private String teacherPassword;
     private String teacherPhone;
+    private String collegeId;
 
     @Override
     public boolean loginCheck(String username, String password) {
@@ -71,5 +72,11 @@ public class Teacher extends Model implements ILoginCheck {
         this.teacherPhone = teacherPhone;
     }
 
+    public String getCollegeId() {
+        return collegeId;
+    }
 
+    public void setCollegeId(String collegeId) {
+        this.collegeId = collegeId;
+    }
 }
