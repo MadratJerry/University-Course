@@ -4,7 +4,7 @@ import EditableCell from './EditableCell'
 import EditableForm from './EditableForm'
 import './EditableTable.css'
 
-function EditableTable({ columns, name, titleName }) {
+function EditableTable({ columns, name, titleName, hasAdd = true, hasDelete = true, disabledList = [] }) {
   return class extends Component {
     state = {
       visible: false,
@@ -15,15 +15,17 @@ function EditableTable({ columns, name, titleName }) {
           title: '操作',
           dataIndex: 'operation',
           render: (text, record) => {
-            return this.state.dataSource.length > 1 ? (
-              <Popconfirm
-                title="确认删除吗？"
-                onConfirm={() => this.onDelete(record.key)}
-                okText="确认"
-                cancelText="取消"
-              >
-                <Button>删除</Button>
-              </Popconfirm>
+            return hasDelete ? (
+              this.state.dataSource.length > 1 ? (
+                <Popconfirm
+                  title="确认删除吗？"
+                  onConfirm={() => this.onDelete(record.key)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <Button>删除</Button>
+                </Popconfirm>
+              ) : null
             ) : null
           },
         },
@@ -49,6 +51,10 @@ function EditableTable({ columns, name, titleName }) {
         )
         c.inputType.options = options
       }
+
+      for (const d of disabledList) {
+        columns[d].canEdit = false
+      }
       this.setState({ columns })
     }
     onCellChange = (key, dataIndex) => {
@@ -72,9 +78,11 @@ function EditableTable({ columns, name, titleName }) {
       const { dataSource, columns, visible } = this.state
       return (
         <div>
-          <Button className="editable-add-btn" type="primary" onClick={() => this.setState({ visible: true })}>
-            添加
-          </Button>
+          {hasAdd ? (
+            <Button className="editable-add-btn" type="primary" onClick={() => this.setState({ visible: true })}>
+              添加
+            </Button>
+          ) : null}
           <EditableForm
             columns={columns.filter(({ title }) => title !== '操作')}
             toggle={() => this.setState({ visible: !visible })}
@@ -89,7 +97,12 @@ function EditableTable({ columns, name, titleName }) {
             columns={columns.map(e => {
               if (e.inputType)
                 e.render = (text, record) => (
-                  <EditableCell value={text} onChange={this.onCellChange(record.key, e.dataIndex)} type={e.inputType} />
+                  <EditableCell
+                    value={text}
+                    onChange={this.onCellChange(record.key, e.dataIndex)}
+                    type={e.inputType}
+                    canEdit={e.canEdit}
+                  />
                 )
               return e
             })}

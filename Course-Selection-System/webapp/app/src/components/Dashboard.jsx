@@ -5,8 +5,9 @@ import Student from './Student'
 import Teacher from './Teacher'
 import College from './College'
 import Major from './Major'
-import Course from './Course'
+import Course, { courseConfig } from './Course'
 import './Dashboard.css'
+import EditableTable from './EditableTable'
 
 const { Header, Content, Sider } = Layout
 const SubMenu = Menu.SubMenu
@@ -59,33 +60,39 @@ class Dashboard extends Component {
       </Menu>
     )
 
-    const { user } = this.state
+    const { user, authority } = this.state
 
     return (
       <Layout style={{ height: '100%' }}>
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo" />
           <Menu theme="dark" mode="inline" defaultOpenKeys={['sub1']} onClick={this.handleMenuClick}>
-            <SubMenu
-              key="sub1"
-              title={
-                <span>
-                  <Icon type="user" />
-                  <span>用户管理</span>
-                </span>
-              }
-            >
-              <Menu.Item key="student">学生管理</Menu.Item>
-              <Menu.Item key="teacher">教师管理</Menu.Item>
-            </SubMenu>
-            <Menu.Item key="college">
-              <Icon type="video-camera" />
-              <span>学院管理</span>
-            </Menu.Item>
-            <Menu.Item key="major">
-              <Icon type="upload" />
-              <span>专业管理</span>
-            </Menu.Item>
+            {authority === 'administrator' ? (
+              <SubMenu
+                key="sub1"
+                title={
+                  <span>
+                    <Icon type="user" />
+                    <span>用户管理</span>
+                  </span>
+                }
+              >
+                <Menu.Item key="student">学生管理</Menu.Item>
+                <Menu.Item key="teacher">教师管理</Menu.Item>
+              </SubMenu>
+            ) : null}
+            {authority === 'administrator' ? (
+              <Menu.Item key="college">
+                <Icon type="video-camera" />
+                <span>学院管理</span>
+              </Menu.Item>
+            ) : null}
+            {authority === 'administrator' ? (
+              <Menu.Item key="major">
+                <Icon type="upload" />
+                <span>专业管理</span>
+              </Menu.Item>
+            ) : null}
             <Menu.Item key="course">
               <Icon type="upload" />
               <span>课程管理</span>
@@ -115,7 +122,20 @@ class Dashboard extends Component {
               <Route path={`${this.props.match.url}/teacher`} component={Teacher} />
               <Route path={`${this.props.match.url}/college`} component={College} />
               <Route path={`${this.props.match.url}/major`} component={Major} />
-              <Route path={`${this.props.match.url}/course`} component={Course} />
+              {authority === 'administrator' ? (
+                <Route path={`${this.props.match.url}/course`} component={Course} />
+              ) : (
+                <Route
+                  path={`${this.props.match.url}/course`}
+                  component={EditableTable({
+                    ...courseConfig,
+                    name: `course?teacherId=${user.teacherId}`,
+                    hasAdd: false,
+                    hasDelete: false,
+                    disabledList: [0, 1, 2, 3, 6],
+                  })}
+                />
+              )}
             </Switch>
           </Content>
         </Layout>

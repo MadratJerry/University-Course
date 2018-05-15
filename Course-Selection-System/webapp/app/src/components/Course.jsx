@@ -1,6 +1,6 @@
 import EditableTable from './EditableTable'
 
-export default EditableTable({
+const courseConfig = {
   name: 'course',
   titleName: '课程',
   columns: [
@@ -40,4 +40,7 @@ export default EditableTable({
       inputType: { type: 'select', options: new Map(), from: 'teacher' },
     },
   ],
-})
+}
+
+export default EditableTable(courseConfig)
+export { courseConfig }

@@ -79,7 +79,7 @@ class EditableCell extends Component {
   }
   render() {
     const { value, editable } = this.state
-    const { type } = this.props
+    const { type, canEdit = true } = this.props
     return (
       <div className="editable-cell">
         {editable ? (
@@ -90,7 +90,7 @@ class EditableCell extends Component {
         ) : (
           <div className="editable-cell-text-wrapper">
             {this.getDisplay(type, value)}
-            <Icon type="edit" className="editable-cell-icon" onClick={this.edit} />
+            {canEdit ? <Icon type="edit" className="editable-cell-icon" onClick={this.edit} /> : null}
           </div>
         )}
       </div>
