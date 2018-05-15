@@ -23,6 +23,6 @@ public class ServletCourses extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println(JSON.toJSON(new Course().findAll()));
+        response.getWriter().println(JSON.toJSON(new Course().findAll(request.getParameterMap())));
     }
 }

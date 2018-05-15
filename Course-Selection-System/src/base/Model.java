@@ -4,22 +4,22 @@ import utils.Database;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Model {
     public Model() {
     }
 
-    public <T extends Model> List<T> query(String sql, Object... params)  {
+    public <T extends Model> List<T> query(String sql, Object... params) {
         List<T> list = new ArrayList<>();
-        try(Connection connection = Database.getConnection()) {
+        try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) statement.setObject(i + 1, params[i]);
             ResultSet resultSet = statement.executeQuery();
@@ -38,7 +38,7 @@ public abstract class Model {
             }
         } catch (ClassNotFoundException | SQLException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException | NoSuchFieldException e) {
             e.printStackTrace();
-       }
+        }
         return list;
     }
 
@@ -72,6 +72,17 @@ public abstract class Model {
 
     public <T extends Model> List<T> findAll() {
         return query(String.format("SELECT * FROM %s", this.getClass().getSimpleName().toLowerCase()));
+    }
+
+    public <T extends Model> List<T> findAll(Map<String, String[]> map) {
+        if (map.isEmpty()) {
+            return findAll();
+        } else {
+            return query(String.format("SELECT * FROM %s WHERE %s",
+                    this.getClass().getSimpleName().toLowerCase(),
+                    map.entrySet().stream().map((e) -> String.format("%s LIKE '%%%s%%'", e.getKey(), e.getValue()[0])).collect(Collectors.joining(" and "))
+            ));
+        }
     }
 
     public <T extends Model> T findOneById(String id) {
