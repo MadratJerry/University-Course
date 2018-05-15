@@ -1,6 +1,6 @@
 import EditableTable from './EditableTable'
 
-export default EditableTable({
+const majorConfig = {
   name: 'major',
   titleName: '专业',
   columns: [
@@ -30,4 +30,7 @@ export default EditableTable({
       inputType: { type: 'input' },
     },
   ],
-})
+}
+
+export default EditableTable(majorConfig)
+export { majorConfig }

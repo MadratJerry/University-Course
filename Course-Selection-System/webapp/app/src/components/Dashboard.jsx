@@ -3,11 +3,12 @@ import { Route, Switch } from 'react-router-dom'
 import { Layout, Menu, Icon, Avatar, Dropdown } from 'antd'
 import Student from './Student'
 import Teacher from './Teacher'
-import College from './College'
-import Major from './Major'
+import College, { collegeConfig } from './College'
+import Major, { majorConfig } from './Major'
+import CV, { cvConfig } from './CV'
 import Course, { courseConfig } from './Course'
-import './Dashboard.css'
 import EditableTable from './EditableTable'
+import './Dashboard.css'
 
 const { Header, Content, Sider } = Layout
 const SubMenu = Menu.SubMenu
@@ -53,8 +54,8 @@ class Dashboard extends Component {
   render() {
     const menu = (
       <Menu onClick={this.handleClick}>
-        <Menu.Item>1st menu item</Menu.Item>
-        <Menu.Item>2nd menu item</Menu.Item>
+        {/* <Menu.Item>1st menu item</Menu.Item>
+        <Menu.Item>2nd menu item</Menu.Item> */}
         <Menu.Divider />
         <Menu.Item key="logout">注销</Menu.Item>
       </Menu>
@@ -81,22 +82,24 @@ class Dashboard extends Component {
                 <Menu.Item key="teacher">教师管理</Menu.Item>
               </SubMenu>
             ) : null}
-            {authority === 'administrator' ? (
-              <Menu.Item key="college">
-                <Icon type="video-camera" />
-                <span>学院管理</span>
-              </Menu.Item>
-            ) : null}
-            {authority === 'administrator' ? (
-              <Menu.Item key="major">
-                <Icon type="upload" />
-                <span>专业管理</span>
-              </Menu.Item>
-            ) : null}
+            <Menu.Item key="college">
+              <Icon type="video-camera" />
+              <span>{authority === 'administrator' ? '学院管理' : '学院查看'}</span>
+            </Menu.Item>
+            <Menu.Item key="major">
+              <Icon type="upload" />
+              <span>{authority === 'administrator' ? '专业管理' : '专业查看'}</span>
+            </Menu.Item>
             <Menu.Item key="course">
               <Icon type="upload" />
-              <span>课程管理</span>
+              <span>{authority === 'administrator' || authority === 'teacher' ? '课程管理' : '课程查看'}</span>
             </Menu.Item>
+            {authority === 'administrator' || authority === 'student' ? (
+              <Menu.Item key="cv">
+                <Icon type="upload" />
+                <span>选课管理</span>
+              </Menu.Item>
+            ) : null}
           </Menu>
         </Sider>
         <Layout>
@@ -120,11 +123,36 @@ class Dashboard extends Component {
             <Switch>
               <Route path={`${this.props.match.url}/student`} component={Student} />
               <Route path={`${this.props.match.url}/teacher`} component={Teacher} />
-              <Route path={`${this.props.match.url}/college`} component={College} />
-              <Route path={`${this.props.match.url}/major`} component={Major} />
+              {authority === 'administrator' ? (
+                <Route path={`${this.props.match.url}/college`} component={College} />
+              ) : (
+                <Route
+                  path={`${this.props.match.url}/college`}
+                  component={EditableTable({
+                    ...collegeConfig,
+                    hasAdd: false,
+                    hasDelete: false,
+                    disabledList: [0, 1, 2, 3],
+                  })}
+                />
+              )}
+              {authority === 'administrator' ? (
+                <Route path={`${this.props.match.url}/major`} component={Major} />
+              ) : (
+                <Route
+                  path={`${this.props.match.url}/major`}
+                  component={EditableTable({
+                    ...majorConfig,
+                    hasAdd: false,
+                    hasDelete: false,
+                    disabledList: [0, 1, 2, 3],
+                  })}
+                />
+              )}
               {authority === 'administrator' ? (
                 <Route path={`${this.props.match.url}/course`} component={Course} />
-              ) : (
+              ) : null}
+              {authority === 'teacher' ? (
                 <Route
                   path={`${this.props.match.url}/course`}
                   component={EditableTable({
@@ -135,7 +163,35 @@ class Dashboard extends Component {
                     disabledList: [0, 1, 2, 3, 6],
                   })}
                 />
-              )}
+              ) : null}
+              {authority === 'student' ? (
+                <Route
+                  path={`${this.props.match.url}/course`}
+                  component={EditableTable({
+                    ...courseConfig,
+                    name: `course`,
+                    hasAdd: false,
+                    hasDelete: false,
+                    disabledList: [0, 1, 2, 3, 4, 5, 6],
+                  })}
+                />
+              ) : null}
+              {authority === 'administrator' ? <Route path={`${this.props.match.url}/cv`} component={CV} /> : null}
+              {authority === 'student' ? (
+                <Route
+                  path={`${this.props.match.url}/cv`}
+                  component={EditableTable({
+                    ...cvConfig,
+                    name: `cv?studentId=${user.studentId}`,
+                    disabledList: [0, 2, 3],
+                    formConfig: {
+                      cvId: { init: Math.floor(Math.random() * 10 ** 16), disabled: true },
+                      studentId: { init: user.studentId, disabled: true },
+                      cvScore: { init: 0, disabled: true },
+                    },
+                  })}
+                />
+              ) : null}
             </Switch>
           </Content>
         </Layout>

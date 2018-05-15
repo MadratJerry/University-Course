@@ -4,7 +4,15 @@ import EditableCell from './EditableCell'
 import EditableForm from './EditableForm'
 import './EditableTable.css'
 
-function EditableTable({ columns, name, titleName, hasAdd = true, hasDelete = true, disabledList = [] }) {
+function EditableTable({
+  columns,
+  name,
+  titleName,
+  hasAdd = true,
+  hasDelete = true,
+  disabledList = [],
+  formConfig = {},
+}) {
   return class extends Component {
     state = {
       visible: false,
@@ -50,10 +58,16 @@ function EditableTable({ columns, name, titleName, hasAdd = true, hasDelete = tr
           ),
         )
         c.inputType.options = options
+        c.filters = []
+        c.onFilter = (value, record) => record[c.dataIndex].indexOf(value) === 0
+        options.forEach((k, v) => c.filters.push({ text: k, value: v }))
       }
 
       for (const d of disabledList) {
         columns[d].canEdit = false
+      }
+      for (const c of columns) {
+        c.sorter = (a, b) => a[c.dataIndex] < b[c.dataIndex]
       }
       this.setState({ columns })
     }
@@ -90,6 +104,7 @@ function EditableTable({ columns, name, titleName, hasAdd = true, hasDelete = tr
             visible={visible}
             title={`添加${titleName}`}
             apiUrl={`/api/${name}`}
+            formConfig={formConfig}
           />
           <Table
             bordered

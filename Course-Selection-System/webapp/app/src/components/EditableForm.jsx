@@ -21,6 +21,7 @@ class EditableForm extends Component {
     })
   }
   getFormItem = (c, key) => {
+    const { formConfig = {} } = this.props
     const { getFieldDecorator } = this.props.form
     const formProps = { key, label: c.title }
     let e = null
@@ -62,8 +63,14 @@ class EditableForm extends Component {
         break
       default:
         e = getFieldDecorator(c.dataIndex, {
+          initialValue: formConfig[c.dataIndex] && formConfig[c.dataIndex].init,
           rules: [{ required: true, message: `请输入${c.title}'` }],
-        })(<Input placeholder={`输入${c.title}`} />)
+        })(
+          <Input
+            placeholder={`输入${c.title}`}
+            disabled={formConfig[c.dataIndex] ? formConfig[c.dataIndex].disabled : false}
+          />,
+        )
     }
     return (
       <FormItem {...formProps} hasFeedback style={{ display: 'block' }}>

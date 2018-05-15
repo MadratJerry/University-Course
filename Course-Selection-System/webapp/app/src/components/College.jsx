@@ -1,6 +1,6 @@
 import EditableTable from './EditableTable'
 
-export default EditableTable({
+const collegeConfig = {
   name: 'college',
   titleName: '学院',
   columns: [
@@ -25,4 +25,7 @@ export default EditableTable({
       inputType: { type: 'input' },
     },
   ],
-})
+}
+
+export default EditableTable(collegeConfig)
+export { collegeConfig }
