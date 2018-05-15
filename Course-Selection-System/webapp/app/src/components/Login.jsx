@@ -13,7 +13,7 @@ class Login extends Component {
         })
         if (response.status === 200) {
           const user = await response.json()
-          this.props.setUser(user)
+          await localStorage.setItem('user', JSON.stringify(user))
           this.props.history.push('/dashboard')
           message.info('登录成功！')
         } else if (response.status === 401) {
