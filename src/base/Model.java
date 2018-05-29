@@ -14,7 +14,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class Model {
+    private  List<Field>  primaryKeyList;
+
     public Model() {
+        primaryKeyList = new ArrayList<>();
+        for (Field field: this.getClass().getDeclaredFields()) {
+            if (field.getAnnotation(PrimaryKey.class) != null) {
+                primaryKeyList.add(field);
+            }
+        }
     }
 
     public <T extends Model> List<T> query(String sql, Object... params) {
@@ -58,7 +66,7 @@ public abstract class Model {
     }
 
     public <T extends Model> boolean updateOneById(String id, T bean) {
-        String name = this.getClass().getSimpleName().toLowerCase();
+        String name = getTableName();
         HashMap<Field, Object> map = getKVMap(bean);
         List<Object> params = new ArrayList<>(map.values());
         params.add(id);
@@ -71,29 +79,46 @@ public abstract class Model {
     }
 
     public <T extends Model> List<T> findAll() {
-        return query(String.format("SELECT * FROM %s", this.getClass().getSimpleName().toLowerCase()));
+        return query(String.format("SELECT * FROM %s", getTableName()));
     }
 
-    public <T extends Model> List<T> findAll(Map<String, String[]> map) {
+    public <T extends Model> List<T> findLike(Map<String, String[]> map) {
         if (map.isEmpty()) {
             return findAll();
         } else {
             return query(String.format("SELECT * FROM %s WHERE %s",
-                    this.getClass().getSimpleName().toLowerCase(),
+                    getTableName(),
                     map.entrySet().stream().map((e) -> String.format("%s LIKE '%%%s%%'", e.getKey(), e.getValue()[0])).collect(Collectors.joining(" and "))
             ));
         }
     }
 
     public <T extends Model> T findOneById(String id) {
-        String name = this.getClass().getSimpleName().toLowerCase();
+        String name = getTableName();
         List<T> list = query(String.format("SELECT * FROM %s WHERE %sId = ?", name, name), id);
         return list.isEmpty() ? null : list.get(0);
     }
 
+    public <T extends Model> T findOneByPrimaryKey(Object... keys) {
+        String name = getTableName();
+        List<T> list = query(
+                String.format("SELECT * FROM %s WHERE %s", name, primaryKeyList.stream()
+                        .map((f)-> String.format("%s = ?",f.getName())).collect(Collectors.joining(" AND "))),
+                keys);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public <T extends Model> List<T> find(T bean) {
+        HashMap<Field, Object> map = getKVMap(bean);
+        return query(String.format("SELECT * FROM %s WHERE %s", getTableName(),
+                map.keySet().stream().map((e) -> String.format("%s = ?", e.getName())).collect(Collectors.joining(" AND "))),
+                map.values().toArray()
+        );
+    }
+
     public boolean deleteOneById(String id) {
         if (findOneById(id) != null) {
-            String name = this.getClass().getSimpleName().toLowerCase();
+            String name = getTableName();
             return update(String.format("DELETE FROM %s WHERE %sId = ?", name, name), id) != 0;
         } else {
             return false;
@@ -101,7 +126,7 @@ public abstract class Model {
     }
 
     public <T extends Model> boolean insertOne(T bean) {
-        String name = this.getClass().getSimpleName().toLowerCase();
+        String name = getTableName();
         HashMap<Field, Object> map = getKVMap(bean);
         return update(String.format("INSERT INTO %s (%s) VALUES (%s)", name,
                 map.keySet().stream().map(Field::getName).collect(Collectors.joining(", ")),
@@ -122,4 +147,11 @@ public abstract class Model {
         }
         return map;
     }
+
+    private String getTableName() {
+        return this.getClass().isAnnotationPresent(TableName.class) ?
+                this.getClass().getAnnotation(TableName.class).value() :
+                this.getClass().getSimpleName();
+    }
+
 }
