@@ -91,3 +91,7 @@ fabric.properties
 
 # Project
 resources/jdbc.properties
+webapp/**/
+!webapp/html
+!webapp/style
+!webapp/WEB-INF
