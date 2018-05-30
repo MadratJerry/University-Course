@@ -60,7 +60,7 @@
 
 <script>
     async function fetchData() {
-        const response = await fetch('/user/');
+        const response = await fetch(`/user/${localStorage.getItem("username")}`);
         if (response.ok) {
             const json = await response.json();
             document.getElementById("name").innerText = json.realname;
@@ -78,7 +78,7 @@
         <div>${json.phone}</div>
     </div>
     <div class="data"><label>邮箱</label>
-        <div>${json.phone}</div>
+        <div>${json.email}</div>
     </div>
     <div class="data"><label>借阅上限</label>
         <div>${json.max}</div>

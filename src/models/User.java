@@ -3,7 +3,7 @@ package models;
 import base.Model;
 import base.PrimaryKey;
 
-public class User extends Model implements ILoginCheck {
+public class User extends Model implements IUser {
     @PrimaryKey
     private String username;
     private String password;
@@ -39,6 +39,17 @@ public class User extends Model implements ILoginCheck {
     @Override
     public boolean isVerified() {
         return !find(this).isEmpty();
+    }
+
+    @Override
+    public boolean changePassword(String newPassword) {
+        if (isVerified()) {
+            password = newPassword;
+            updateOneByPrimaryKey(this, username);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getUsername() {
