@@ -4,6 +4,7 @@ import base.BaseServlet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import models.IUser;
+import models.Librarian;
 import models.User;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,9 @@ public class ServletLogin extends BaseServlet {
         if (role.equals("1")) {
             user = (User) convertJSONObject(jsonObject, User.class);
             response.getWriter().println(JSON.toJSON(new User().findOneByPrimaryKey(jsonObject.getString("username"))));
+        } else if (role.equals("2")) {
+            user = (Librarian) convertJSONObject(jsonObject, Librarian.class);
+            response.getWriter().println(JSON.toJSON(new Librarian().findOneByPrimaryKey(jsonObject.getString("username"))));
         }
         if (user == null || !user.isVerified()) {
             response.setStatus(403);
