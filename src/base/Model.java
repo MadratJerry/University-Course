@@ -7,18 +7,15 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Model {
-    private  List<Field>  primaryKeyList;
+    private List<Field> primaryKeyList;
 
     public Model() {
         primaryKeyList = new ArrayList<>();
-        for (Field field: this.getClass().getDeclaredFields()) {
+        for (Field field : this.getClass().getDeclaredFields()) {
             if (field.getAnnotation(PrimaryKey.class) != null) {
                 primaryKeyList.add(field);
             }
@@ -65,16 +62,18 @@ public abstract class Model {
         return count;
     }
 
-    public <T extends Model> boolean updateOneById(String id, T bean) {
-        String name = getTableName();
+    public <T extends Model> boolean updateOneByPrimaryKey(T bean, Object... keys) {
+//        String name = getTableName();
         HashMap<Field, Object> map = getKVMap(bean);
         List<Object> params = new ArrayList<>(map.values());
-        params.add(id);
+        params.addAll(Arrays.asList(keys));
         return update(
-                String.format("UPDATE %s SET %s WHERE %sId = ?",
-                        name,
+                String.format("UPDATE %s SET %s WHERE %s",
+                        getTableName(),
                         map.keySet().stream().map((c) -> c.getName() + " = ?").collect(Collectors.joining(",")),
-                        name),
+                        primaryKeyList.stream()
+                                .map((f) -> String.format("%s = ?", f.getName())).collect(Collectors.joining(" AND "))
+                ),
                 params.toArray()) != 0;
     }
 
@@ -93,17 +92,11 @@ public abstract class Model {
         }
     }
 
-    public <T extends Model> T findOneById(String id) {
-        String name = getTableName();
-        List<T> list = query(String.format("SELECT * FROM %s WHERE %sId = ?", name, name), id);
-        return list.isEmpty() ? null : list.get(0);
-    }
-
     public <T extends Model> T findOneByPrimaryKey(Object... keys) {
-        String name = getTableName();
         List<T> list = query(
-                String.format("SELECT * FROM %s WHERE %s", name, primaryKeyList.stream()
-                        .map((f)-> String.format("%s = ?",f.getName())).collect(Collectors.joining(" AND "))),
+                String.format("SELECT * FROM %s WHERE %s", getTableName(),
+                        primaryKeyList.stream()
+                                .map((f) -> String.format("%s = ?", f.getName())).collect(Collectors.joining(" AND "))),
                 keys);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -116,10 +109,12 @@ public abstract class Model {
         );
     }
 
-    public boolean deleteOneById(String id) {
-        if (findOneById(id) != null) {
-            String name = getTableName();
-            return update(String.format("DELETE FROM %s WHERE %sId = ?", name, name), id) != 0;
+    public boolean deleteOneByPrimaryKey(Object... keys) {
+        if (findOneByPrimaryKey(keys) != null) {
+            return update(String.format("DELETE FROM %s WHERE %s", getTableName(),
+                    primaryKeyList.stream()
+                            .map((f) -> String.format("%s = ?", f.getName())).collect(Collectors.joining(" AND "))),
+                    keys) != 0;
         } else {
             return false;
         }

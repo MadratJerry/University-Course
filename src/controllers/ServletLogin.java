@@ -21,8 +21,10 @@ public class ServletLogin extends BaseServlet {
             loginCheck = (User) convertJSONObject(jsonObject, User.class);
         if (loginCheck == null || !loginCheck.isVerified()) {
             response.setStatus(403);
+            return;
         }
-
+        request.getSession().setAttribute("username", jsonObject.getString("username"));
+        request.getSession().setAttribute("role", role);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
