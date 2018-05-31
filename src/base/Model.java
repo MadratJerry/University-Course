@@ -87,7 +87,7 @@ public abstract class Model {
         } else {
             return query(String.format("SELECT * FROM %s WHERE %s",
                     getTableName(),
-                    map.entrySet().stream().map((e) -> String.format("%s LIKE '%%%s%%'", e.getKey(), e.getValue()[0])).collect(Collectors.joining(" and "))
+                    map.entrySet().stream().map((e) -> String.format("%s LIKE '%%%s%%'", e.getKey(), e.getValue()[0])).collect(Collectors.joining(" OR "))
             ));
         }
     }

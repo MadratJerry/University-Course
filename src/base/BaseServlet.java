@@ -92,7 +92,7 @@ public class BaseServlet<T extends Model> extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
         if (pathInfo == null) {
-            response.getWriter().println(JSON.toJSON(getInstance().findAll()));
+            response.getWriter().println(JSON.toJSON(getInstance().findLike(request.getParameterMap())));
         } else {
             T t = getInstance().findOneByPrimaryKey(request.getPathInfo().substring(1));
             if (t == null) {

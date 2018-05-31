@@ -4,6 +4,8 @@ import base.Model;
 import base.PrimaryKey;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class Book extends Model {
     @PrimaryKey
@@ -18,6 +20,11 @@ public class Book extends Model {
     private int state;
     private String enteringPerson;
     private Date enteringDate = new Date();
+
+    @Override
+    public <T extends Model> List<T> findLike(Map<String, String[]> map) {
+        return super.findLike(map);
+    }
 
     public Integer getBookId() {
         return bookId;
