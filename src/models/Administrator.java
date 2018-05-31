@@ -3,37 +3,13 @@ package models;
 import base.Model;
 import base.PrimaryKey;
 
-public class User extends Model implements IUser {
+public class Administrator extends Model implements IUser {
     @PrimaryKey
     private String username;
     private String password;
-    private String realname;
-    private String departments;
-    private String major;
+    private String name;
     private String phone;
     private String email;
-    private Integer max;
-    private Integer time;
-    private Integer count;
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public String getRealname() {
-        return realname;
-    }
-
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
-
-    public static void main(String... args) {
-    }
 
     @Override
     public boolean isVerified() {
@@ -67,20 +43,12 @@ public class User extends Model implements IUser {
         this.password = password;
     }
 
-    public String getDepartments() {
-        return departments;
+    public String getName() {
+        return name;
     }
 
-    public void setDepartments(String departments) {
-        this.departments = departments;
-    }
-
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -98,21 +66,4 @@ public class User extends Model implements IUser {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public Integer getMax() {
-        return max;
-    }
-
-    public void setMax(Integer max) {
-        this.max = max;
-    }
-
-    public Integer getTime() {
-        return time;
-    }
-
-    public void setTime(Integer time) {
-        this.time = time;
-    }
-
 }

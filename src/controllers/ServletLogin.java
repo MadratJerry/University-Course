@@ -3,6 +3,7 @@ package controllers;
 import base.BaseServlet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import models.Administrator;
 import models.IUser;
 import models.Librarian;
 import models.User;
@@ -25,6 +26,9 @@ public class ServletLogin extends BaseServlet {
         } else if (role.equals("2")) {
             user = (Librarian) convertJSONObject(jsonObject, Librarian.class);
             response.getWriter().println(JSON.toJSON(new Librarian().findOneByPrimaryKey(jsonObject.getString("username"))));
+        } else if (role.equals("3")) {
+            user = (Administrator) convertJSONObject(jsonObject, Administrator.class);
+            response.getWriter().println(JSON.toJSON(new Administrator().findOneByPrimaryKey(jsonObject.getString("username"))));
         }
         if (user == null || !user.isVerified()) {
             response.setStatus(403);

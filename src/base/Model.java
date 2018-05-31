@@ -63,7 +63,6 @@ public abstract class Model {
     }
 
     public <T extends Model> boolean updateOneByPrimaryKey(T bean, Object... keys) {
-//        String name = getTableName();
         HashMap<Field, Object> map = getKVMap(bean);
         List<Object> params = new ArrayList<>(map.values());
         params.addAll(Arrays.asList(keys));
