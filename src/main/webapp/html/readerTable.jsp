@@ -66,7 +66,7 @@
                 <td><input value="${user.count}" name="count"/></td>
                 <td>
                     <input type="button" class="save" value="保存" onclick="save('${user.username}')">
-                    <input type="button" class="delete" value="删除" onclick="remoe('${user.username}')">
+                    <input type="button" class="delete" value="删除" onclick="remove('${user.username}')">
                 </td>
             </tr>
             <%

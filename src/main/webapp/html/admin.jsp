@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: crazymousethief
-  Date: 2018/5/31
-  Time: 8:09 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String tab = request.getParameter("tab");
@@ -16,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>系统管理员-录入读者</title>
+    <title>系统管理员</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../style/adminMain.css">
