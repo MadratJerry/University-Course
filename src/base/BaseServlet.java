@@ -1,6 +1,7 @@
 package base;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "BaseServlet")
 public class BaseServlet<T extends Model> extends HttpServlet {
@@ -51,6 +51,10 @@ public class BaseServlet<T extends Model> extends HttpServlet {
         return (JSONObject) getServletContext().getAttribute("JSONObject");
     }
 
+    protected JSONArray getJSONArray() {
+        return (JSONArray) getServletContext().getAttribute("JSONArray");
+    }
+
     protected <E> E convertJSONObject(JSONObject jsonObject, Class<E> tClass) {
         return JSON.parseObject(JSON.toJSONString(jsonObject), tClass);
     }
@@ -64,10 +68,16 @@ public class BaseServlet<T extends Model> extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext ctx = request.getServletContext();
+        ctx.setAttribute("JSONPlain", new String(request.getInputStream().readAllBytes()));
         try {
-            ctx.setAttribute("JSONObject", JSON.parseObject(request.getInputStream(), StandardCharsets.UTF_8, JSONObject.class));
+            ctx.setAttribute("JSONObject", JSON.parseObject((String) ctx.getAttribute("JSONPlain")));
         } catch (JSONException e) {
             ctx.setAttribute("JSONObject", new JSONObject());
+        }
+        try {
+            ctx.setAttribute("JSONArray", JSON.parseArray((String) ctx.getAttribute("JSONPlain")));
+        } catch (JSONException e) {
+            ctx.setAttribute("JSONArray", new JSONArray());
         }
         if (getGenericClass() != null) {
             JSONObject jsonObject = (JSONObject) ctx.getAttribute("JSONObject");
