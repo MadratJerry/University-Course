@@ -64,7 +64,7 @@
                     break;
                 case "1":
             %>
-            <jsp:include page="borrowAndReturn.jsp"/>
+            <jsp:include page="recordTable.jsp"/>
             <%
                     break;
                 case "2":

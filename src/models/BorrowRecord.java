@@ -17,7 +17,7 @@ public class BorrowRecord extends Model {
     private Date borrowTime;
     private Date shouldTime;
     private Date returnTime;
-    private Integer state;
+    private Boolean state;
 
     public JSONObject checkRecord(String borrowId, String bookId) {
         User user = new User().findOneByPrimaryKey(borrowId);
@@ -40,7 +40,7 @@ public class BorrowRecord extends Model {
         record.setBorrowTime(new Date());
         User user = new User().findOneByPrimaryKey(record.getBorrowId());
         record.setShouldTime(new Date(new Date().getTime() + 60 * 60 * 24 * 1000 * user.getMax()));
-        record.setState(0);
+        record.setState(false);
         return super.insertOne(bean);
     }
 
@@ -92,11 +92,11 @@ public class BorrowRecord extends Model {
         this.returnTime = returnTime;
     }
 
-    public Integer getState() {
+    public Boolean getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(Boolean state) {
         this.state = state;
     }
 }

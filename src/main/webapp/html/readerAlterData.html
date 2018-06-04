@@ -50,8 +50,8 @@
 </div>
 <!-- class="content"的div中是个人中心的切换部分 -->
 <form class="content" onsubmit="post(event)">
-    <div class="data"><label>电话</label><input name="phone" value="1008610001"/></div>
-    <div class="data"><label>邮箱</label><input name="email" value="123456@qq.com"/></div>
+    <div class="data"><label>电话</label><input id="phone" name="phone" value="1008610001"/></div>
+    <div class="data"><label>邮箱</label><input id="email" name="email" value="123456@qq.com"/></div>
     <input type="submit" class="add_btn" value="确认修改"></input>
 </form>
 <div class="footer">
@@ -64,6 +64,8 @@
         const response = await fetch(`/user/${localStorage.getItem("username")}`);
         const json = await response.json();
         document.getElementById("name").innerText = json.realname;
+        document.getElementById("phone").value = json.phone;
+        document.getElementById("email").value = json.email;
     }
 
     async function post(e) {

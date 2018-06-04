@@ -2,13 +2,15 @@
 <%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="models.User" %>
+<%@ page import="models.User" %>
 <%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String value = request.getParameter("search");
     Map<String, String[]> map = new HashMap<>();
     if (value != null) {
-        for (String key : new String[]{"username", "departments", "major", "phone", "email"}) {
+        for (String key : new String[]{"username", "departments", "major", "phone", "email", "realname"}) {
             map.put(key, new String[]{value});
         }
     }

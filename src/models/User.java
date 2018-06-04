@@ -32,9 +32,6 @@ public class User extends Model implements IUser {
         this.realname = realname;
     }
 
-    public static void main(String... args) {
-    }
-
     @Override
     public boolean isVerified() {
         return !find(this).isEmpty();
