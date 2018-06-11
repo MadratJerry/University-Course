@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../style/login.css">
+    <link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../script/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+<div class="login_page">
+    <div class="page_top"></div>
+    <div class="header">
+        <img src="../images/logo.png">
+        <div class="hello_word">中山图书馆欢迎您</div>
+        <div class="clear"></div>
+    </div>
+    <div class="login">
+        <form class="login_part" id="login_form" name="login_form" onsubmit="handleSubmit(event)">
+            <select class="role" name="role">
+                <option value="1" selected>读者</option>
+                <option value="2">图书管理员</option>
+                <option value="3">系统管理员</option>
+            </select>
+            <hr class="lion"/>
+            <div class="login_input">
+                <div class="user"><i class="fa fa-user"></i></div>
+                <input name="username" type="text" value="请输入通行证号" onfocus="if (value ==='请输入通行证号'){value=''}"
+                       onblur="if (value==='') {value='请输入通行证号'}"/>&nbsp;<span class="text_red">*</span>
+                <div class="user"><i class="fa fa-lock"></i></div>
+                <input name="password" type="password"/>&nbsp;<span class="text_red">*</span>
+            </div>
+            <input type="submit" class="login_btn" value="登录"/>
+            <div class="password_f" onclick="alert('亲，请到教务系统修改密码！')">忘记密码 ？</div>
+        </form>
+        <div class="clear"></div>
+        <div class="from">@Copyright重庆理工大学中山图书馆</div>
+    </div>
+</div>
+</body>
+
+<script>
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const body = {};
+        for (const [k, v] of formData) body[k] = v;
+        const response = await fetch("/login", {
+            method: "POST",
+            credentials: "same-origin",
+            body: JSON.stringify(body)
+        });
+        if (response.ok) {
+            const json = await response.json();
+            localStorage.setItem("username", json.username);
+            localStorage.setItem("role", body.role);
+            const role = parseInt(document.querySelector("select[name='role']").value);
+            if (role === 1) {
+                window.location.href = "../html/readerPersonal.html";
+            } else if (role === 3) {
+                window.location.href = "../html/admin.jsp";
+            } else if (role === 2) {
+                window.location.href = "../html/librarian.jsp";
+            }
+        } else {
+            alert("登录失败！");
+        }
+    }
+</script>
+</html>
