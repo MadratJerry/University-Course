@@ -1,6 +1,10 @@
 package models;
 
-public class User {
+import base.repository.Model;
+import base.repository.PrimaryKey;
+
+public class User extends Model {
+    @PrimaryKey
     private String username;
     private String password;
 
