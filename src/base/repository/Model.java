@@ -22,6 +22,11 @@ public abstract class Model {
         ).toArray());
     }
 
+    public <T extends Model> List<T> find() {
+        @SuppressWarnings("unchecked") T bean = (T) this;
+        return Repository.find(bean);
+    }
+
     private <T extends Model> Class<T> getSubClass() {
         @SuppressWarnings("unchecked")
         Class<T> tClass = (Class<T>) this.getClass();
