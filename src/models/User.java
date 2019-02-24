@@ -8,6 +8,10 @@ public class User extends Model {
     private String username;
     private String password;
 
+    public boolean verified() {
+        return !this.find().isEmpty();
+    }
+
     public String getUsername() {
         return username;
     }
