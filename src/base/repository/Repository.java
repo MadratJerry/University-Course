@@ -34,18 +34,13 @@ public class Repository {
         return list;
     }
 
-
-    public static <T extends Model> T findOneByPK(Class<T> tClass, List<Field> primaryKeyList, Object... keys) {
+    public static <T extends Model> T findOneByPK(Class<T> tClass, Object... keys) {
         List<T> list = query(tClass,
                 String.format("SELECT * FROM %s WHERE %s", getEntityName(tClass),
-                        primaryKeyList.stream()
+                        getPrimaryKeyList(tClass).stream()
                                 .map((f) -> String.format("%s = ?", f.getName())).collect(Collectors.joining(" AND "))),
                 keys);
         return list.isEmpty() ? null : list.get(0);
-    }
-
-    public static <T extends Model> T findOneByPK(Class<T> tClass, Object... keys) {
-        return findOneByPK(tClass, getPrimaryKeyList(tClass), keys);
     }
 
     public static <T extends Model> String getEntityName(Class<T> tClass) {

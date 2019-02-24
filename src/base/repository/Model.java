@@ -1,17 +1,25 @@
 package base.repository;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public abstract class Model {
-    private List<Field> primaryKeyList;
 
-    public Model() {
-        primaryKeyList = Repository.getPrimaryKeyList(getSubClass());
-    }
-
-    public <T extends Model> T findOneByPK(Object... keys) {
-        return Repository.findOneByPK(getSubClass(), primaryKeyList, keys);
+    public <T extends Model> T findOneByPK() {
+        List<Field> primaryKeyList = Repository.getPrimaryKeyList(getSubClass());
+        return Repository.findOneByPK(getSubClass(), primaryKeyList.stream().map((f) ->
+                {
+                    try {
+                        return new PropertyDescriptor(f.getName(), getSubClass()).getReadMethod().invoke(this);
+                    } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+        ).toArray());
     }
 
     private <T extends Model> Class<T> getSubClass() {
