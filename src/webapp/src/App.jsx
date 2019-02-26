@@ -1,26 +1,13 @@
 import React from 'react'
-import { Layout, Button } from 'antd'
+import { Layout } from 'antd'
 import './App.css'
+import Header from './components/Header'
 
-const { Header, Content, Footer } = Layout
+const { Content, Footer } = Layout
 
 const App = () => (
   <Layout>
-    <Header
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        background: '#ffffff',
-      }}
-    >
-      <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>
-        Flea
-      </div>
-      <Button.Group>
-        <Button>登录</Button>
-        <Button>注册</Button>
-      </Button.Group>
-    </Header>
+    <Header />
     <Content style={{ padding: '0 50px' }}>
       <div
         style={{
