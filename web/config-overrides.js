@@ -4,6 +4,7 @@ const {
   addLessLoader,
   overrideDevServer,
 } = require('customize-cra')
+const path = require('path')
 
 module.exports = {
   webpack: override(
@@ -16,6 +17,15 @@ module.exports = {
       javascriptEnabled: true,
       modifyVars: { '@primary-color': '#25b864' },
     }),
+    config => {
+      config.resolve = {
+        extensions: ['.js', '.json', '.jsx'],
+        alias: {
+          '@': path.resolve(__dirname, './src'),
+        },
+      }
+      return config
+    },
   ),
   devServer: overrideDevServer(config => {
     config.proxy = {
