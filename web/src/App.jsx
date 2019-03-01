@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader'
 import React from 'react'
 import { Layout } from 'antd'
 import Header from '@/components/Header'
@@ -28,4 +29,4 @@ const App = () => (
   </Provider>
 )
 
-export default App
+export default (process.env.NODE_ENV === 'development' ? hot(module)(App) : App)

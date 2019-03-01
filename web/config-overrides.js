@@ -4,6 +4,7 @@ const {
   addLessLoader,
   overrideDevServer,
 } = require('customize-cra')
+const rewireReactHotLoader = require('react-app-rewire-hot-loader')
 const path = require('path')
 
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
       }
       return config
     },
+    rewireReactHotLoader,
   ),
   devServer: overrideDevServer(config => {
     config.proxy = {
