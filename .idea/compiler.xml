@@ -9,5 +9,13 @@
         <module name="flea" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="flea" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="flea" options="-parameters" />
+    </option>
   </component>
 </project>

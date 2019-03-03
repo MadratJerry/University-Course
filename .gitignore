@@ -120,3 +120,5 @@ hs_err_pid*
 # Project
 resources/jdbc.properties
 data
+HELP.md
+*.iml
