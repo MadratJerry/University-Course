@@ -1,26 +1,17 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import ProxyObject, { subscribe, visitTree } from './proxyObject'
 
-const StoreContext = createContext(
-  new ProxyObject({ first: 'a', last: 'b', age: 0 }),
-)
+const StoreContext = createContext(new ProxyObject({ a: 0, b: 1, c: 1 }))
 
 export function useStore() {
   const store = useContext(StoreContext)
   const [state, setState] = useState(new ProxyObject(store))
-  const update = function() {
-    setState(new ProxyObject(store))
-  }
+  const update = () => setState(new ProxyObject(store))
   useEffect(() => {
-    let subscribed = false
-    const checkUpdates = () => (subscribed ? null : update())
-    console.log('effect')
     console.log(visitTree(state))
-    subscribe(store, checkUpdates, visitTree(state))
-    return () => {
-      subscribed = true
-    }
-  }, [store])
+    subscribe(store, update, visitTree(state))
+    return () => {}
+  }, [state])
   const setter = newState => {
     Object.assign(store, newState)
     update()

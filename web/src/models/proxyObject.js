@@ -1,56 +1,57 @@
-const subscribeSymbol = Symbol('subscribe')
-const plainSymbol = Symbol('plain')
-const visitSymbol = Symbol('visit')
-
 class ProxyObject {
+  listenerMap = new Map()
+  visitSet = new Set()
+  proxyCache = new Map()
+  changeSet = new Set()
   constructor(object) {
-    const listenerSet = new Set()
-    const proxyCache = new Map()
-    const visitSet = new Set()
-    const changeSet = new Set()
-    const proxy = new Proxy(object, {
-      get: function(o, p) {
-        if (typeof p !== 'symbol') visitSet.add(p)
-        if (p === plainSymbol) return object
-        if (p === subscribeSymbol) return listenerSet
-        if (p === visitSymbol) return visitSet
+    const plainObject = plain(object)
+    this.proxy = this
+    this.plainObject = plainObject
+
+    return new Proxy(plainObject, {
+      get: (o, p) => {
+        if (typeof p !== 'symbol') this.visitSet.add(p)
+        else return this[p.toString().slice(7, -1)]
+        // console.log('get ', p)
         if (o[p] instanceof Object) {
-          if (!proxyCache.get(p)) proxyCache.set(p, new ProxyObject(o[p]))
-          return proxyCache.get(p)
+          if (!this.proxyCache.get(p)) this.proxyCache.set(p, new ProxyObject(o[p]))
+          return this.proxyCache.get(p)
         }
         return o[p]
       },
-      set: function(o, p, v) {
+      set: (o, p, v) => {
         if (v !== o[p]) {
-          changeSet.add(p)
-          listenerSet.forEach(f => f(o[p], v, p))
+          this.changeSet.add(p)
+          this.listenerMap.forEach((tree, fn) => (p in tree ? fn(o[p], v, p) : null))
           o[p] = v
         }
         return true
       },
     })
-    return proxy
   }
 }
 
-function subscribe(obj, listener, tree = {}) {
-  if (obj instanceof Object) {
-    obj[subscribeSymbol].add((pv, v, p) =>
-      p in tree ? listener(pv, v, p) : null,
-    )
-    for (const p in obj) {
-      if (p in tree) subscribe(obj[p], listener, tree[p] ? tree[p] : {})
-    }
-    return obj
+function subscribe(o, listener, tree = {}) {
+  if (o instanceof Object) {
+    proxy(o).listenerMap.set(listener, tree)
+    for (const p in o) if (p in tree) subscribe(o[p], listener, tree[p] ? tree[p] : {})
+    return o
   }
 }
 
-function visitTree(obj) {
+function visitTree(o) {
   const tree = {}
-  if (obj instanceof Object)
-    obj[visitSymbol].forEach(p => (tree[p] = visitTree(obj[p])))
+  if (o instanceof Object) proxy(o).visitSet.forEach(p => (tree[p] = visitTree(o[p])))
   return tree
 }
 
+function plain(o) {
+  return proxy(o) ? plain(proxy(o).plainObject) : o
+}
+
+function proxy(o) {
+  return o[Symbol('proxy')]
+}
+
+export { subscribe, visitTree, plain, proxy }
 export default ProxyObject
-export { subscribe, visitTree }
