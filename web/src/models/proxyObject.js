@@ -1,21 +1,20 @@
 class ProxyObject {
   listenerMap = new Map()
   visitSet = new Set()
-  proxyCache = new Map()
+  proxyCache = new WeakMap()
   changeSet = new Set()
   constructor(object) {
     const plainObject = plain(object)
-    this.proxy = this
+    this.jar = this
     this.plainObject = plainObject
-
-    return new Proxy(plainObject, {
+    this.proxy = new Proxy(plainObject, {
       get: (o, p) => {
         if (typeof p !== 'symbol') this.visitSet.add(p)
         else return this[p.toString().slice(7, -1)]
         // console.log('get ', p)
         if (o[p] instanceof Object) {
-          if (!this.proxyCache.get(p)) this.proxyCache.set(p, new ProxyObject(o[p]))
-          return this.proxyCache.get(p)
+          if (!this.proxyCache.get(o[p])) this.proxyCache.set(o[p], new ProxyObject(o[p]))
+          return this.proxyCache.get(o[p])
         }
         return o[p]
       },
@@ -28,30 +27,35 @@ class ProxyObject {
         return true
       },
     })
+    return this.proxy
   }
 }
 
 function subscribe(o, listener, tree = {}) {
   if (o instanceof Object) {
-    proxy(o).listenerMap.set(listener, tree)
-    for (const p in o) if (p in tree) subscribe(o[p], listener, tree[p] ? tree[p] : {})
-    return o
-  }
+    const unsubscribe = {}
+    jar(o).listenerMap.set(listener, tree)
+    for (const p in o) if (p in tree) unsubscribe[p] = subscribe(o[p], listener, tree[p] ? tree[p] : {})
+    return () => {
+      jar(o).listenerMap.delete(listener)
+      for (const f in unsubscribe) unsubscribe[f]()
+    }
+  } else return () => {}
 }
 
 function visitTree(o) {
   const tree = {}
-  if (o instanceof Object) proxy(o).visitSet.forEach(p => (tree[p] = visitTree(o[p])))
+  if (o instanceof Object) jar(o).visitSet.forEach(p => (tree[p] = visitTree(o[p])))
   return tree
 }
 
 function plain(o) {
-  return proxy(o) ? plain(proxy(o).plainObject) : o
+  return jar(o) ? plain(jar(o).plainObject) : o
 }
 
-function proxy(o) {
-  return o[Symbol('proxy')]
+function jar(o) {
+  return o[Symbol('jar')]
 }
 
-export { subscribe, visitTree, plain, proxy }
+export { subscribe, visitTree, plain, jar }
 export default ProxyObject

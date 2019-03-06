@@ -1,5 +1,5 @@
 import { hot } from 'react-hot-loader'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Layout } from 'antd'
 import Header from '@/components/Header'
 import { Provider, useStore as useStore2 } from '@/models'
@@ -36,9 +36,10 @@ const A = () => {
   console.log('A')
   return (
     <div>
-      {store.first}
-      <button onClick={() => setStore({ first: 'b' })} />
-      {store.last}
+      number:{store.c % 2 === 0 ? store.a : store.b}
+      {store.c % 2 === 0 ? 'a' : 'b'}
+      <button onClick={() => setStore({ c: store.c + 1 })}>changeC</button>
+      <button onClick={() => setStore({ b: store.b + 1 })}>changeB</button>
     </div>
   )
 }
@@ -48,9 +49,9 @@ const B = () => {
   console.log('B')
   return (
     <div>
-      {/* {store.first} */}
-      <button onClick={() => setStore({ last: 'a' })} />
-      {store.last}
+      number:{store.c % 2 === 1 ? store.a : store.b}
+      {store.c % 2 === 1 ? 'a' : 'b'}
+      <button onClick={() => setStore({ c: store.c + 1 })}>changeC</button>
     </div>
   )
 }
@@ -76,11 +77,24 @@ const D = () => {
   )
 }
 
+const O = () => {
+  const [state, setState] = useState(0)
+  useEffect(() => {
+    console.log(state)
+  }, [])
+  return (
+    <div>
+      {state}
+      <button onClick={() => setState(state + 1)} />
+    </div>
+  )
+}
 const App = () => (
   <div>
     {/* <StoreContext.Provider> */}
     <A />
     <B />
+    <O />
     {/* <Provider>
       <C />
       <D />

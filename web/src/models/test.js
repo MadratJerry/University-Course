@@ -8,9 +8,8 @@ export function useStore() {
   const [state, setState] = useState(new ProxyObject(store))
   const update = () => setState(new ProxyObject(store))
   useEffect(() => {
-    console.log(visitTree(state))
-    subscribe(store, update, visitTree(state))
-    return () => {}
+    const unsubscribe = subscribe(store, update, visitTree(state))
+    return unsubscribe
   }, [state])
   const setter = newState => {
     Object.assign(store, newState)
