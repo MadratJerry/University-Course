@@ -2,7 +2,6 @@ class ProxyObject {
   listenerMap = new Map()
   visitSet = new Set()
   proxyCache = new WeakMap()
-  changeSet = new Set()
   constructor(object) {
     const plainObject = plain(object)
     this.jar = this
@@ -11,19 +10,14 @@ class ProxyObject {
       get: (o, p) => {
         if (typeof p !== 'symbol') this.visitSet.add(p)
         else return this[p.toString().slice(7, -1)]
-        // console.log('get ', p)
         if (o[p] instanceof Object) {
-          if (!this.proxyCache.get(o[p])) this.proxyCache.set(o[p], new ProxyObject(o[p]))
+          if (!this.proxyCache.has(o[p])) this.proxyCache.set(o[p], new ProxyObject(o[p]))
           return this.proxyCache.get(o[p])
         }
         return o[p]
       },
       set: (o, p, v) => {
-        if (v !== o[p]) {
-          this.changeSet.add(p)
-          this.listenerMap.forEach((tree, fn) => (p in tree ? fn(o[p], v, p) : null))
-          o[p] = v
-        }
+        if (v !== o[p]) this.listenerMap.forEach((tree, fn) => (p in tree ? fn(o[p], (o[p] = v), p) : null))
         return true
       },
     })
