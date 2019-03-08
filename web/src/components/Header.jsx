@@ -17,9 +17,7 @@ export default () => {
         background: '#ffffff',
       }}
     >
-      <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>
-        Flea
-      </div>
+      <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>Flea</div>
       {user.verified ? (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div>
@@ -34,12 +32,7 @@ export default () => {
           <Button>注册</Button>
         </Button.Group>
       )}
-      <Modal
-        title="登录"
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        footer={null}
-      >
+      <Modal title="登录" visible={visible} onCancel={() => setVisible(false)} footer={null}>
         <Login setVisible={setVisible} setUser={setUser} />
       </Modal>
     </Header>

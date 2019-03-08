@@ -24,12 +24,7 @@ class Login extends React.Component {
         <Form.Item>
           {getFieldDecorator('username', {
             rules: [{ required: true, message: '请输入用户名！' }],
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="用户名"
-            />,
-          )}
+          })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
@@ -46,11 +41,7 @@ class Login extends React.Component {
           <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
             登录
           </Button>
-          <a
-            className="login-form-forgot"
-            href="/forgot"
-            style={{ float: 'right' }}
-          >
+          <a className="login-form-forgot" href="/forgot" style={{ float: 'right' }}>
             忘记密码
           </a>
         </Form.Item>
