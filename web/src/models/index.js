@@ -1,23 +1,16 @@
-import React, { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import ProxyObject, { subscribe, visitTree } from './proxyObject'
 
-let uid = 0
-const modelMap = new Map()
-const context = createContext()
+const contextMap = new Map()
 
 export function useStore(model) {
-  const { state, setState } = useContext(context)
-  if (!modelMap.has(model.prototype)) {
-    modelMap.set(model.prototype, uid)
-    state[uid++] = new model()
-  }
-  const id = modelMap.get(model.prototype)
-  const setStore = newState => setState({ [id]: { ...state[id], ...newState } })
-  return [state[id], setStore]
-}
-
-export const Provider = ({ children }) => {
-  const [state, setState] = useState({})
-  return (
-    <context.Provider value={{ state, setState }}>{children}</context.Provider>
-  )
+  if (!contextMap.has(model.prototype)) contextMap.set(model.prototype, new ProxyObject(createContext(new model())))
+  const store = useContext(contextMap.get(model.prototype))
+  const [state, setState] = useState(new ProxyObject(store))
+  const update = () => setState(new ProxyObject(store))
+  useEffect(() => {
+    return subscribe(store, update, visitTree(state))
+  }, [state])
+  const setter = newState => Object.assign(store, newState)
+  return [state, setter]
 }
