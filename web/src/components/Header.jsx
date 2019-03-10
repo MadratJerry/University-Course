@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Layout, Button, Modal, Avatar } from 'antd'
 import Login from '@/components/Login'
 import { useStore } from '@/models/index'
@@ -9,6 +9,22 @@ const { Header } = Layout
 export default () => {
   const [visible, setVisible] = useState(false)
   const [user, setUser] = useStore(User)
+
+  const handleLogout = async () => {
+    const { response } = await User.logout()
+    if (response.ok) setUser({ verified: false })
+  }
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (user.verified) {
+        const { data } = await User.getInfo()
+        setUser({ ...data })
+      }
+    }
+    fetchUserInfo()
+  }, [user.verified])
+
   return (
     <Header
       style={{
@@ -24,7 +40,9 @@ export default () => {
             <Avatar size="large" icon="user" />
             <span style={{ margin: 10 }}>{user.username}</span>
           </div>
-          <Button type="dashed">退出</Button>
+          <Button type="dashed" onClick={handleLogout}>
+            退出
+          </Button>
         </div>
       ) : (
         <Button.Group>

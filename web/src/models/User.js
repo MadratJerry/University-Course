@@ -17,9 +17,11 @@ class User {
     localStorage.setItem('verified', v)
   }
 
-  static login = async data => {
-    return await request('/login', 'POST', data)
-  }
+  static login = async data => await request('/login', 'POST', data)
+
+  static logout = async () => await request('/logout', 'GET')
+
+  static getInfo = async () => await request('/user')
 }
 
 export default User
