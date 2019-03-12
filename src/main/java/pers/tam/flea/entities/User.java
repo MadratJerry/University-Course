@@ -1,35 +1,37 @@
 package pers.tam.flea.entities;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class User extends BaseModel implements UserDetails {
 
     private String username;
 
     private String password;
 
-    public Long getId() {
-        return id;
+
+    public User() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User(String username, String password) {
+        setUsername(username);
+        setPassword(password);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Set<SimpleGrantedAuthority> set = new HashSet<>();
+        if (getUsername().equals("test"))
+            set.add(new SimpleGrantedAuthority("ROLE_USER"));
+        else set.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return set;
     }
 
     @Override
