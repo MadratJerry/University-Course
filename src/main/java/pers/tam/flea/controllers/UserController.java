@@ -1,8 +1,6 @@
 package pers.tam.flea.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,13 +13,6 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 public class UserController {
-
-    private final UserRepository userRepository;
-
-    @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @GetMapping("/")
     public String index() {
@@ -40,6 +31,6 @@ public class UserController {
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String admin() {
-        return"admin";
+        return "admin";
     }
 }
