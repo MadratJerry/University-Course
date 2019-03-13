@@ -4,20 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.HashSet;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @JsonIgnoreProperties(value = {
         "password",
-        "role",
+        "roles",
         "enabled",
         "authorities",
         "accountNonExpired",
@@ -29,20 +27,24 @@ public class User extends BaseModel implements UserDetails {
 
     private String password;
 
-    private String role = "ROLE_USER";
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, Collection<Role> roles) {
         setUsername(username);
         setPassword(password);
+        setRoles(roles);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(this.role).stream()
-                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return roles;
     }
 
     @Override
