@@ -9,9 +9,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
-public class Role extends BaseModel implements GrantedAuthority {
+@Entity
+public class Role extends Model implements GrantedAuthority {
 
     @Enumerated(EnumType.STRING)
     private RoleName name;

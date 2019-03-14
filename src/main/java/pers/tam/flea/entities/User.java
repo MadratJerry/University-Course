@@ -6,13 +6,14 @@ import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import java.util.Collection;
-import java.util.HashSet;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
+@Entity
 @JsonIgnoreProperties(value = {
         "password",
         "roles",
@@ -21,17 +22,14 @@ import java.util.HashSet;
         "accountNonExpired",
         "accountNonLocked",
         "credentialsNonExpired"}, allowSetters = true)
-public class User extends BaseModel implements UserDetails {
+public class User extends Model implements UserDetails {
 
     private String username;
 
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Collection<Role> roles;
 
     public User() {
     }
