@@ -1,8 +1,6 @@
 package pers.tam.flea.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,8 +20,13 @@ public class Item extends Model {
 
     private String location;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = {"collection", "items"})
+    private User seller;
+
+
     @ManyToMany(mappedBy = "collection")
-    @JsonIgnoreProperties(value = "collection")
+    @JsonIgnoreProperties(value = {"collection", "items"})
     private Collection<User> collectedBy;
 
     @Column(columnDefinition = "TEXT")

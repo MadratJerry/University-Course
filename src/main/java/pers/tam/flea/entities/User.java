@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.util.Collection;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -34,8 +33,12 @@ public class User extends Model implements UserDetails {
     private Collection<Role> roles;
 
     @ManyToMany
-    @JsonIgnoreProperties(value = "collectedBy")
+    @JsonIgnoreProperties(value = {"collectedBy", "seller"})
     private Collection<Item> collection;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties(value = {"collectedBy", "seller"})
+    private Collection<Item> items;
 
     public User() {
     }

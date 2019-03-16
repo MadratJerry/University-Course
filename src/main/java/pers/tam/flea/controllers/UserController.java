@@ -7,6 +7,7 @@ import pers.tam.flea.entities.User;
 import pers.tam.flea.services.UserService;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -21,5 +22,10 @@ public class UserController {
     @GetMapping("/user")
     public User getUserInfo(HttpSession session) {
         return userService.getCurrentUser(session);
+    }
+
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

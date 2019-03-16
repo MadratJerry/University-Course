@@ -35,8 +35,12 @@ public class DatabaseLoader implements CommandLineRunner {
                 Set.of(roleRepository.save(new Role(RoleName.ROLE_USER)))));
         User adminUser = userRepository.save(new User("admin", "{noop}admin",
                 Set.of(roleRepository.save(new Role(RoleName.ROLE_ADMIN)))));
-        Item item = itemRepository.save(new Item());
-        testUser.setCollection(Set.of(item));
-        userRepository.save(testUser);
+
+        Item item1 = itemRepository.save(new Item());
+        Item item2 = itemRepository.save(new Item());
+        testUser.setCollection(Set.of(item1, item2));
+        testUser.setItems(Set.of(item1, item2));
+        testUser.getItems().forEach(i -> i.setSeller(testUser));
+        userRepository.saveAndFlush(testUser);
     }
 }
