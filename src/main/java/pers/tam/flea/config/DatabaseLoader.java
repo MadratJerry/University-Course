@@ -3,10 +3,7 @@ package pers.tam.flea.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import pers.tam.flea.entities.Item;
-import pers.tam.flea.entities.Role;
-import pers.tam.flea.entities.RoleName;
-import pers.tam.flea.entities.User;
+import pers.tam.flea.entities.*;
 import pers.tam.flea.repositories.ItemRepository;
 import pers.tam.flea.repositories.RoleRepository;
 import pers.tam.flea.repositories.UserRepository;
@@ -35,12 +32,12 @@ public class DatabaseLoader implements CommandLineRunner {
                 Set.of(roleRepository.save(new Role(RoleName.ROLE_USER)))));
         User adminUser = userRepository.save(new User("admin", "{noop}admin",
                 Set.of(roleRepository.save(new Role(RoleName.ROLE_ADMIN)))));
-
-        Item item1 = itemRepository.save(new Item());
-        Item item2 = itemRepository.save(new Item());
+        Item item1 = new Item();
+        item1.setImages(Set.of(new Image("http://example.com")));
+        Item item2 = new Item();
         testUser.setCollection(Set.of(item1, item2));
         testUser.setItems(Set.of(item1, item2));
         testUser.getItems().forEach(i -> i.setSeller(testUser));
-        userRepository.saveAndFlush(testUser);
+        userRepository.save(testUser);
     }
 }

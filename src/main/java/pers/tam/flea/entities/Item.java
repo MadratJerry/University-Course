@@ -24,10 +24,12 @@ public class Item extends Model {
     @JsonIgnoreProperties(value = {"collection", "items"})
     private User seller;
 
-
     @ManyToMany(mappedBy = "collection")
     @JsonIgnoreProperties(value = {"collection", "items"})
     private Collection<User> collectedBy;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Image> images;
 
     @Column(columnDefinition = "TEXT")
     private String description;
