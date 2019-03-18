@@ -6,10 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +14,6 @@ import java.util.Collection;
 @Entity
 @JsonIgnoreProperties(value = {
         "password",
-        "roles",
         "enabled",
         "authorities",
         "accountNonExpired",
@@ -28,6 +24,9 @@ public class User extends Model implements UserDetails {
     private String username;
 
     private String password;
+
+    @OneToOne
+    private Image avatar;
 
     @ManyToMany
     private Collection<Role> roles;
