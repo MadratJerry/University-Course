@@ -119,6 +119,6 @@ hs_err_pid*
 
 # Project
 resources/jdbc.properties
-data
+/static
 HELP.md
 *.iml

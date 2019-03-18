@@ -35,8 +35,8 @@ public class ImageController {
             String destFileName = md5 + fileName.substring(fileName.lastIndexOf("."));
             Image image = imageRepository.findByUrl(destFileName);
             if (image != null) return ResponseEntity.ok().body(imageRepository.save(image));
-            File dir = new File("data");
-            if (!dir.exists()) dir.mkdir();
+            File dir = new File("static/images");
+            if (!dir.exists()) dir.mkdirs();
             File dest = new File(dir.getAbsolutePath() + "/" + destFileName);
             file.transferTo(dest);
             image = new Image();
