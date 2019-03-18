@@ -20,6 +20,9 @@ public class Item extends Model {
 
     private String location;
 
+    @OneToOne
+    private Category category;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = {"collection", "items"})
     private User seller;
