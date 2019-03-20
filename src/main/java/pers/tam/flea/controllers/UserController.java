@@ -1,15 +1,20 @@
 package pers.tam.flea.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.hateoas.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pers.tam.flea.entities.User;
 import pers.tam.flea.services.UserService;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
-@RestController
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+@BasePathAwareController
 public class UserController {
 
     private UserService userService;
@@ -20,12 +25,14 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User getUserInfo(HttpSession session) {
-        return userService.getCurrentUser(session);
-    }
+    public @ResponseBody
+    ResponseEntity<?> getUserInfo(HttpSession session) {
+        User user = userService.getCurrentUser(session);
 
-    @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+        Resource<User> resource = new Resource<>(user);
+
+        resource.add(linkTo(methodOn(UserController.class).getUserInfo(session)).withSelfRel());
+
+        return ResponseEntity.ok(resource);
     }
 }

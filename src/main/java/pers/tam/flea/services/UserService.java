@@ -10,7 +10,4 @@ public interface UserService {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     User getCurrentUser(HttpSession session);
-
-    @PreAuthorize("hasRole('ADMIN')")
-    List<User> getAllUsers();
 }
