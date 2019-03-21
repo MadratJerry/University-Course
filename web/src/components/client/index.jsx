@@ -1,6 +1,9 @@
 import React from 'react'
-import Header from '@/components/client/Header'
 import { Layout } from 'antd'
+import Header from '@/components/client/Header'
+import Category from '@/components/client/Category'
+import TopCarousel from './TopCarousel'
+import './index.css'
 
 const { Content, Footer } = Layout
 
@@ -16,7 +19,10 @@ const Client = () => (
           minHeight: 280,
         }}
       >
-        Content
+        <div style={{ display: 'flex', justifyContent: 'space-around' }} className="top">
+          <Category style={{ width: '40%' }} />
+          <TopCarousel />
+        </div>
       </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>
