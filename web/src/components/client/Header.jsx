@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Layout, Button, Modal, Avatar } from 'antd'
+import { Layout, Button, Modal, Avatar, message } from 'antd'
 import Login from '@/components/Login'
 import { useStore } from '@/models/index'
 import User from '@/models/User'
@@ -12,7 +12,10 @@ export default () => {
 
   const handleLogout = async () => {
     const { response } = await User.logout()
-    if (response.ok) setUser({ verified: false })
+    if (response.ok) {
+      message.success('已退出。')
+      setUser({ verified: false })
+    }
   }
 
   useEffect(() => {

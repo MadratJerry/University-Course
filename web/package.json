@@ -1,5 +1,5 @@
 {
-  "name": "antd-demo",
+  "name": "flea",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,7 +18,7 @@
     "react-scripts": "2.1.5"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "PORT=8000 react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
