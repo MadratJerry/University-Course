@@ -2,7 +2,8 @@ import React from 'react'
 import { Layout } from 'antd'
 import Header from '@/components/client/Header'
 import Category from '@/components/client/Category'
-import TopCarousel from './TopCarousel'
+import TopCarousel from '@/components/client/TopCarousel'
+import SellGroup from '@/components/client/SellGroup'
 import './index.css'
 
 const { Content, Footer } = Layout
@@ -23,6 +24,7 @@ const Client = () => (
           <Category style={{ width: '40%' }} />
           <TopCarousel />
         </div>
+        <SellGroup />
       </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>

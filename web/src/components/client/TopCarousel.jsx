@@ -6,7 +6,7 @@ const TopCarousel = () => {
   return (
     <Carousel className="top-carousel">
       <div>
-        <h3>1</h3>
+        <img src="/api/static/images/57aeb9e05842d77bf0fd2e42a6812b11.png" alt="" />
       </div>
       <div>
         <h3>2</h3>
