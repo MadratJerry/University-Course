@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { List } from 'antd'
+import GoodsLink from '@/components/client/GoodsLink'
 import './Category.css'
 
 const data = [
@@ -19,8 +20,8 @@ const CategoryLine = ([parent, key1, key2]) => (
     <div className="category-line">
       {parent}
       <div className="link-group">
-        <Link to={key1}>{key1}</Link>
-        <Link to={key2}>{key2}</Link>
+        <GoodsLink keyName={key1} />
+        <GoodsLink keyName={key2} />
       </div>
     </div>
   </List.Item>

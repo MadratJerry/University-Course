@@ -8,8 +8,8 @@ import Client from '@/components/client'
 const App = () => (
   <Router>
     <Interceptor />
-    <Route exact path="/" component={Client} />
-    <Route path="/admin" component={Admin} />
+    <Route exact path="/*" component={Client} />
+    <Route exact path="/admin/*" component={Admin} />
   </Router>
 )
 

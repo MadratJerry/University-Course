@@ -1,0 +1,13 @@
+.category-panel {
+  display: flex;
+}
+.category-panel .container {
+  overflow: hidden;
+  display: flex;
+  flex-flow: wrap;
+}
+
+.category-panel a {
+  width: 80px;
+  margin: 4px;
+}

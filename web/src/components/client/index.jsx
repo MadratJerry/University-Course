@@ -1,10 +1,9 @@
 import React from 'react'
 import { Layout } from 'antd'
+import { Route } from 'react-router-dom'
 import Header from '@/components/client/Header'
-import Category from '@/components/client/Category'
-import TopCarousel from '@/components/client/TopCarousel'
-import SellGroup from '@/components/client/SellGroup'
-import './index.css'
+import GoodList from '@/components/client/GoodList'
+import Home from '@/components/client/Home'
 
 const { Content, Footer } = Layout
 
@@ -20,11 +19,8 @@ const Client = () => (
           minHeight: 280,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-around' }} className="top">
-          <Category style={{ width: '40%' }} />
-          <TopCarousel />
-        </div>
-        <SellGroup />
+        <Route exact path="/" component={Home} />
+        <Route exact path="/goods" component={GoodList} />
       </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>
