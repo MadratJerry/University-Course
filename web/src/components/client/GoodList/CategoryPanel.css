@@ -1,6 +1,7 @@
 .category-panel {
   display: flex;
 }
+
 .category-panel .container {
   overflow: hidden;
   display: flex;
@@ -8,6 +9,7 @@
 }
 
 .category-panel a {
-  width: 80px;
-  margin: 4px;
+  width: 96px;
+  margin-bottom: 8px;
+  margin-left: 48px;
 }

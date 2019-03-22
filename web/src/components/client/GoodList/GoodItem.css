@@ -1,0 +1,31 @@
+.good-card {
+  width: 300px;
+  margin: 4px;
+}
+
+.good-card .ant-card-meta-description {
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.good-card .price-group {
+  margin: 12px 0;
+}
+
+.good-card .price {
+  font-size: 20px;
+  color: #ff3434;
+}
+
+.good-card .original-price {
+  margin-left: 10px;
+  color: #666;
+  text-decoration: line-through;
+}
+
+.good-card .location {
+  font-size: 12px;
+  color: #999;
+}
