@@ -1,8 +1,19 @@
+.top-carousel {
+  width: 60%;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+}
+
+.top-carousel .ant-carousel {
+  width: 100%;
+}
+
 .ant-carousel .slick-slide {
   text-align: center;
-  height: 420px;
-  line-height: 420px;
-  background: #EEE;
+  height: 100%;
+  line-height: 100%;
+  background: #eee;
   overflow: hidden;
 }
 

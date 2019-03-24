@@ -10,12 +10,12 @@ const { Content, Footer } = Layout
 const Client = () => (
   <Layout>
     <Header />
-    <Content style={{ padding: '0 50px' }}>
+    <Content style={{ padding: '0 3%' }}>
       <div
         style={{
           background: '#fff',
-          margin: '16px 0',
-          padding: 24,
+          margin: '3% 0',
+          padding: '3%',
           minHeight: 280,
         }}
       >
