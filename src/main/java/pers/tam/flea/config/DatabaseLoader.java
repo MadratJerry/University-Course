@@ -13,6 +13,8 @@ import pers.tam.flea.repositories.ItemRepository;
 import pers.tam.flea.repositories.RoleRepository;
 import pers.tam.flea.repositories.UserRepository;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        categoryRepository.saveAll(
+        Iterable<Category> categoryIterable = categoryRepository.saveAll(
                 Set.of("手机", "笔记本电脑", "平板", "台式机", "手表", "箱包", "耳机耳麦", "路由器",
                         "网络盒子", "智能手表", "游戏手柄", "无人机", "MP3/MP4", "音响/音箱", "麦克风",
                         "笔记本", "一体机", "组装机", "游戏机", "电脑配件", "打印机", "键盘鼠标", "办公桌",
@@ -42,6 +44,9 @@ public class DatabaseLoader implements CommandLineRunner {
                         .stream()
                         .map(Category::new)
                         .collect(Collectors.toSet()));
+        Map<String, Category> categories = new HashMap<>();
+        for (Category category : categoryIterable)
+            categories.put(category.getName(), category);
 
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
@@ -61,6 +66,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setOriginalPrice(5499);
         item1.setLocation("北京市丰台区");
         item1.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
+        item1.setCategory(categories.get("手机"));
         Item item2 = new Item();
         item2.setName("Apple iPhone X (A1865) 64GB 深空灰色 移动联通电信4G手机");
         item2.setDescription("深空灰色 公开版 内存：64GB  入手不到1个月，手机我还令购买了2年的意外保险，2年的电池保险，我另行购买的苹果12w快充充电器，一并赠送，还有无线充电器，有发票，官方可查。手机无任何问题，一直戴套贴膜，我全下来花了6600多，想要通话录音功能，换安卓机，想出手！！");
@@ -68,6 +74,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setOriginalPrice(6349);
         item2.setLocation("湖南湘潭市岳塘区");
         item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
+        item2.setCategory(categories.get("手机"));
         testUser.setCollection(Set.of(item1, item2));
         testUser.setItems(Set.of(item1, item2));
         testUser.getItems().forEach(i -> i.setSeller(testUser));
