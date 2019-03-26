@@ -1,25 +1,45 @@
-import React from 'react'
-import GoodItem from './GoodItem'
+import React, { useEffect, useState } from 'react'
+import { Pagination } from 'antd'
+import GoodItem from '@/components/client/GoodList/GoodItem'
+import Item from '@/models/Item'
 import './ItemTable.css'
 
-const ItemTable = () => {
-  const a = []
-  for (let i = 0; i < 100; i++) a.push(i)
-  const item = {
-    url: '//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1',
-    name: 'Apple iPhone 8 Plus (A1864) 64GB 深空灰色 移动联通电信4G手机',
-    description: '深空灰色 公开版 内存：64GB差不多一年了吧，打算换华为了，一直有贴膜和保护壳，外观无划痕，原包装也都在',
-    price: 3500,
-    originalPrice: 5499,
-    location: '北京市朝阳区',
+const ItemTable = ({ category }) => {
+  const [items, setItems] = useState([])
+  const [page, setPage] = useState({ size: 20, totalElements: 0, totalPages: 0, number: 0 })
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const {
+        data: {
+          _embedded: { items },
+          page: newPage,
+        },
+      } = await Item.getAllByCategory(category, page.number, 1)
+      setItems(items)
+      setPage(newPage)
+    }
+    fetchItems()
+  }, [page.number])
+
+  const handlePageChange = number => {
+    setPage({ ...page, number: number - 1 })
   }
+
   return (
     <div>
       <div className="item-container">
-        {a.map(a => (
-          <GoodItem key={a} {...item} />
+        {items.map(item => (
+          <GoodItem key={item.id} {...item} url={item.images[0].url} />
         ))}
       </div>
+      <Pagination
+        style={{ marginTop: '1%' }}
+        current={page.number + 1}
+        pageSize={page.size}
+        total={page.totalElements}
+        onChange={handlePageChange}
+      />
     </div>
   )
 }
