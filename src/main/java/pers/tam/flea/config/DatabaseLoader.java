@@ -1,5 +1,6 @@
 package pers.tam.flea.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,23 +17,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DatabaseLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
-
-    @Autowired
-    public DatabaseLoader(UserRepository userRepository,
-                          RoleRepository roleRepository,
-                          ItemRepository itemRepository,
-                          CategoryRepository categoryRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.itemRepository = itemRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     @Override
     public void run(String... args) throws Exception {

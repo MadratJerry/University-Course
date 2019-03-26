@@ -1,5 +1,7 @@
 package pers.tam.flea.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +17,11 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/images")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageController {
 
     private final ImageService imageService;
     private final ImageRepository imageRepository;
-
-    public ImageController(ImageService imageService, ImageRepository imageRepository) {
-        this.imageService = imageService;
-        this.imageRepository = imageRepository;
-    }
 
     @PostMapping("/upload")
     public ResponseEntity<Image> uploadImage(@RequestParam(value = "file") MultipartFile file) {
