@@ -4,9 +4,10 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
@@ -18,8 +19,10 @@ abstract class Model {
     private Long id;
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createdDate;
 
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date lastModifiedDate;
 }

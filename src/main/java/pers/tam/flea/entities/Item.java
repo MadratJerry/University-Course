@@ -11,6 +11,7 @@ import java.util.List;
 
 @Projection(name = "simple", types = {Item.class})
 interface Simple {
+
     Long getId();
 
     String getName();
@@ -22,7 +23,6 @@ interface Simple {
     String getLocation();
 
     List<Image> getImages();
-
 }
 
 @Projection(name = "full", types = {Item.class})
