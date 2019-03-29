@@ -8,7 +8,7 @@ const GoodList = ({ location }) => {
   return (
     <div>
       <CategoryPanel />
-      <ItemTable category={params.get('category')} />
+      <ItemTable category={params.get('category')} key={params.get('category')} />
     </div>
   )
 }

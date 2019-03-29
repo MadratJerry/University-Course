@@ -15,6 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             String category,
             Double priceLow,
             Double priceHigh,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date createdTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date createdDate,
             Pageable pageable);
 }

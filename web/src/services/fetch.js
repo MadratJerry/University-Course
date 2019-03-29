@@ -22,3 +22,10 @@ export async function request(
     data: json,
   }
 }
+
+export const params = (v, dv) => {
+  Object.keys(v).forEach(k => (v[k] === undefined ? delete v[k] : null))
+  return Object.keys(Object.assign(dv, v))
+    .map(key => `${key}=${dv[key]}`)
+    .join('&')
+}
