@@ -75,7 +75,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setLocation("湖南湘潭市岳塘区");
         item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
         item2.setCategory(categories.get("手机"));
-        testUser.setCollection(Set.of(item1, item2));
+        testUser.setCollection(Set.of(item1));
         testUser.setItems(Set.of(item1, item2));
         testUser.getItems().forEach(i -> i.setSeller(testUser));
         userRepository.save(testUser);

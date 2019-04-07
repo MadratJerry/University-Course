@@ -3,10 +3,12 @@ package pers.tam.flea.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Projection(name = "simple", types = {Item.class})
@@ -25,10 +27,27 @@ interface Simple {
     List<Image> getImages();
 }
 
-@Projection(name = "full", types = {Item.class})
+@Projection(name = "detail", types = {Item.class})
 interface Full extends Simple {
 
-    Category getCategory();
+    Long getId();
+
+    String getName();
+
+    double getPrice();
+
+    double getOriginalPrice();
+
+    String getLocation();
+
+    List<Image> getImages();
+
+    User getSeller();
+
+    Date getCreatedDate();
+
+    @Value("#{@userRepository.countByCollectionId(target.id)}")
+    Long getCollectByCount();
 }
 
 @EqualsAndHashCode(callSuper = true)
