@@ -112,7 +112,7 @@ const ItemTable = ({ category }) => {
       </Card>
       {items.length ? (
         <>
-          <Spin spinning={loading}>
+          <Spin spinning={loading} delay={300}>
             <div className="item-container">
               {items.map(item => (
                 <GoodItem key={item.id} {...item} url={item.images[0].url} />

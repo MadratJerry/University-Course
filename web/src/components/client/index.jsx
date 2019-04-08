@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom'
 import Header from '@/components/client/Header'
 import GoodList from '@/components/client/GoodList'
 import Home from '@/components/client/Home'
+import Good from '@/components/client/GoodDetail'
 
 const { Content, Footer } = Layout
 
@@ -21,6 +22,7 @@ const Client = () => (
       >
         <Route exact path="/" component={Home} />
         <Route exact path="/goods" component={GoodList} />
+        <Route exact path="/good/:id" component={Good} />
       </div>
     </Content>
     <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>

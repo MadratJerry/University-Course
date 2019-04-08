@@ -14,6 +14,7 @@ class Item {
         createdDate: new Date(0).toISOString(),
       })}`,
     )
+  static getById = async id => await request(`items/${id}?${params({ projection: 'detail' })}`)
 }
 
 export default Item

@@ -23,7 +23,7 @@ export async function request(
   }
 }
 
-export const params = (v, dv) => {
+export const params = (v, dv = {}) => {
   Object.keys(v).forEach(k => (v[k] === undefined ? delete v[k] : null))
   return Object.keys(Object.assign(dv, v))
     .map(key => `${key}=${dv[key]}`)
