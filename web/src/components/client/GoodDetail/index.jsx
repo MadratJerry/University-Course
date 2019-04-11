@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Avatar, Button, Icon } from 'antd'
+import Lightbox from 'react-images'
 import GoodPrice from '@/components/client/Price'
 import Item from '@/models/Item'
 import './index.css'
@@ -11,6 +12,8 @@ const Good = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({ images: [{ url: '' }], seller: { username: '' }, createdDate: 0 })
+  const [open, setOpen] = useState(false)
+  const [current, setCurrent] = useState(0)
 
   const fetchData = async () => {
     setLoading(true)
@@ -38,7 +41,15 @@ const Good = ({
       >
         <div className="good-container">
           <div className="good-images">
-            <img src={data.images[0].url} alt="good" />
+            <Lightbox
+              images={data.images.map(i => ({ src: i.url }))}
+              isOpen={open}
+              currentImage={current % data.images.length}
+              onClickPrev={() => setCurrent(current - 1 + data.images.length)}
+              onClickNext={() => setCurrent(current + 1 + data.images.length)}
+              onClose={() => setOpen(false)}
+            />
+            <img src={data.images[0].url} alt="good" onClick={() => setOpen(true)} />
           </div>
           <div className="good-details">
             <div className="good-info">

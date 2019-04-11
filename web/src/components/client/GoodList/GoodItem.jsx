@@ -8,7 +8,7 @@ const { Meta } = Card
 
 const GoodItem = ({ id, url, name, description, price, originalPrice, location }) => {
   return (
-    <Link to={`/item/${id}`}>
+    <Link to={`/good/${id}`}>
       <Card className="good-card" hoverable cover={<img alt="good-item" src={url} />}>
         <Meta title={name} description={description} />
         <div className="price-group">
