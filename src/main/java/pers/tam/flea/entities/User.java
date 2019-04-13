@@ -28,16 +28,17 @@ public class User extends Model implements UserDetails {
     @OneToOne
     private Image avatar;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Collection<Role> roles;
 
     @ManyToMany
-    @JsonIgnoreProperties(value = {"collectedBy", "seller"})
     private Collection<Item> collection;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties(value = {"collectedBy", "seller"})
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Collection<Item> items;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<Comment> comments;
 
     public User() {
     }

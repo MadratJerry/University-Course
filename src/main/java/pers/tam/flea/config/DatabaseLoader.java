@@ -8,10 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pers.tam.flea.entities.*;
-import pers.tam.flea.repositories.CategoryRepository;
-import pers.tam.flea.repositories.ItemRepository;
-import pers.tam.flea.repositories.RoleRepository;
-import pers.tam.flea.repositories.UserRepository;
+import pers.tam.flea.repositories.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +20,6 @@ import java.util.stream.Collectors;
 public class DatabaseLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final ItemRepository itemRepository;
     private final CategoryRepository categoryRepository;
 
     @Override
@@ -54,10 +49,18 @@ public class DatabaseLoader implements CommandLineRunner {
                         "admin",
                         AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
 
-        User testUser = userRepository.save(new User("test", "{noop}test",
-                Set.of(roleRepository.save(new Role(RoleName.ROLE_USER)))));
-        User adminUser = userRepository.save(new User("admin", "{noop}admin",
-                Set.of(roleRepository.save(new Role(RoleName.ROLE_ADMIN)))));
+        User testUser = new User("test", "{noop}test",
+                Set.of(new Role(RoleName.ROLE_USER)));
+        User adminUser = new User("admin", "{noop}admin",
+                Set.of(new Role(RoleName.ROLE_ADMIN)));
+
+        Comment comment1 = new Comment("3000出吗");
+        Comment comment2 = new Comment("不行!");
+        Comment comment3 = new Comment("3200如何？");
+        comment2.setParent(comment1);
+        comment2.setReply(adminUser);
+        comment3.setParent(comment1);
+        comment3.setReply((testUser));
 
         Item item1 = new Item();
         item1.setName("Apple iPhone 8 Plus (A1864) 64GB 深空灰色 移动联通电信4G手机");
@@ -65,8 +68,10 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
         item1.setLocation("北京市丰台区");
-        item1.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
+        item1.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1"),
+                new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg!cc_1x1")));
         item1.setCategory(categories.get("手机"));
+        item1.setComments(Set.of(comment1, comment2, comment3));
         Item item2 = new Item();
         item2.setName("Apple iPhone X (A1865) 64GB 深空灰色 移动联通电信4G手机");
         item2.setDescription("深空灰色 公开版 内存：64GB  入手不到1个月，手机我还令购买了2年的意外保险，2年的电池保险，我另行购买的苹果12w快充充电器，一并赠送，还有无线充电器，有发票，官方可查。手机无任何问题，一直戴套贴膜，我全下来花了6600多，想要通话录音功能，换安卓机，想出手！！");
@@ -78,6 +83,12 @@ public class DatabaseLoader implements CommandLineRunner {
         testUser.setCollection(Set.of(item1));
         testUser.setItems(Set.of(item1, item2));
         testUser.getItems().forEach(i -> i.setSeller(testUser));
-        userRepository.save(testUser);
+
+        testUser.setComments(Set.of(comment2));
+        testUser.getComments().forEach(i -> i.setUser(testUser));
+        adminUser.setComments((Set.of(comment1, comment3)));
+        adminUser.getComments().forEach(i -> i.setUser(adminUser));
+        userRepository.saveAndFlush(testUser);
+        userRepository.saveAndFlush(adminUser);
     }
 }

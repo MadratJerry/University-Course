@@ -1,6 +1,5 @@
 package pers.tam.flea.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +10,40 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Entity
+public class Item extends Model {
+
+    private String name;
+
+    private double price;
+
+    private double originalPrice;
+
+    private String location;
+
+    @OneToOne
+    private Category category;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User seller;
+
+    @ManyToMany(mappedBy = "collection")
+    private Collection<User> collectedBy;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Image> images;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Collection<Comment> comments;
+}
+
 @Projection(name = "simple", types = {Item.class})
-interface Simple {
+interface ItemSimpleProjection {
 
     Long getId();
 
@@ -28,7 +59,7 @@ interface Simple {
 }
 
 @Projection(name = "detail", types = {Item.class})
-interface Full extends Simple {
+interface ItemDetailProjection extends ItemSimpleProjection {
 
     Long getId();
 
@@ -48,35 +79,4 @@ interface Full extends Simple {
 
     @Value("#{@userRepository.countByCollectionId(target.id)}")
     Long getCollectByCount();
-}
-
-@EqualsAndHashCode(callSuper = true)
-@Data
-@Entity
-public class Item extends Model {
-
-    private String name;
-
-    private double price;
-
-    private double originalPrice;
-
-    private String location;
-
-    @OneToOne
-    private Category category;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnoreProperties(value = {"collection", "items"})
-    private User seller;
-
-    @ManyToMany(mappedBy = "collection")
-    @JsonIgnoreProperties(value = {"collection", "items"})
-    private Collection<User> collectedBy;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    private Collection<Image> images;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
 }
