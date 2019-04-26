@@ -4,11 +4,12 @@ import ItemTable from './ItemTable'
 
 const GoodList = ({ location }) => {
   const params = new URLSearchParams(location.search)
+  const category = params.get('category')
 
   return (
     <div>
       <CategoryPanel />
-      <ItemTable category={params.get('category')} key={params.get('category')} />
+      <ItemTable category={category === null ? '' : category} key={category} />
     </div>
   )
 }

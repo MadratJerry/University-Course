@@ -71,6 +71,8 @@ interface ItemDetailProjection extends ItemSimpleProjection {
 
     String getLocation();
 
+    String getDescription();
+
     List<Image> getImages();
 
     User getSeller();

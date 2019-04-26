@@ -93,7 +93,7 @@ const Good = ({
           )}
         >
           <TabPane tab="详情" key="1">
-            Content of Tab Pane 1
+            <div dangerouslySetInnerHTML={{ __html: data.description }} />
           </TabPane>
           <TabPane tab="留言" key="2">
             <Comments id={id} />

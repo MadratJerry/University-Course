@@ -8,7 +8,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pers.tam.flea.entities.*;
-import pers.tam.flea.repositories.*;
+import pers.tam.flea.repositories.CategoryRepository;
+import pers.tam.flea.repositories.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,22 +50,24 @@ public class DatabaseLoader implements CommandLineRunner {
                         "admin",
                         AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
 
-        User testUser = new User("test", "{noop}test",
+        User user1 = new User("test1", "{noop}test",
                 Set.of(new Role(RoleName.ROLE_USER)));
-        User adminUser = new User("admin", "{noop}admin",
+        User user2 = new User("test2", "{noop}test",
+                Set.of(new Role(RoleName.ROLE_USER)));
+        User admin = new User("admin", "{noop}admin",
                 Set.of(new Role(RoleName.ROLE_ADMIN)));
 
         Comment comment1 = new Comment("3000出吗");
         Comment comment2 = new Comment("不行!");
         Comment comment3 = new Comment("3200如何？");
         comment2.setParent(comment1);
-        comment2.setReply(adminUser);
+        comment2.setReply(user1);
         comment3.setParent(comment1);
-        comment3.setReply((testUser));
+        comment3.setReply((user2));
 
         Item item1 = new Item();
         item1.setName("Apple iPhone 8 Plus (A1864) 64GB 深空灰色 移动联通电信4G手机");
-        item1.setDescription("深空灰色 公开版 内存：64GB差不多一年了吧，打算换华为了，一直有贴膜和保护壳，外观无划痕，原包装也都在");
+        item1.setDescription("<strong>深空灰色 公开版 内存：64GB差不多一年了吧，打算换华为了，一直有贴膜和保护壳，外观无划痕，原包装也都在</strong>");
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
         item1.setLocation("北京市丰台区");
@@ -80,15 +83,15 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setLocation("湖南湘潭市岳塘区");
         item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
         item2.setCategory(categories.get("手机"));
-        testUser.setCollection(Set.of(item1));
-        testUser.setItems(Set.of(item1, item2));
-        testUser.getItems().forEach(i -> i.setSeller(testUser));
+        user2.setCollection(Set.of(item1));
+        user2.setItems(Set.of(item1, item2));
+        user2.getItems().forEach(i -> i.setSeller(user2));
 
-        testUser.setComments(Set.of(comment2));
-        testUser.getComments().forEach(i -> i.setUser(testUser));
-        adminUser.setComments((Set.of(comment1, comment3)));
-        adminUser.getComments().forEach(i -> i.setUser(adminUser));
-        userRepository.saveAndFlush(testUser);
-        userRepository.saveAndFlush(adminUser);
+        user2.setComments(Set.of(comment2));
+        user2.getComments().forEach(i -> i.setUser(user2));
+        user1.setComments((Set.of(comment1, comment3)));
+        user1.getComments().forEach(i -> i.setUser(user1));
+        userRepository.saveAndFlush(user2);
+        userRepository.saveAndFlush(user1);
     }
 }
