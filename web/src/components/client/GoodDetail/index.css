@@ -54,3 +54,14 @@
   margin-top: 8px;
   width: 100%;
 }
+
+.comment-panel {
+  display: flex;
+  width: 100%;
+  background-color: #fff;
+}
+
+.comment-panel .avatar,
+.comment-input {
+  margin-right: 8px;
+}
