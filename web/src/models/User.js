@@ -1,20 +1,12 @@
 import { request } from '@/services/fetch'
+import { createContext } from 'react'
 
-class User {
-  _verified = false
+export default class User {
+  verified
   username = null
 
   constructor() {
-    this._verified = localStorage.getItem('verified') === 'false' ? false : true
-  }
-
-  get verified() {
-    return this._verified
-  }
-
-  set verified(v) {
-    this._verified = v
-    localStorage.setItem('verified', v)
+    this.verified = localStorage.getItem('verified') === 'false' ? false : true
   }
 
   static login = async data => await request('/login', 'POST', data)
@@ -24,4 +16,19 @@ class User {
   static getInfo = async () => await request('/user')
 }
 
-export default User
+export const reducer = (state, action) => {
+  switch (action.type) {
+    case 'verified':
+      localStorage.setItem('verified', true)
+      return { ...state, verified: true }
+    case 'unverified':
+      localStorage.setItem('verified', false)
+      return { ...state, verified: false }
+    case 'update':
+      return { ...state, ...action.payload }
+    default:
+      throw new Error()
+  }
+}
+
+export const UserConext = createContext([null, () => {}])

@@ -1,11 +1,11 @@
+import { useContext } from 'react'
 import { withRouter } from 'react-router'
 import fetchIntercept from 'fetch-intercept'
 import { message } from 'antd'
-import User from '@/models/User'
-import { useStore } from '@/models'
+import { UserConext } from '@/models/User'
 
 const Interceptor = ({ history }) => {
-  const [, setUser] = useStore(User)
+  const [, userDispatch] = useContext(UserConext)
   fetchIntercept.register({
     request: function(url, config = {}) {
       // Modify the url or config here
@@ -29,7 +29,7 @@ const Interceptor = ({ history }) => {
               pathname: '/',
               from: pathname,
             })
-          setUser({ verified: false })
+          userDispatch({ type: 'unverified' })
           break
         default:
           return response

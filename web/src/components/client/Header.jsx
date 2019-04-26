@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Layout, Button, Modal, Avatar, message } from 'antd'
 import Login from '@/components/Login'
-import { useStore } from '@/models/index'
-import User from '@/models/User'
+import User, { UserConext } from '@/models/User'
 
 const { Header } = Layout
 
 export default () => {
   const [visible, setVisible] = useState(false)
-  const [user, setUser] = useStore(User)
+  const [user, userDispatch] = useContext(UserConext)
 
   const handleLogout = async () => {
     const { response } = await User.logout()
     if (response.ok) {
       message.success('已退出。')
-      setUser({ verified: false })
+      userDispatch({ type: 'unverified' })
     }
   }
 
@@ -22,7 +21,7 @@ export default () => {
     const fetchUserInfo = async () => {
       if (user.verified) {
         const { data } = await User.getInfo()
-        setUser({ ...data })
+        userDispatch({ type: 'update', payload: data })
       }
     }
     fetchUserInfo()
@@ -54,7 +53,7 @@ export default () => {
         </Button.Group>
       )}
       <Modal title="登录" visible={visible} onCancel={() => setVisible(false)} footer={null}>
-        <Login setVisible={setVisible} setUser={setUser} />
+        <Login setVisible={setVisible} userDispatch={userDispatch} />
       </Modal>
     </Header>
   )

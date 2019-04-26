@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Card, Avatar, Button, Icon, Tabs, Comment, Tooltip, Affix, Input } from 'antd'
 import Lightbox from 'react-images'
 import moment from 'moment'
 import GoodPrice from '@/components/client/Price'
 import Item from '@/models/Item'
+import { UserConext } from '@/models/User'
 import './index.css'
-import { useStore } from '@/models/index'
-import User from '@/models/User'
 
 const TabPane = Tabs.TabPane
 
@@ -47,7 +46,7 @@ const Good = ({
   const [current, setCurrent] = useState(0)
   const [comments, setComments] = useState([])
   const [replyTo, setReplyTo] = useState()
-  const [user] = useStore(User)
+  const [user] = useContext(UserConext)
 
   const fetchData = async () => {
     setLoading(true)

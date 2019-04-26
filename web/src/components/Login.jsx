@@ -11,7 +11,7 @@ class Login extends React.Component {
         if (response.ok) {
           message.success('登录成功！')
           this.props.setVisible(false)
-          this.props.setUser({ verified: true })
+          this.props.userDispatch({ type: 'verified' })
         } else message.error('登录失败，用户名或密码错误！')
       }
     })
