@@ -1,39 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Card, Avatar, Button, Icon, Tabs, Comment, Tooltip, Affix, Input } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Card, Avatar, Button, Icon, Tabs } from 'antd'
 import Lightbox from 'react-images'
-import moment from 'moment'
+import { StickyContainer, Sticky } from 'react-sticky'
 import GoodPrice from '@/components/client/Price'
 import Item from '@/models/Item'
-import { UserConext } from '@/models/User'
+import Comments from './Comments'
 import './index.css'
 
 const TabPane = Tabs.TabPane
-
-const UserComment = ({ value: { content, createdDate, user, reply, parent }, value, onReply, children }) => (
-  <Comment
-    actions={[<span onClick={() => onReply(value)}>回复</span>]}
-    author={
-      <span>
-        {user.username}{' '}
-        {parent ? (
-          <>
-            <Icon type="caret-right" />
-            {reply.username}
-          </>
-        ) : null}
-      </span>
-    }
-    avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" alt="Han Solo" />}
-    content={<p>{content}</p>}
-    datetime={
-      <Tooltip title={moment(createdDate).format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment(createdDate).fromNow()}</span>
-      </Tooltip>
-    }
-  >
-    {children}
-  </Comment>
-)
 
 const Good = ({
   match: {
@@ -44,19 +18,10 @@ const Good = ({
   const [data, setData] = useState({ images: [{ url: '' }], seller: { username: '' }, createdDate: 0 })
   const [open, setOpen] = useState(false)
   const [current, setCurrent] = useState(0)
-  const [comments, setComments] = useState([])
-  const [replyTo, setReplyTo] = useState()
-  const [user] = useContext(UserConext)
 
   const fetchData = async () => {
     setLoading(true)
     const { data } = await Item.getById(id)
-    const {
-      data: {
-        _embedded: { comments },
-      },
-    } = await Item.getComments(id)
-    setComments(comments)
     setData(data)
     setLoading(false)
   }
@@ -64,8 +29,6 @@ const Good = ({
   useEffect(() => {
     fetchData()
   }, [id])
-
-  const handleReply = v => setReplyTo(v)
 
   return (
     <div>
@@ -120,49 +83,23 @@ const Good = ({
           </div>
         </div>
       </Card>
-      <Tabs defaultActiveKey="2">
-        <TabPane tab="详情" key="1">
-          Content of Tab Pane 1
-        </TabPane>
-        <TabPane tab="留言" key="2">
-          {comments
-            .filter(c => !c.parent)
-            .map(v => (
-              <UserComment value={v} key={v.id} onReply={handleReply}>
-                {comments
-                  .filter(c => c.parent && c.parent.id === v.id)
-                  .sort((a, b) => a.createdDate < b.createdDate)
-                  .map(c => (
-                    <UserComment value={c} key={c.id} onReply={handleReply} />
-                  ))}
-              </UserComment>
-            ))}
-          <Affix offsetBottom={8}>
-            <div className="comment-panel">
-              {user.verified ? (
-                <Avatar
-                  src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                  alt="Han Solo"
-                  className="avatar"
-                />
-              ) : null}
-              <Input
-                key={replyTo}
-                className="comment-input"
-                disabled={!user.verified}
-                size="large"
-                suffix={replyTo ? <Icon type="close-circle" onClick={() => setReplyTo()} /> : null}
-                placeholder={
-                  user.verified ? (replyTo ? `回复 ${replyTo.user.username}` : '发布你的留言') : '登录后发表留言'
-                }
-              />
-              <Button type="primary" size="large" className="comment-send" disabled={!user.verified}>
-                发布
-              </Button>
-            </div>
-          </Affix>
-        </TabPane>
-      </Tabs>
+      <StickyContainer>
+        <Tabs
+          defaultActiveKey="1"
+          renderTabBar={(props, DefaultTabBar) => (
+            <Sticky bottomOffset={80}>
+              {({ style }) => <DefaultTabBar {...props} style={{ ...style, zIndex: 1, background: '#fff' }} />}
+            </Sticky>
+          )}
+        >
+          <TabPane tab="详情" key="1">
+            Content of Tab Pane 1
+          </TabPane>
+          <TabPane tab="留言" key="2">
+            <Comments id={id} />
+          </TabPane>
+        </Tabs>
+      </StickyContainer>
     </div>
   )
 }

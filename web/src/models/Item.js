@@ -18,6 +18,26 @@ class Item {
   static getById = async id => await request(`/items/${id}?${params({ projection: 'detail' })}`)
 
   static getComments = async id => await request(`/items/${id}/comments?${params({ projection: 'detail' })}`)
+
+  static addComment = async (id, content, replyTo) => {
+    const { data } = await request(
+      `/comments`,
+      'POST',
+      Object.assign(
+        { content },
+        replyTo
+          ? {
+              parent: `/${replyTo.parent ? replyTo.parent.id : replyTo.id}`,
+              reply: `/${replyTo.user.id}`,
+            }
+          : {},
+      ),
+    )
+    return await request(`/items/${id}/comments`, 'POST', '', {
+      body: data._links.self.href,
+      headers: { 'Content-Type': 'text/uri-list' },
+    })
+  }
 }
 
 export default Item
