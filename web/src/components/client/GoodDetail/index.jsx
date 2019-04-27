@@ -6,6 +6,7 @@ import GoodPrice from '@/components/client/Price'
 import Item from '@/models/Item'
 import Comments from './Comments'
 import './index.css'
+import Address from '../Address'
 
 const TabPane = Tabs.TabPane
 
@@ -67,7 +68,7 @@ const Good = ({
               </div>
               <div>
                 <span>发布地</span>
-                {data.location}
+                <Address {...data.location} />
               </div>
             </div>
             <Card style={{ marginTop: 16 }} loading={loading}>

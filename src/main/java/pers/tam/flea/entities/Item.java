@@ -21,7 +21,8 @@ public class Item extends Model {
 
     private double originalPrice;
 
-    private String location;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address location;
 
     @OneToOne
     private Category category;
@@ -53,7 +54,7 @@ interface ItemSimpleProjection {
 
     double getOriginalPrice();
 
-    String getLocation();
+    Address getLocation();
 
     List<Image> getImages();
 }
@@ -61,19 +62,7 @@ interface ItemSimpleProjection {
 @Projection(name = "detail", types = {Item.class})
 interface ItemDetailProjection extends ItemSimpleProjection {
 
-    Long getId();
-
-    String getName();
-
-    double getPrice();
-
-    double getOriginalPrice();
-
-    String getLocation();
-
     String getDescription();
-
-    List<Image> getImages();
 
     User getSeller();
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Icon } from 'antd'
 import Price from '@/components/client/Price'
+import Address from '@/components/client/Address'
 import './GoodItem.css'
 
 const { Meta } = Card
@@ -17,7 +18,7 @@ const GoodItem = ({ id, url, name, description, price, originalPrice, location }
         </div>
         <span className="location">
           <Icon type="environment" />
-          {location}
+          <Address {...location} />
         </span>
       </Card>
     </Link>

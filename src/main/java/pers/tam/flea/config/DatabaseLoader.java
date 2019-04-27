@@ -70,7 +70,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setDescription("<strong>深空灰色 公开版 内存：64GB差不多一年了吧，打算换华为了，一直有贴膜和保护壳，外观无划痕，原包装也都在</strong>");
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
-        item1.setLocation("北京市丰台区");
+        item1.setLocation(new Address("北京", "北京", "丰台", ""));
         item1.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1"),
                 new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg!cc_1x1")));
         item1.setCategory(categories.get("手机"));
@@ -80,7 +80,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setDescription("深空灰色 公开版 内存：64GB  入手不到1个月，手机我还令购买了2年的意外保险，2年的电池保险，我另行购买的苹果12w快充充电器，一并赠送，还有无线充电器，有发票，官方可查。手机无任何问题，一直戴套贴膜，我全下来花了6600多，想要通话录音功能，换安卓机，想出手！！");
         item2.setPrice(5999);
         item2.setOriginalPrice(6349);
-        item2.setLocation("湖南湘潭市岳塘区");
+        item2.setLocation(new Address("湖南", "湘潭", "岳塘", ""));
         item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
         item2.setCategory(categories.get("手机"));
         user2.setCollection(Set.of(item1));
