@@ -10,6 +10,35 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+@Projection(name = "simple", types = {Item.class})
+interface ItemSimpleProjection {
+
+    Long getId();
+
+    String getName();
+
+    double getPrice();
+
+    double getOriginalPrice();
+
+    Address getLocation();
+
+    List<Image> getImages();
+}
+
+@Projection(name = "detail", types = {Item.class})
+interface ItemDetailProjection extends ItemSimpleProjection {
+
+    String getDescription();
+
+    User getSeller();
+
+    Date getCreatedDate();
+
+    @Value("#{@userRepository.countByCollectionId(target.id)}")
+    Long getCollectByCount();
+}
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -41,33 +70,4 @@ public class Item extends Model {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Comment> comments;
-}
-
-@Projection(name = "simple", types = {Item.class})
-interface ItemSimpleProjection {
-
-    Long getId();
-
-    String getName();
-
-    double getPrice();
-
-    double getOriginalPrice();
-
-    Address getLocation();
-
-    List<Image> getImages();
-}
-
-@Projection(name = "detail", types = {Item.class})
-interface ItemDetailProjection extends ItemSimpleProjection {
-
-    String getDescription();
-
-    User getSeller();
-
-    Date getCreatedDate();
-
-    @Value("#{@userRepository.countByCollectionId(target.id)}")
-    Long getCollectByCount();
 }

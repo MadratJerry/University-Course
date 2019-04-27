@@ -5,6 +5,7 @@ import Header from '@/components/client/Header'
 import GoodList from '@/components/client/GoodList'
 import Home from '@/components/client/Home'
 import Good from '@/components/client/GoodDetail'
+import Profile from '@/components/client/Profile'
 
 const { Content, Footer } = Layout
 
@@ -22,6 +23,7 @@ const Client = () => {
           }}
         >
           <Route exact path="/" component={Home} />
+          <Route exact path="/profile" component={Profile} />
           <Route exact path="/goods" component={GoodList} />
           <Route exact path="/goods/:id" component={Good} />
         </div>

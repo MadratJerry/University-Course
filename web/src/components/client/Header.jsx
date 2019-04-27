@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Layout, Button, Modal, Avatar, message } from 'antd'
 import Login from '@/components/Login'
 import User, { UserConext } from '@/models/User'
@@ -20,7 +21,10 @@ export default () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (user.verified) {
-        const { data } = await User.getInfo()
+        const {
+          data: { username },
+        } = await User.getInfo()
+        const { data } = await User.getUserByUsername(username)
         userDispatch({ type: 'update', payload: data })
       }
     }
@@ -38,10 +42,10 @@ export default () => {
       <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>Flea</div>
       {user.verified ? (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div>
+          <Link to="/profile">
             <Avatar size="large" icon="user" />
             <span style={{ margin: 10 }}>{user.username}</span>
-          </div>
+          </Link>
           <Button type="dashed" onClick={handleLogout}>
             退出
           </Button>

@@ -83,14 +83,24 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setLocation(new Address("湖南省", "湘潭市", "岳塘区", ""));
         item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
         item2.setCategory(categories.get("手机"));
+
         user2.setCollection(Set.of(item1));
         user2.setItems(Set.of(item1, item2));
         user2.getItems().forEach(i -> i.setSeller(user2));
-
         user2.setComments(Set.of(comment2));
         user2.getComments().forEach(i -> i.setUser(user2));
         user1.setComments((Set.of(comment1, comment3)));
         user1.getComments().forEach(i -> i.setUser(user1));
+        user1.setShippingAddresses(Set.of(
+                new ShippingAddress("老王",
+                        new Address("北京市", "北京市", "朝阳区", "某地"),
+                        true,
+                        "12345678901"),
+                new ShippingAddress("老李",
+                        new Address("北京市", "北京市", "朝阳区", "某某地"),
+                        false,
+                        "12345678902")
+        ));
         userRepository.saveAndFlush(user2);
         userRepository.saveAndFlush(user1);
     }

@@ -14,6 +14,22 @@ import pers.tam.flea.repositories.UserRepository;
 import javax.persistence.*;
 import java.util.Date;
 
+@Projection(name = "detail", types = {Comment.class})
+interface CommentDetailProjection {
+
+    Long getId();
+
+    String getContent();
+
+    Comment getParent();
+
+    User getUser();
+
+    User getReply();
+
+    Date getCreatedDate();
+}
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -34,23 +50,6 @@ public class Comment extends Model {
     @ManyToOne
     private User reply;
 }
-
-@Projection(name = "detail", types = {Comment.class})
-interface CommentDetailProjection {
-
-    Long getId();
-
-    String getContent();
-
-    Comment getParent();
-
-    User getUser();
-
-    User getReply();
-
-    Date getCreatedDate();
-}
-
 
 @Component
 @RepositoryEventHandler

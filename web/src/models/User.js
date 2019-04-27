@@ -14,6 +14,16 @@ export default class User {
   static logout = async () => await request('/logout', 'GET')
 
   static getInfo = async () => await request('/user')
+
+  static getUserByUsername = async username => await request(`/users/search/findByUsername?username=${username}`)
+
+  static addShippingAddress = async data => await request('/users/addShippingAddress', 'POST', data)
+
+  static getShippingAddresses = async id => await request(`/users/${id}/shippingAddresses?projection=detail`)
+
+  static removeShippingAddress = async id => await request(`/users/removeShippingAddress/${id}`, 'DELETE')
+
+  static setShippingAddressDefault = async id => await request(`/users/setShippingAddressDefault/${id}`, 'PATCH')
 }
 
 export const reducer = (state, action) => {
