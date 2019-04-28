@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pers.tam.flea.entities.*;
 import pers.tam.flea.repositories.CategoryRepository;
+import pers.tam.flea.repositories.ItemOrderRepository;
 import pers.tam.flea.repositories.UserRepository;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final ItemOrderRepository orderRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -101,6 +103,7 @@ public class DatabaseLoader implements CommandLineRunner {
                         false,
                         "12345678902")
         ));
+
         userRepository.saveAndFlush(user2);
         userRepository.saveAndFlush(user1);
     }

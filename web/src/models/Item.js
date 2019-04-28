@@ -38,6 +38,8 @@ class Item {
       headers: { 'Content-Type': 'text/uri-list' },
     })
   }
+
+  static addOrder = async (id, data) => await request(`/items/${id}/addOrder`, 'POST', data)
 }
 
 export default Item

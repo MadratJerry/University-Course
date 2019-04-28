@@ -40,6 +40,9 @@ public class User extends Model implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Comment> comments;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<ItemOrder> itemOrders;
+
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<ShippingAddress> shippingAddresses;
 

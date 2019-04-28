@@ -39,7 +39,9 @@ export default () => {
         background: '#ffffff',
       }}
     >
-      <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>Flea</div>
+      <div style={{ color: '#25b864', fontSize: 36, fontWeight: 'bold' }}>
+        <Link to="/">Flea</Link>
+      </div>
       {user.verified ? (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/profile">

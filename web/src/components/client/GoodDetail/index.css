@@ -28,16 +28,26 @@
   flex-direction: column;
   justify-content: space-between;
 }
-
+.good-order .price,
 .good-info .price {
   font-size: 28px;
   color: #ff3434;
 }
 
+.good-order .price {
+  font-size: 16px;
+}
+
+.good-order .original-price,
 .good-info .original-price {
   font-size: 20px;
   color: #666;
   text-decoration: line-through;
+}
+
+.good-order .original-price {
+  margin-left: 4px;
+  font-size: 14px;
 }
 
 .good-info > div {

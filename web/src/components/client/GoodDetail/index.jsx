@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Avatar, Button, Icon, Tabs } from 'antd'
+import { Card, Avatar, Button, Icon, Tabs, Modal } from 'antd'
 import Lightbox from 'react-images'
 import { StickyContainer, Sticky } from 'react-sticky'
 import GoodPrice from '@/components/client/Price'
 import Item from '@/models/Item'
 import Comments from './Comments'
+import Order from './Order'
 import './index.css'
 import Address from '../Address'
 
@@ -18,6 +19,7 @@ const Good = ({
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({ images: [{ url: '' }], seller: { username: '' }, createdDate: 0 })
   const [open, setOpen] = useState(false)
+  const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState(0)
 
   const fetchData = async () => {
@@ -31,8 +33,15 @@ const Good = ({
     fetchData()
   }, [id])
 
+  const handleClickBuy = () => setVisible(true)
+
+  const handleBuyCancel = () => setVisible(false)
+
   return (
     <div>
+      <Modal title="发起交易请求" visible={visible} onCancel={handleBuyCancel} footer={null}>
+        {visible ? <Order data={data} setVisible={setVisible} /> : null}
+      </Modal>
       <Card
         title={data.name}
         bordered={false}
@@ -78,8 +87,8 @@ const Good = ({
                 description={`${new Date(data.createdDate).toLocaleDateString()}发布`}
               />
             </Card>
-            <Button type="primary" size="large" className="buy-btn">
-              立即购买
+            <Button type="primary" size="large" className="buy-btn" onClick={handleClickBuy}>
+              立即交易
             </Button>
           </div>
         </div>
