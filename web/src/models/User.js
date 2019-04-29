@@ -24,6 +24,10 @@ export default class User {
   static removeShippingAddress = async id => await request(`/users/removeShippingAddress/${id}`, 'DELETE')
 
   static setShippingAddressDefault = async id => await request(`/users/setShippingAddressDefault/${id}`, 'PATCH')
+
+  static getOrders = async id => await request(`/users/${id}/itemOrders?projection=detail`)
+
+  static cancelOrder = async id => await request(`/itemOrders/${id}`, 'PATCH', { orderState: 'CANCELED' })
 }
 
 export const reducer = (state, action) => {

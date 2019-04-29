@@ -1,6 +1,7 @@
 package pers.tam.flea.entities;
 
 import lombok.*;
+import org.springframework.data.rest.core.config.Projection;
 
 import javax.persistence.*;
 
@@ -33,4 +34,20 @@ public class ItemOrder extends Model {
     @NonNull
     @Enumerated(EnumType.STRING)
     private OrderState orderState;
+}
+
+@Projection(name="detail", types = {ItemOrder.class})
+interface ItemOrderDetailProjection {
+
+    Long getId();
+
+    ItemSimpleProjection getItem();
+
+    ShippingAddress getShippingAddress();
+
+    Double getPrice();
+
+    String getBuyWay();
+
+    String getOrderState();
 }
