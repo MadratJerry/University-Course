@@ -29,11 +29,17 @@ const Item = ({ id }) => {
 
   const handleDetailCancel = () => setVisible(false)
 
+  const handleItemAdd = () => {
+    setDetailData({})
+    setVisible(true)
+  }
+
   return (
     <div>
       <Modal title="物品详情" visible={visible} onCancel={handleDetailCancel} footer={null}>
-        {detailData ? <ItemDetail data={detailData} setVisible={setVisible} fetchData={fetchData} /> : null}
+        <ItemDetail data={detailData} setVisible={setVisible} fetchData={fetchData} />
       </Modal>
+      <Button onClick={handleItemAdd}>添加</Button>
       <List
         loading={loading}
         itemLayout="horizontal"

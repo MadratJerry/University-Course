@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pers.tam.flea.entities.*;
-import pers.tam.flea.repositories.ItemOrderRepository;
 import pers.tam.flea.repositories.ItemRepository;
 import pers.tam.flea.repositories.ShippingAddressRepository;
 import pers.tam.flea.repositories.UserRepository;
@@ -27,7 +26,6 @@ public class ItemController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final ShippingAddressRepository shippingAddressRepository;
-    private final ItemOrderRepository itemOrderRepository;
     private final ItemRepository itemRepository;
 
     @PostMapping("/items/{id}/addOrder")

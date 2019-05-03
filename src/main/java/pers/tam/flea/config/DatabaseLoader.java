@@ -74,17 +74,18 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
         item1.setLocation(new Address("北京市", "北京市", "丰台区", ""));
-        item1.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1"),
-                new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg!cc_1x1")));
+        item1.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg"),
+                new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg")
+        ));
         item1.setCategory(categories.get("手机"));
         item1.setComments(Set.of(comment1, comment2, comment3));
         Item item2 = new Item();
-        item2.setName("Apple iPhone X (A1865) 64GB 深空灰色 移动联通电信4G手机");
-        item2.setDescription("深空灰色 公开版 内存：64GB  入手不到1个月，手机我还令购买了2年的意外保险，2年的电池保险，我另行购买的苹果12w快充充电器，一并赠送，还有无线充电器，有发票，官方可查。手机无任何问题，一直戴套贴膜，我全下来花了6600多，想要通话录音功能，换安卓机，想出手！！");
-        item2.setPrice(5999);
-        item2.setOriginalPrice(6349);
-        item2.setLocation(new Address("湖南省", "湘潭市", "岳塘区", ""));
-        item2.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
+        item2.setName("美图（meitu） 美图T8s 手机 莫奈粉 全网通(4G+128G)");
+        item2.setDescription("莫奈粉 全网通(4G 128G)");
+        item2.setPrice(1300);
+        item2.setOriginalPrice(3899);
+        item2.setLocation(new Address("北京市", "北京市", "大兴区", ""));
+        item2.setImages(List.of(new Image("//img10.360buyimg.com/n1/s520x520_jfs/t8347/318/2536225704/177966/6991907e/59cf3164Nd076a8cf.jpg")));
         item2.setCategory(categories.get("手机"));
 
         user2.setCollection(Set.of(item1));

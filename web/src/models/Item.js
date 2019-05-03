@@ -1,4 +1,5 @@
 import { request, params } from '@/services/fetch'
+import Address from './Address'
 
 class Item {
   static getAllByCategory = async p =>
@@ -41,11 +42,19 @@ class Item {
 
   static addOrder = async (id, data) => await request(`/items/${id}/addOrder`, 'POST', data)
 
-  static updateItem = async (id, data) =>
-    await request(`/items/${id}`, 'PATCH', {
+  static updateItem = async (id, data) => await request(`/items/${id}`, 'PATCH', await Item.itemReducer(data))
+
+  static addItem = async data => await request(`/items`, 'POST', await Item.itemReducer(data))
+
+  static itemReducer = async data => {
+    const { data: address } = await Address.addAddress(data.location)
+    return {
       ...data,
       images: data.images.map(i => `/${(i.response || i).id}`),
-    })
+      category: `/${data.category}`,
+      location: `/${address.id}`,
+    }
+  }
 }
 
 export default Item

@@ -37,6 +37,8 @@ interface ItemDetailProjection extends ItemSimpleProjection {
 
     @Value("#{@userRepository.countByCollectionId(target.id)}")
     Long getCollectByCount();
+
+    Category getCategory();
 }
 
 @EqualsAndHashCode(callSuper = true)
@@ -50,7 +52,7 @@ public class Item extends Model {
 
     private double originalPrice;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Address location;
 
     @OneToOne

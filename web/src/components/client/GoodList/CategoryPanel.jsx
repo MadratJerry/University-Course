@@ -11,7 +11,10 @@ const CategoryPanel = () => {
   const handleClick = () => setOpen(!open)
 
   useEffect(() => {
-    const fetchCategories = async () => setCategories(await Category.getAll())
+    const fetchCategories = async () => {
+      const { data } = await Category.getAll()
+      setCategories(data._embedded.categories)
+    }
 
     fetchCategories()
   }, [])
