@@ -13,6 +13,7 @@ import pers.tam.flea.repositories.ItemOrderRepository;
 import pers.tam.flea.repositories.UserRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
         item1.setLocation(new Address("北京市", "北京市", "丰台区", ""));
-        item1.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1"),
+        item1.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1"),
                 new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg!cc_1x1")));
         item1.setCategory(categories.get("手机"));
         item1.setComments(Set.of(comment1, comment2, comment3));
@@ -83,7 +84,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setPrice(5999);
         item2.setOriginalPrice(6349);
         item2.setLocation(new Address("湖南省", "湘潭市", "岳塘区", ""));
-        item2.setImages(Set.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
+        item2.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg!cc_1x1")));
         item2.setCategory(categories.get("手机"));
 
         user2.setCollection(Set.of(item1));

@@ -63,7 +63,7 @@ public class Item extends Model {
     private Collection<User> collectedBy;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Collection<Image> images;
+    private List<Image> images;
 
     @Column(columnDefinition = "TEXT")
     private String description;

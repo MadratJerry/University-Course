@@ -40,6 +40,12 @@ class Item {
   }
 
   static addOrder = async (id, data) => await request(`/items/${id}/addOrder`, 'POST', data)
+
+  static updateItem = async (id, data) =>
+    await request(`/items/${id}`, 'PATCH', {
+      ...data,
+      images: data.images.map(i => `/${(i.response || i).id}`),
+    })
 }
 
 export default Item

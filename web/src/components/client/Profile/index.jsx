@@ -3,6 +3,7 @@ import { Tabs } from 'antd'
 import { UserConext } from '@/models/User'
 import ShippingAddress from './ShippingAddress'
 import Order from './Order'
+import Item from './Item'
 
 const TabPane = Tabs.TabPane
 
@@ -10,9 +11,9 @@ const Profile = () => {
   const [user] = useContext(UserConext)
 
   return (
-    <Tabs defaultActiveKey="2">
+    <Tabs defaultActiveKey="1">
       <TabPane tab="我的闲置" key="1">
-        Content of Tab Pane 1
+        <Item id={user.id} />
       </TabPane>
       <TabPane tab="我的请求" key="2">
         <Order id={user.id} />

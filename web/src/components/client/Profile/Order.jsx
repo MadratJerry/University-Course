@@ -50,8 +50,7 @@ const Order = ({ id }) => {
         renderItem={data => (
           <List.Item
             actions={[OrderState(data.orderState)].concat(
-              data.orderState === 'CANCELED' || data.orderState === 'REJECTED',
-              data.orderState === 'FINISHED' ? (
+              data.orderState === 'CANCELED' || data.orderState === 'REJECTED' || data.orderState === 'FINISHED' ? (
                 []
               ) : (
                 <Button size="small" type="dashed" onClick={handleCancel(data.id)}>

@@ -27,6 +27,8 @@ export default class User {
 
   static getOrders = async id => await request(`/users/${id}/itemOrders?projection=detail`)
 
+  static getItems = async id => await request(`/users/${id}/items?projection=detail`)
+
   static cancelOrder = async id => await request(`/itemOrders/${id}`, 'PATCH', { orderState: 'CANCELED' })
 }
 

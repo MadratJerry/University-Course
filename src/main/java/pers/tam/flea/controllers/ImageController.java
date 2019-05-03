@@ -19,6 +19,7 @@ import java.io.IOException;
 @RequestMapping("/images")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageController {
+    static final String prefix = "/api/static/images/";
 
     private final ImageService imageService;
     private final ImageRepository imageRepository;
@@ -38,7 +39,7 @@ public class ImageController {
             File dest = new File(dir.getAbsolutePath() + "/" + destFileName);
             file.transferTo(dest);
             image = new Image();
-            image.setUrl(destFileName);
+            image.setUrl(prefix + destFileName);
             return ResponseEntity.ok().body(imageRepository.save(image));
         } catch (IOException e) {
             e.printStackTrace();
