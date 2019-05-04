@@ -3,6 +3,7 @@ package pers.tam.flea.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -38,9 +39,11 @@ public class User extends Model implements UserDetails {
     private Collection<Item> items;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Collection<Comment> comments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Collection<ItemOrder> itemOrders;
 
     @OneToMany(cascade = CascadeType.ALL)

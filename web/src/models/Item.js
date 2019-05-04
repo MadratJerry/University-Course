@@ -40,7 +40,8 @@ class Item {
     })
   }
 
-  static addOrder = async (id, data) => await request(`/items/${id}/addOrder`, 'POST', data)
+  static addOrder = async (id, data) =>
+    await request(`/itemOrders`, 'POST', { ...data, item: `/${id}`, shippingAddress: `/${data.shippingAddress}` })
 
   static updateItem = async (id, data) => await request(`/items/${id}`, 'PATCH', await Item.itemReducer(data))
 
@@ -55,6 +56,14 @@ class Item {
       location: `/${address.id}`,
     }
   }
+
+  static getAllOrders = async id =>
+    await request(
+      `/itemOrders/search/findByItemId?${params({
+        id,
+        projection: 'detail',
+      })}`,
+    )
 }
 
 export default Item

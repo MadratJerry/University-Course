@@ -48,6 +48,9 @@ interface ItemDetailProjection extends ItemSimpleProjection {
     Long getCollectByCount();
 
     Category getCategory();
+
+    @Value("#{@itemOrderRepository.countByItemIdAndOrderStateNot(target.id, 'REJECTED')}")
+    Long getOrdersCount();
 }
 
 @EqualsAndHashCode(callSuper = true)
@@ -81,6 +84,9 @@ public class Item extends Model {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Comment> comments;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<ItemOrder> orders;
 }
 
 
@@ -90,9 +96,8 @@ public class Item extends Model {
 class ItemEventHandler {
     private final UserRepository userRepository;
 
-    @HandleBeforeSave
     @HandleBeforeCreate
-    public void handleCommentSave(Item item) {
+    public void handleItemCreate(Item item) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()

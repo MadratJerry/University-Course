@@ -4,7 +4,7 @@ import { List, Avatar, Card, Tag, Button } from 'antd'
 import GoodPrice from '@/components/client/Price'
 import User from '@/models/User'
 
-const OrderState = state => {
+export const OrderState = state => {
   switch (state) {
     case 'UNACCEPTED':
       return <Tag>等待接受</Tag>
