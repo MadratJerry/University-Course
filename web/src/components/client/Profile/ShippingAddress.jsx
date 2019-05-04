@@ -132,7 +132,7 @@ const ShippingAddress = ({ id }) => {
         )}
       />
       <Modal title="添加收货地址" visible={visible} footer={null} onCancel={() => setVisible(false)}>
-        <WrappedAddressForm setVisible={setVisible} fetchData={fetchData} />
+        <WrappedAddressForm setVisible={setVisible} fetchData={fetchData} key={visible} />
       </Modal>
     </div>
   )

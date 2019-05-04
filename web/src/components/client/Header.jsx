@@ -44,7 +44,7 @@ export default () => {
       </div>
       {user.verified ? (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/profile">
+          <Link to="/profile/item">
             <Avatar size="large" icon="user" />
             <span style={{ margin: 10 }}>{user.username}</span>
           </Link>

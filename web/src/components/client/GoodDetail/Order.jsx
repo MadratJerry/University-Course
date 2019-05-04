@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { Card, Avatar, Select, Form, InputNumber, Button, message } from 'antd'
 import GoodPrice from '@/components/client/Price'
 import User, { UserConext } from '@/models/User'
@@ -58,7 +59,12 @@ class Order extends Component {
           <Form.Item label="收货地址">
             {getFieldDecorator('shippingAddress', {
               initialValue: defaultAddress,
-              rules: [{ required: true }],
+              rules: [
+                {
+                  required: true,
+                  message: '请选择收货地址！',
+                },
+              ],
             })(
               <Select>
                 {this.state.addresses.map(a => (
@@ -68,7 +74,9 @@ class Order extends Component {
                 ))}
               </Select>,
             )}
+            {this.state.addresses.length ? null : <Link to="/profile/address">添加地址</Link>}
           </Form.Item>
+
           <Form.Item label="交易方式">
             {getFieldDecorator('buyWay', {
               initialValue: 'OFFLINE',

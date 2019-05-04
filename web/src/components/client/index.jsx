@@ -23,7 +23,7 @@ const Client = () => {
           }}
         >
           <Route exact path="/" component={Home} />
-          <Route exact path="/profile" component={Profile} />
+          <Route exact path="/profile/:tab" component={Profile} />
           <Route exact path="/goods" component={GoodList} />
           <Route exact path="/goods/:id" component={Good} />
         </div>

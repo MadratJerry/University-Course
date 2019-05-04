@@ -51,6 +51,7 @@ public class UserController {
                 body.get("phone"));
         User user = userRepository.findByUsername(userService.getCurrentUser(session).getUsername());
         Collection<ShippingAddress> collection = user.getShippingAddresses();
+        if (collection.isEmpty()) shippingAddress.setIsDefault(true);
         collection.add(shippingAddress);
         user.setShippingAddresses(collection);
         userRepository.save(user);
@@ -61,15 +62,12 @@ public class UserController {
     public @ResponseBody
     ResponseEntity<?> removeShippingAddress(HttpSession session, @PathVariable Long id) {
         ShippingAddress shippingAddress = shippingAddressRepository.getOne(id);
-        if (shippingAddress.getIsDefault()) {
-            User user = userRepository.findByUsername(userService.getCurrentUser(session).getUsername());
-            List<ShippingAddress> list = new ArrayList<>(user.getShippingAddresses());
-            list.removeIf(a -> a.getId().equals(id));
-            if (!list.isEmpty()) list.get(0).setIsDefault(true);
-            user.setShippingAddresses(list);
-            userRepository.save(user);
-        }
-        shippingAddressRepository.delete(shippingAddress);
+        User user = userRepository.findByUsername(userService.getCurrentUser(session).getUsername());
+        List<ShippingAddress> list = new ArrayList<>(user.getShippingAddresses());
+        list.removeIf(a -> a.getId().equals(id));
+        if (!list.isEmpty()) list.get(0).setIsDefault(true);
+        user.setShippingAddresses(list);
+        userRepository.save(user);
         return ResponseEntity.ok(null);
     }
 
