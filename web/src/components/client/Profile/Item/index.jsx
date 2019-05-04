@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { List, Avatar, Card, Modal, Button, Badge } from 'antd'
+import { List, Avatar, Card, Modal, Button, Badge, Radio } from 'antd'
 import GoodPrice from '@/components/client/Price'
 import User from '@/models/User'
 import ItemDetail from './ItemDetail'
 import OrderDetail from './OrderDetail'
+
+const RadioButton = Radio.Button
+const RadioGroup = Radio.Group
 
 const Item = ({ id }) => {
   const [loading, setLoading] = useState(true)
@@ -12,17 +15,18 @@ const Item = ({ id }) => {
   const [detailVisible, setDetailVisible] = useState(false)
   const [ordersVisible, setOrdersVisible] = useState(false)
   const [detailData, setDetailData] = useState({})
+  const [filter, setFilter] = useState('SELLING')
 
   const fetchData = async () => {
     setLoading(true)
-    const { data } = await User.getItems(id)
+    const { data } = await User.getItems(id, { itemState: filter })
     setItems(data._embedded.items)
     setLoading(false)
   }
 
   useEffect(() => {
     if (id) fetchData()
-  }, [id, ordersVisible])
+  }, [id, ordersVisible, filter])
 
   const handleDetail = data => () => {
     setDetailData(data)
@@ -43,6 +47,8 @@ const Item = ({ id }) => {
     setDetailVisible(true)
   }
 
+  const handleFilterChange = e => setFilter(e.target.value)
+
   return (
     <div>
       <Modal title="物品详情" visible={detailVisible} onCancel={handleDetailCancel} footer={null}>
@@ -51,9 +57,18 @@ const Item = ({ id }) => {
       <Modal title="交易请求" visible={ordersVisible} onCancel={handleOrdersCancel} footer={null}>
         <OrderDetail id={detailData.id} />
       </Modal>
-      <Button onClick={handleItemAdd} type="primary">
-        添加
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button onClick={handleItemAdd} type="primary">
+          添加
+        </Button>
+        <RadioGroup onChange={handleFilterChange} defaultValue={filter}>
+          {[['在售', 'SELLING'], ['已完成', 'FINISHED'], ['已下架', 'OFF']].map(([name, value]) => (
+            <RadioButton key={value} value={value}>
+              {name}
+            </RadioButton>
+          ))}
+        </RadioGroup>
+      </div>
       <List
         loading={loading}
         itemLayout="horizontal"
@@ -61,8 +76,10 @@ const Item = ({ id }) => {
         renderItem={data => (
           <List.Item
             actions={[
-              <Button onClick={handleDetail(data)}>详情</Button>,
-              <Badge style={{ marginRight: 4 }} count={data.ordersCount}>
+              <Button onClick={handleDetail(data)} disabled={data.itemState === 'FINISHED'}>
+                详情
+              </Button>,
+              <Badge style={{ marginRight: 4 }} count={data.itemState === 'SELLING' ? data.ordersCount : 0}>
                 <Button onClick={handleOrderList(data)}>交易请求</Button>
               </Badge>,
             ]}

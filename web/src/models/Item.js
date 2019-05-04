@@ -43,7 +43,8 @@ class Item {
   static addOrder = async (id, data) =>
     await request(`/itemOrders`, 'POST', { ...data, item: `/${id}`, shippingAddress: `/${data.shippingAddress}` })
 
-  static updateItem = async (id, data) => await request(`/items/${id}`, 'PATCH', await Item.itemReducer(data))
+  static updateItem = async (id, data) =>
+    await request(`/items/${id}`, 'PATCH', data.address ? await Item.itemReducer(data) : data)
 
   static addItem = async data => await request(`/items`, 'POST', await Item.itemReducer(data))
 

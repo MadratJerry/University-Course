@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { List, Avatar, Card, Tag, Button } from 'antd'
 import GoodPrice from '@/components/client/Price'
 import User from '@/models/User'
+import ItemOrder from '@/models/ItemOrder'
 
 export const OrderState = state => {
   switch (state) {
@@ -36,29 +37,40 @@ const Order = ({ id }) => {
     if (id) fetchData()
   }, [id])
 
-  const handleCancel = id => async () => {
-    await User.cancelOrder(id)
+  const handleState = (id, state) => async () => {
+    await ItemOrder.updateOrder(id, { orderState: state })
     fetchData()
+  }
+
+  const ListAction = data => {
+    if (data.orderState === 'CANCELED' || data.orderState === 'REJECTED' || data.orderState === 'FINISHED') return []
+    else {
+      if (data.orderState === 'UNACCEPTED')
+        return [
+          <Button size="small" type="dashed" onClick={handleState(data.id, 'CANCELED')}>
+            取消请求
+          </Button>,
+        ]
+      else
+        return [
+          <Button size="small" type="primary" onClick={handleState(data.id, 'FINISHED')}>
+            确认收货
+          </Button>,
+          <Button size="small" type="dashed" onClick={handleState(data.id, 'CANCELED')}>
+            取消请求
+          </Button>,
+        ]
+    }
   }
 
   return (
     <div>
       <List
         loading={loading}
-        itemLayout="horizontal"
+        itemLayout="vertical"
         dataSource={orders}
         renderItem={data => (
-          <List.Item
-            actions={[OrderState(data.orderState)].concat(
-              data.orderState === 'CANCELED' || data.orderState === 'REJECTED' || data.orderState === 'FINISHED' ? (
-                []
-              ) : (
-                <Button size="small" type="dashed" onClick={handleCancel(data.id)}>
-                  取消请求
-                </Button>
-              ),
-            )}
-          >
+          <List.Item actions={ListAction(data)} extra={OrderState(data.orderState)}>
             <Card bordered={false}>
               <Card.Meta
                 avatar={

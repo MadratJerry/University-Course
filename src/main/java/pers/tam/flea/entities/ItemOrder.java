@@ -9,9 +9,28 @@ import org.springframework.data.rest.core.config.Projection;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pers.tam.flea.repositories.ItemRepository;
 import pers.tam.flea.repositories.UserRepository;
 
 import javax.persistence.*;
+
+@Projection(name = "detail", types = {ItemOrder.class})
+interface ItemOrderDetailProjection {
+
+    Long getId();
+
+    ItemSimpleProjection getItem();
+
+    ShippingAddress getShippingAddress();
+
+    Double getPrice();
+
+    String getBuyWay();
+
+    String getOrderState();
+
+    User getUser();
+}
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -44,29 +63,12 @@ public class ItemOrder extends Model {
     private OrderState orderState;
 }
 
-@Projection(name="detail", types = {ItemOrder.class})
-interface ItemOrderDetailProjection {
-
-    Long getId();
-
-    ItemSimpleProjection getItem();
-
-    ShippingAddress getShippingAddress();
-
-    Double getPrice();
-
-    String getBuyWay();
-
-    String getOrderState();
-
-    User getUser();
-}
-
 @Component
 @RepositoryEventHandler
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ItemOrderEventHandler {
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @HandleBeforeCreate
     public void handleItemOrderCreate(ItemOrder itemOrder) {
@@ -77,5 +79,13 @@ class ItemOrderEventHandler {
         User user = userRepository.findByUsername(userDetails.getUsername());
         itemOrder.setUser(user);
         itemOrder.setOrderState(OrderState.UNACCEPTED);
+    }
+
+    @HandleBeforeSave
+    public void handleItemOrderSave(ItemOrder itemOrder) {
+        if (itemOrder.getOrderState().equals(OrderState.FINISHED)) {
+            Item item = itemRepository.getOne(itemOrder.getItem().getId());
+            item.setItemState(ItemState.FINISHED);
+        }
     }
 }

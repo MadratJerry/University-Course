@@ -36,6 +36,13 @@ class ItemDetail extends React.Component {
     })
   }
 
+  handleState = state => async () => {
+    await Item.updateItem(this.props.data.id, { itemState: state })
+    message.success('操作成功！')
+    this.props.setVisible(false)
+    this.props.fetchData()
+  }
+
   async componentDidMount() {
     const { data } = await Category.getAll()
     this.setState({
@@ -109,6 +116,15 @@ class ItemDetail extends React.Component {
             <Button type="primary" htmlType="submit">
               {Object.keys(data).length === 0 ? '添加' : '保存'}
             </Button>
+            {Object.keys(data).length === 0 ? null : (
+              <Button
+                style={{ marginLeft: 8 }}
+                type="danger"
+                onClick={data.itemState === 'OFF' ? this.handleState('SELLING') : this.handleState('OFF')}
+              >
+                {data.itemState === 'OFF' ? '上架' : '下架'}
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </Card>

@@ -1,4 +1,4 @@
-import { request } from '@/services/fetch'
+import { request, params } from '@/services/fetch'
 import { createContext } from 'react'
 
 export default class User {
@@ -27,9 +27,16 @@ export default class User {
 
   static getOrders = async id => await request(`/users/${id}/itemOrders?projection=detail`)
 
-  static getItems = async id => await request(`/users/${id}/items?projection=detail`)
-
-  static cancelOrder = async id => await request(`/itemOrders/${id}`, 'PATCH', { orderState: 'CANCELED' })
+  static getItems = async (id, filter) =>
+    await request(
+      `/items/search/findBySellerIdAndItemState?${params(
+        {
+          id,
+          projection: 'detail',
+        },
+        filter,
+      )}`,
+    )
 }
 
 export const reducer = (state, action) => {
