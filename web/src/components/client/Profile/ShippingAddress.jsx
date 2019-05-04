@@ -100,6 +100,9 @@ const ShippingAddress = ({ id }) => {
 
   return (
     <div>
+      <Button onClick={handleAdd} type="primary">
+        添加
+      </Button>
       <List
         dataSource={addresses}
         renderItem={({ id, name, address, isDefault, phoneNumber }) => (
@@ -128,7 +131,6 @@ const ShippingAddress = ({ id }) => {
           </List.Item>
         )}
       />
-      <Button onClick={handleAdd}>添加</Button>
       <Modal title="添加收货地址" visible={visible} footer={null} onCancel={() => setVisible(false)}>
         <WrappedAddressForm setVisible={setVisible} fetchData={fetchData} />
       </Modal>

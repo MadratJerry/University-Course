@@ -52,11 +52,13 @@ class Order extends Component {
           <Form.Item label="意向价格">
             {getFieldDecorator('price', {
               initialValue: data.price,
+              rules: [{ required: true }],
             })(<InputNumber min={0} max={data.price} />)}
           </Form.Item>
           <Form.Item label="收货地址">
             {getFieldDecorator('shippingAddress', {
               initialValue: defaultAddress,
+              rules: [{ required: true }],
             })(
               <Select>
                 {this.state.addresses.map(a => (

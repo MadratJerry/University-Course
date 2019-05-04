@@ -3,7 +3,6 @@ import { Card, Form, InputNumber, Input, Button, message, Select, Cascader } fro
 import Item from '@/models/Item'
 import Category from '@/models/Category'
 import residences from '@/components/client/data.json'
-import { UserConext } from '@/models/User'
 import ImageWall from './ImageWall'
 
 const { TextArea } = Input
@@ -26,8 +25,6 @@ class ItemDetail extends React.Component {
             this.props.fetchData()
           }
         } else {
-          const [user] = this.context
-          values.seller = `/${user.id}`
           const { response } = await Item.addItem(values)
           if (response.ok) {
             message.success('添加成功！')
@@ -118,7 +115,5 @@ class ItemDetail extends React.Component {
     )
   }
 }
-
-ItemDetail.contextType = UserConext
 
 export default Form.create()(ItemDetail)

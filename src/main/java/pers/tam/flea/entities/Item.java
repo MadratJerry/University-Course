@@ -2,8 +2,17 @@ package pers.tam.flea.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.data.rest.core.config.Projection;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import pers.tam.flea.repositories.UserRepository;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -72,4 +81,23 @@ public class Item extends Model {
 
     @OneToMany(cascade = CascadeType.ALL)
     private Collection<Comment> comments;
+}
+
+
+@Component
+@RepositoryEventHandler
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+class ItemEventHandler {
+    private final UserRepository userRepository;
+
+    @HandleBeforeSave
+    @HandleBeforeCreate
+    public void handleCommentSave(Item item) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        item.setSeller(user);
+    }
 }

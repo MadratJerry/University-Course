@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Card, Avatar, Button, Icon, Tabs, Modal } from 'antd'
 import Lightbox from 'react-images'
 import { StickyContainer, Sticky } from 'react-sticky'
 import GoodPrice from '@/components/client/Price'
+import Address from '@/components/client/Address'
 import Item from '@/models/Item'
+import { UserConext } from '@/models/User'
 import Comments from './Comments'
 import Order from './Order'
 import './index.css'
-import Address from '../Address'
 
 const TabPane = Tabs.TabPane
 
@@ -21,6 +22,7 @@ const Good = ({
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState(0)
+  const [user] = useContext(UserConext)
 
   const fetchData = async () => {
     setLoading(true)
@@ -87,9 +89,11 @@ const Good = ({
                 description={`${new Date(data.createdDate).toLocaleDateString()}发布`}
               />
             </Card>
-            <Button type="primary" size="large" className="buy-btn" onClick={handleClickBuy}>
-              立即交易
-            </Button>
+            {!user.verified || data.seller.id === user.id ? null : (
+              <Button type="primary" size="large" className="buy-btn" onClick={handleClickBuy}>
+                立即交易
+              </Button>
+            )}
           </div>
         </div>
       </Card>

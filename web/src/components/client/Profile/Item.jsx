@@ -27,6 +27,10 @@ const Item = ({ id }) => {
     setVisible(true)
   }
 
+  const handleOrderList = data => () => {
+    setDetailData(data)
+  }
+
   const handleDetailCancel = () => setVisible(false)
 
   const handleItemAdd = () => {
@@ -39,13 +43,20 @@ const Item = ({ id }) => {
       <Modal title="物品详情" visible={visible} onCancel={handleDetailCancel} footer={null}>
         <ItemDetail data={detailData} setVisible={setVisible} fetchData={fetchData} />
       </Modal>
-      <Button onClick={handleItemAdd}>添加</Button>
+      <Button onClick={handleItemAdd} type="primary">
+        添加
+      </Button>
       <List
         loading={loading}
         itemLayout="horizontal"
         dataSource={items}
         renderItem={data => (
-          <List.Item actions={[<Button onClick={handleDetail(data)}>详情</Button>]}>
+          <List.Item
+            actions={[
+              <Button onClick={handleDetail(data)}>详情</Button>,
+              <Button onClick={handleOrderList(data)}>交易请求</Button>,
+            ]}
+          >
             <Card bordered={false}>
               <Card.Meta
                 avatar={
