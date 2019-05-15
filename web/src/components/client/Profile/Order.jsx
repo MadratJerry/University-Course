@@ -73,14 +73,12 @@ const Order = ({ id }) => {
         } else {
           message.error('余额不足！')
         }
-        console.log('OK')
       },
       onCancel() {},
     })
   }
 
   const handleRecivied = data => async () => {
-    console.log(data)
     await User.updateInfo(data.item.seller.id, { money: data.item.seller.money + data.price })
     await handleState(data.id, 'FINISHED')()
     message.success('收货成功！')

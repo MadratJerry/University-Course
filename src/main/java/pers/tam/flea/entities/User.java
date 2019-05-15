@@ -12,6 +12,7 @@ import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pers.tam.flea.repositories.UserRepository;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -108,9 +109,13 @@ public class User extends Model implements UserDetails {
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class UserEventHandler {
 
+    private final UserRepository userRepository;
+
     @HandleBeforeSave
     @HandleBeforeCreate
     public void handleUserSave(User user) {
-        user.setPassword("{noop}" + user.getPassword());
+        User previousUser = userRepository.getOne(user.getId());
+        if (!user.getPassword().equals(previousUser.getPassword()))
+            user.setPassword("{noop}" + user.getPassword());
     }
 }

@@ -6,6 +6,7 @@ import GoodList from '@/components/client/GoodList'
 import Home from '@/components/client/Home'
 import Good from '@/components/client/GoodDetail'
 import Profile from '@/components/client/Profile'
+import TopUp from '@/components/client/TopUp'
 
 const { Content, Footer } = Layout
 
@@ -26,6 +27,7 @@ const Client = () => {
           <Route exact path="/profile/:tab" component={Profile} />
           <Route exact path="/goods" component={GoodList} />
           <Route exact path="/goods/:id" component={Good} />
+          <Route exact path="/topUp/:id" component={TopUp} />
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>

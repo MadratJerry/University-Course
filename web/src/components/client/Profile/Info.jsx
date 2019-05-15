@@ -1,10 +1,57 @@
-import React from 'react'
-import { Form, Input, Button, message, InputNumber } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Form, Input, Button, message, Modal, InputNumber } from 'antd'
+import GoodPrice from '@/components/client/Price'
 import User, { UserConext } from '@/models/User'
+import { request } from '@/services/fetch'
+var QRCode = require('qrcode.react')
 
+const TopUp = ({ id, close }) => {
+  const [value, setValue] = useState(0)
+  const [confirm, setConfirm] = useState(false)
+  const [topId, setTopId] = useState(0)
+  const [stop, setStop] = useState()
+
+  const handleTopUp = async () => {
+    const { data } = await request('/topUps', 'POST', {
+      user: `/${id}`,
+      money: value,
+    })
+    setTopId(data.id)
+    setConfirm(true)
+    const stop = setInterval(async () => {
+      const { data: top } = await request(`/topUps/${data.id}?projection=detail`)
+      if (!top) {
+        message.success('充值成功！')
+        window.location.reload()
+      }
+    }, 1000)
+    setStop(stop)
+  }
+
+  useEffect(() => {
+    return () => clearInterval(stop)
+  }, [stop])
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+      {confirm ? (
+        <QRCode value={`${window.location.origin}/topUps/${topId}`} size={256} />
+      ) : (
+        <>
+          金额
+          <InputNumber value={value} onChange={e => setValue(e)} />
+          <Button type="primary" onClick={handleTopUp}>
+            确认
+          </Button>
+        </>
+      )}
+    </div>
+  )
+}
 class Info extends React.Component {
   state = {
     confirmDirty: false,
+    visible: false,
   }
 
   compareToFirstPassword = (rule, value, callback) => {
@@ -59,6 +106,10 @@ class Info extends React.Component {
     })
   }
 
+  handleTopUp = () => {
+    this.setState({ visible: true })
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form
 
@@ -83,8 +134,14 @@ class Info extends React.Component {
                   })(<Input />)}
                 </Form.Item>
                 <Form.Item label="金币">
-                  <InputNumber disabled value={user.money} />
+                  <GoodPrice style={{ color: '#ff3434' }} value={user.money} />
+                  <Button type="primary" onClick={this.handleTopUp}>
+                    充值
+                  </Button>
                 </Form.Item>
+                <Modal visible={this.state.visible} footer={null} onCancel={() => this.setState({ visible: false })}>
+                  {this.state.visible ? <TopUp id={user.id} close={() => this.setState({ visible: false })} /> : null}
+                </Modal>
               </>
             )}
           </UserConext.Consumer>
