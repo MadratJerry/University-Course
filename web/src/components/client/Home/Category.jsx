@@ -33,7 +33,7 @@ const Category = props => {
       {...props}
       footer={
         <div className="view-more">
-          <Link to="/list">查看更多</Link>
+          <Link to="/goods?category=">查看更多</Link>
         </div>
       }
       bordered

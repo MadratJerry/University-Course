@@ -10,7 +10,7 @@ const Option = Select.Option
 const ItemTable = ({ category }) => {
   const [loading, setLoading] = useState(true)
   const [items, setItems] = useState([])
-  const [page, setPage] = useState({ size: 1, totalElements: 0, totalPages: 0, number: 0 })
+  const [page, setPage] = useState({ size: 2, totalElements: 0, totalPages: 0, number: 0 })
   const [open, setOpen] = useState(false)
   const [filter, setFilter] = useState({})
 

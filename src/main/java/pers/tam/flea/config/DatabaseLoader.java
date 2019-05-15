@@ -74,8 +74,8 @@ public class DatabaseLoader implements CommandLineRunner {
         item1.setPrice(3500);
         item1.setOriginalPrice(5499);
         item1.setLocation(new Address("北京市", "北京市", "丰台区", ""));
-        item1.setImages(List.of(new Image("//img10.360buyimg.com/n1/s290x290_jfs/t8107/37/1359438185/72159/a6129e26/59b857f8N977f476c.jpg"),
-                new Image("//img10.360buyimg.com/n1/s290x290_jfs/t3916/268/2480035790/288161/e9b84529/58aa5e70Nb419eb24.jpg")
+        item1.setImages(List.of(new Image("/api/static/images/a9b896bf681cb76ca5178046a7088b.jpg"),
+                new Image("/api/static/images/e39e510aca5b2d148b302e7df0682f16.jpg")
         ));
         item1.setCategory(categories.get("手机"));
         item1.setComments(Set.of(comment1, comment2, comment3));
@@ -85,7 +85,7 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setPrice(1300);
         item2.setOriginalPrice(3899);
         item2.setLocation(new Address("北京市", "北京市", "大兴区", ""));
-        item2.setImages(List.of(new Image("//img10.360buyimg.com/n1/s520x520_jfs/t8347/318/2536225704/177966/6991907e/59cf3164Nd076a8cf.jpg")));
+        item2.setImages(List.of(new Image("/api/static/images/d6f1da000052ded9b92ef1b52ebcfe74.jpg")));
         item2.setCategory(categories.get("手机"));
 
         user2.setCollection(Set.of(item1));
