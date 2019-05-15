@@ -15,6 +15,10 @@ export default class User {
 
   static getInfo = async () => await request('/user')
 
+  static getUserInfo = async id => await request(`/users/${id}`)
+
+  static updateInfo = async (id, value) => await request(`/users/${id}`, 'PATCH', value)
+
   static getUserByUsername = async username => await request(`/users/search/findByUsername?username=${username}`)
 
   static addShippingAddress = async data => await request('/users/addShippingAddress', 'POST', data)

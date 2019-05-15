@@ -22,9 +22,9 @@ export default () => {
     const fetchUserInfo = async () => {
       if (user.verified) {
         const {
-          data: { username },
+          data: { id },
         } = await User.getInfo()
-        const { data } = await User.getUserByUsername(username)
+        const { data } = await User.getUserInfo(id)
         userDispatch({ type: 'update', payload: data })
       }
     }

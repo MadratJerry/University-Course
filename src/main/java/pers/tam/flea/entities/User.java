@@ -3,9 +3,17 @@ package pers.tam.flea.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
+import org.springframework.data.rest.core.annotation.HandleBeforeSave;
+import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import pers.tam.flea.repositories.UserRepository;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -91,5 +99,18 @@ public class User extends Model implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+}
+
+
+@Component
+@RepositoryEventHandler
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+class UserEventHandler {
+
+    @HandleBeforeSave
+    @HandleBeforeCreate
+    public void handleUserSave(User user) {
+       user.setPassword("{noop}" + user.getPassword());
     }
 }

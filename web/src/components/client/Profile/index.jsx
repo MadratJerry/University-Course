@@ -4,6 +4,7 @@ import { UserConext } from '@/models/User'
 import ShippingAddress from './ShippingAddress'
 import Order from './Order'
 import Item from './Item'
+import Info from './Info'
 
 const TabPane = Tabs.TabPane
 
@@ -31,7 +32,7 @@ const Profile = ({
         <ShippingAddress id={user.id} />
       </TabPane>
       <TabPane tab="个人资料" key="info">
-        个人资料
+        <Info id={user.id} />
       </TabPane>
     </Tabs>
   )
