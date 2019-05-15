@@ -79,10 +79,10 @@ class Order extends Component {
 
           <Form.Item label="交易方式">
             {getFieldDecorator('buyWay', {
-              initialValue: 'OFFLINE',
+              initialValue: 'ONLINE',
             })(
               <Select>
-                <Option value="OFFLINE">线下交易</Option>
+                <Option value="ONLINE">在线交易</Option>
               </Select>,
             )}
           </Form.Item>

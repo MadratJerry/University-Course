@@ -32,14 +32,14 @@ interface ItemSimpleProjection {
     Address getLocation();
 
     List<Image> getImages();
+
+    User getSeller();
 }
 
 @Projection(name = "detail", types = {Item.class})
 interface ItemDetailProjection extends ItemSimpleProjection {
 
     String getDescription();
-
-    User getSeller();
 
     Date getCreatedDate();
 
@@ -48,7 +48,7 @@ interface ItemDetailProjection extends ItemSimpleProjection {
 
     Category getCategory();
 
-    @Value("#{@itemOrderRepository.countByItemIdAndOrderStateNot(target.id, 'REJECTED')}")
+    @Value("#{@itemOrderRepository.countByItemIdAndOrderStateNotIn(target.id, 'REJECTED,CANCELED'.split(','))}")
     Long getOrdersCount();
 
     ItemState getItemState();

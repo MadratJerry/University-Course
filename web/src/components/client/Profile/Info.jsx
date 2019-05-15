@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Button, message } from 'antd'
+import { Form, Input, Button, message, InputNumber } from 'antd'
 import User, { UserConext } from '@/models/User'
 
 class Info extends React.Component {
@@ -67,20 +67,25 @@ class Info extends React.Component {
         <Form onSubmit={this.handleSubmit} style={{ width: 500 }}>
           <UserConext.Consumer>
             {([user]) => (
-              <Form.Item label="用户名" hasFeedback>
-                {getFieldDecorator('username', {
-                  initialValue: user.username,
-                  rules: [
-                    {
-                      required: true,
-                      message: '请输入名字！',
-                    },
-                    {
-                      validator: this.checkUsername,
-                    },
-                  ],
-                })(<Input />)}
-              </Form.Item>
+              <>
+                <Form.Item label="用户名" hasFeedback>
+                  {getFieldDecorator('username', {
+                    initialValue: user.username,
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入名字！',
+                      },
+                      {
+                        validator: this.checkUsername,
+                      },
+                    ],
+                  })(<Input />)}
+                </Form.Item>
+                <Form.Item label="金币">
+                  <InputNumber disabled value={user.money} />
+                </Form.Item>
+              </>
             )}
           </UserConext.Consumer>
           <Form.Item label="密码" hasFeedback>
