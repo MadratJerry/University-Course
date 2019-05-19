@@ -13,6 +13,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     Page<User> findAll(Pageable pageable);
-
-    Long countByCollectionId(Long id);
 }

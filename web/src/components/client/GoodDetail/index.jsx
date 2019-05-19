@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Card, Avatar, Button, Icon, Tabs, Modal } from 'antd'
+import { Card, Avatar, Button, Tabs, Modal } from 'antd'
 import Lightbox from 'react-images'
 import { StickyContainer, Sticky } from 'react-sticky'
 import GoodPrice from '@/components/client/Price'
@@ -44,17 +44,7 @@ const Good = ({
       <Modal title="发起交易请求" visible={visible} onCancel={handleBuyCancel} footer={null}>
         {visible ? <Order data={data} setVisible={setVisible} /> : null}
       </Modal>
-      <Card
-        title={data.name}
-        bordered={false}
-        loading={loading}
-        extra={
-          <>
-            <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />
-            {data.collectByCount}人已收藏
-          </>
-        }
-      >
+      <Card title={data.name} bordered={false} loading={loading}>
         <div className="good-container">
           <div className="good-images">
             <Lightbox

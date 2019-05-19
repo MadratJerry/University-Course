@@ -88,7 +88,6 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setImages(List.of(new Image("/api/static/images/d6f1da000052ded9b92ef1b52ebcfe74.jpg")));
         item2.setCategory(categories.get("手机"));
 
-        user2.setCollection(Set.of(item1));
         user2.setItems(Set.of(item1, item2));
         user2.getItems().forEach(i -> i.setSeller(user2));
         user2.setComments(Set.of(comment2));

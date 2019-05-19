@@ -40,9 +40,6 @@ public class User extends Model implements UserDetails {
     @ManyToMany(cascade = CascadeType.ALL)
     private Collection<Role> roles;
 
-    @ManyToMany
-    private Collection<Item> collection;
-
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Collection<Item> items;
 

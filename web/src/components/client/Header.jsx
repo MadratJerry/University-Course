@@ -25,10 +25,12 @@ export default withRouter(({ history }) => {
         const {
           data: { id },
         } = await User.getInfo()
-        const { data } = await User.getUserInfo(id)
-        userDispatch({ type: 'update', payload: data })
-        if (data.roles[0].authority === 'ROLE_ADMIN') {
-          history.push('/admin')
+        const { data, response } = await User.getUserInfo(id)
+
+        if (response.ok) {
+          userDispatch({ type: 'update', payload: data })
+          if (data.roles[0].authority === 'ROLE_ADMIN') history.push('/admin')
+          else history.push('/')
         }
       }
     }

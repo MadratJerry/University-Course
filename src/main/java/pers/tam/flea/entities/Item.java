@@ -43,9 +43,6 @@ interface ItemDetailProjection extends ItemSimpleProjection {
 
     Date getCreatedDate();
 
-    @Value("#{@userRepository.countByCollectionId(target.id)}")
-    Long getCollectByCount();
-
     Category getCategory();
 
     @Value("#{@itemOrderRepository.countByItemIdAndOrderStateNotIn(target.id, 'REJECTED,CANCELED'.split(','))}")
@@ -73,9 +70,6 @@ public class Item extends Model {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private User seller;
-
-    @ManyToMany(mappedBy = "collection")
-    private Collection<User> collectedBy;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Image> images;
