@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { withRouter } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Layout, Button, Modal, Avatar, message } from 'antd'
 import Login from '@/components/Login'
@@ -6,7 +7,7 @@ import User, { UserConext } from '@/models/User'
 
 const { Header } = Layout
 
-export default () => {
+export default withRouter(({ history }) => {
   const [visible, setVisible] = useState(false)
   const [user, userDispatch] = useContext(UserConext)
 
@@ -26,6 +27,9 @@ export default () => {
         } = await User.getInfo()
         const { data } = await User.getUserInfo(id)
         userDispatch({ type: 'update', payload: data })
+        if (data.roles[0].authority === 'ROLE_ADMIN') {
+          history.push('/admin')
+        }
       }
     }
     fetchUserInfo()
@@ -63,4 +67,4 @@ export default () => {
       </Modal>
     </Header>
   )
-}
+})

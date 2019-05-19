@@ -1,6 +1,7 @@
 import React from 'react'
 import { Layout } from 'antd'
 import { Route } from 'react-router-dom'
+import Admin from '@/components/admin'
 import Header from '@/components/client/Header'
 import GoodList from '@/components/client/GoodList'
 import Home from '@/components/client/Home'
@@ -24,13 +25,14 @@ const Client = () => {
           }}
         >
           <Route exact path="/" component={Home} />
+          <Route exact path="/admin" component={Admin} />
           <Route exact path="/profile/:tab" component={Profile} />
           <Route exact path="/goods" component={GoodList} />
           <Route exact path="/goods/:id" component={Good} />
           <Route exact path="/topUp/:id" component={TopUp} />
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>Flea ©2018 Created by Aries Tam</Footer>
+      <Footer style={{ textAlign: 'center' }}>Flea ©2019 Created by Aries Tam</Footer>
     </Layout>
   )
 }

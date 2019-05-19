@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.security.core.GrantedAuthority;
@@ -112,10 +111,7 @@ class UserEventHandler {
     private final UserRepository userRepository;
 
     @HandleBeforeSave
-    @HandleBeforeCreate
     public void handleUserSave(User user) {
-        User previousUser = userRepository.getOne(user.getId());
-        if (!user.getPassword().equals(previousUser.getPassword()))
-            user.setPassword("{noop}" + user.getPassword());
+        user.setPassword("{noop}" + user.getPassword());
     }
 }

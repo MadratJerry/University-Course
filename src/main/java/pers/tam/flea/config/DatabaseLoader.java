@@ -108,5 +108,6 @@ public class DatabaseLoader implements CommandLineRunner {
 
         userRepository.saveAndFlush(user2);
         userRepository.saveAndFlush(user1);
+        userRepository.saveAndFlush(admin);
     }
 }
