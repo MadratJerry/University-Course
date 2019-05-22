@@ -1,6 +1,6 @@
 import React from 'react'
 import { Layout } from 'antd'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Admin from '@/components/admin'
 import Header from '@/components/client/Header'
 import GoodList from '@/components/client/GoodList'
@@ -24,12 +24,15 @@ const Client = () => {
             minHeight: 280,
           }}
         >
-          <Route exact path="/" component={Home} />
-          <Route exact path="/admin" component={Admin} />
-          <Route exact path="/profile/:tab" component={Profile} />
-          <Route exact path="/goods" component={GoodList} />
-          <Route exact path="/goods/:id" component={Good} />
-          <Route exact path="/topUp/:id" component={TopUp} />
+          <Switch>
+            <Route path="/admin/:tab" component={Admin} />
+            <Route exact path="/admin" component={Admin} />
+            <Route exact path="/" component={Home} />
+            <Route exact path="/profile/:tab" component={Profile} />
+            <Route exact path="/goods" component={GoodList} />
+            <Route exact path="/goods/:id" component={Good} />
+            <Route exact path="/topUp/:id" component={TopUp} />
+          </Switch>
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Flea ©2019 Created by Aries Tam</Footer>

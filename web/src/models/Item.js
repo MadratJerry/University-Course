@@ -4,7 +4,8 @@ import Address from './Address'
 class Item {
   static getAllByCategory = async p =>
     await request(
-      `/items/search/findByCategoryNameContainsAndPriceBetweenAndCreatedDateAfter?${params(p, {
+      `/items/search/findByNameContainsAndCategoryNameContainsAndPriceBetweenAndCreatedDateAfter?${params(p, {
+        name: '',
         category: '',
         page: 0,
         size: 20,

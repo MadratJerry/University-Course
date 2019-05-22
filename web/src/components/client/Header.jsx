@@ -29,8 +29,12 @@ export default withRouter(({ history }) => {
 
         if (response.ok) {
           userDispatch({ type: 'update', payload: data })
-          if (data.roles[0].authority === 'ROLE_ADMIN') history.push('/admin')
-          else history.push('/')
+          if (data.roles[0].authority === 'ROLE_ADMIN') {
+            if (!document.location.pathname.includes('/admin')) history.push('/admin')
+          }
+        } else {
+          userDispatch({ type: 'unverified' })
+          history.push('/')
         }
       }
     }

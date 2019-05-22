@@ -79,11 +79,17 @@ const Good = ({
                 description={`${new Date(data.createdDate).toLocaleDateString()}发布`}
               />
             </Card>
-            {!user.verified || data.seller.id === user.id ? null : (
-              <Button type="primary" size="large" className="buy-btn" onClick={handleClickBuy}>
-                立即交易
+            {
+              <Button
+                type="primary"
+                size="large"
+                className="buy-btn"
+                onClick={handleClickBuy}
+                disabled={!user.verified || data.seller.id !== user.id || data.itemState === 'OFF'}
+              >
+                {data.itemState === 'OFF' ? '已下架' : '立即交易'}
               </Button>
-            )}
+            }
           </div>
         </div>
       </Card>

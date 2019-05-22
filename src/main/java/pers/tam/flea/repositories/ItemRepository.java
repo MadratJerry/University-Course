@@ -12,7 +12,8 @@ import java.util.Date;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Page<Item> findByCategoryNameContainsAndPriceBetweenAndCreatedDateAfter(
+    Page<Item> findByNameContainsAndCategoryNameContainsAndPriceBetweenAndCreatedDateAfter(
+            String name,
             String category,
             Double priceLow,
             Double priceHigh,

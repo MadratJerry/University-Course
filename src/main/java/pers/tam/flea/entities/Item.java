@@ -34,6 +34,8 @@ interface ItemSimpleProjection {
     List<Image> getImages();
 
     User getSeller();
+
+    ItemState getItemState();
 }
 
 @Projection(name = "detail", types = {Item.class})
@@ -47,8 +49,6 @@ interface ItemDetailProjection extends ItemSimpleProjection {
 
     @Value("#{@itemOrderRepository.countByItemIdAndOrderStateNotIn(target.id, 'REJECTED,CANCELED'.split(','))}")
     Long getOrdersCount();
-
-    ItemState getItemState();
 }
 
 @EqualsAndHashCode(callSuper = true)

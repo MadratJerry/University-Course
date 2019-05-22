@@ -1,10 +1,11 @@
 import React from 'react'
-import { Card, Form, InputNumber, Input, Button, message, Select, Cascader } from 'antd'
+import { Card, Form, InputNumber, Input, Button, message, Select, Cascader, Modal } from 'antd'
 import Item from '@/models/Item'
 import Category from '@/models/Category'
 import residences from '@/components/client/data.json'
 import ImageWall from './ImageWall'
 
+const { confirm } = Modal
 const { TextArea } = Input
 const { Option } = Select
 
@@ -116,15 +117,21 @@ class ItemDetail extends React.Component {
             <Button type="primary" htmlType="submit">
               {Object.keys(data).length === 0 ? '添加' : '保存'}
             </Button>
-            {Object.keys(data).length === 0 ? null : (
+            {Object.keys(data).length === 0 ? null : data.itemState !== 'OFF' ? (
               <Button
                 style={{ marginLeft: 8 }}
                 type="danger"
-                onClick={data.itemState === 'OFF' ? this.handleState('SELLING') : this.handleState('OFF')}
+                onClick={() => {
+                  confirm({
+                    title: '确认下架当前商品？',
+                    content: '下架后商品无法再次上架，如要上架请联系管理员！',
+                    onOk: () => this.handleState('OFF')(),
+                  })
+                }}
               >
-                {data.itemState === 'OFF' ? '上架' : '下架'}
+                下架
               </Button>
-            )}
+            ) : null}
           </Form.Item>
         </Form>
       </Card>
