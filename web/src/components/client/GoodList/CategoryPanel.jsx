@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
+import { Link } from 'react-router-dom'
 import Category from '@/models/Category'
 import GoodsLink from '@/components/client/GoodsLink'
 import './CategoryPanel.css'
@@ -22,6 +23,7 @@ const CategoryPanel = () => {
     <div>
       <div className="category-panel" style={open ? null : { height: 29 * 3 }}>
         <div className="container">
+          <Link to={`/goods?category=`}>全部</Link>
           {categories.map(({ id, name }) => (
             <GoodsLink key={id} keyName={name} />
           ))}

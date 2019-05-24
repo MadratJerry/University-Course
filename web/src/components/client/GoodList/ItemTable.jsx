@@ -6,6 +6,7 @@ import './ItemTable.css'
 
 const InputGroup = Input.Group
 const Option = Select.Option
+const Search = Input.Search
 
 const ItemTable = ({ category }) => {
   const [loading, setLoading] = useState(true)
@@ -34,7 +35,7 @@ const ItemTable = ({ category }) => {
 
   useEffect(() => {
     fetchItems(page.number)
-  }, [category, page.number, filter.sort])
+  }, [category, page.number, filter.sort, filter.name])
 
   const handlePageChange = number => setPage({ ...page, number: number - 1 })
 
@@ -105,6 +106,12 @@ const ItemTable = ({ category }) => {
             <Option value="price,desc">价格从高到低</Option>
             <Option value="createdDate,desc">最新发布</Option>
           </Select>
+          <Search
+            placeholder="请输入想要搜索的内容"
+            onSearch={value => setFilter({ ...filter, name: value })}
+            enterButton
+            style={{ margin: '0 16px' }}
+          />
           <Button type="primary" icon="filter" onClick={handleFilterClick}>
             筛选
           </Button>
