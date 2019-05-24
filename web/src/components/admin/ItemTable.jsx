@@ -116,7 +116,7 @@ const ItemTable = () => {
 
   const fetchData = async number => {
     setLoading(true)
-    const { data } = await Item.getAllByCategory({ page: number, size: 2 })
+    const { data } = await Item.getAllByCategory({ page: number, size: 2, itemStates: 'SELLING,OFF,FINISHED' })
     setData(data._embedded.items)
     setPage({ total: data.page.totalElements, current: data.page.number + 1, pageSize: data.page.size })
     setLoading(false)

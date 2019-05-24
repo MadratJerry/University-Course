@@ -75,6 +75,7 @@ const Item = ({ id }) => {
         dataSource={items}
         renderItem={data => (
           <List.Item
+            style={{ display: 'flex', justifyContent: 'space-between' }}
             actions={[
               <Button onClick={handleDetail(data)} disabled={data.itemState === 'FINISHED'}>
                 详情
