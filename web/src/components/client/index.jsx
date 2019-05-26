@@ -31,7 +31,7 @@ const Client = () => {
             <Route exact path="/profile/:tab" component={Profile} />
             <Route exact path="/goods" component={GoodList} />
             <Route exact path="/goods/:id" component={Good} />
-            <Route exact path="/topUp/:id" component={TopUp} />
+            <Route exact path="/topUps/:id" component={TopUp} />
           </Switch>
         </div>
       </Content>

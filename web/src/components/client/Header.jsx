@@ -9,7 +9,7 @@ import Register from '../Register'
 const { Header } = Layout
 // 传入history网页访问历史记录
 // 利用state改变登录/注册框状态
-export default withRouter(({ history }) => {
+export default withRouter(({ history, location }) => {
   const [loginVisible, setLoginVisible] = useState(false)
   const [registerVisible, setRegisterVisible] = useState(false)
   const [user, userDispatch] = useContext(UserContext)
@@ -42,7 +42,7 @@ export default withRouter(({ history }) => {
         }
       }
     }
-    fetchUserInfo()
+    if (!location.pathname.includes('topUps')) fetchUserInfo()
   }, [user.verified])
 
   return (

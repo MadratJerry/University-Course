@@ -85,7 +85,7 @@ const Good = ({
                 size="large"
                 className="buy-btn"
                 onClick={handleClickBuy}
-                disabled={!user.verified || data.seller.id !== user.id || data.itemState === 'OFF'}
+                disabled={!user.verified || data.seller.id === user.id || data.itemState === 'OFF'}
               >
                 {data.itemState === 'OFF' ? '已下架' : '立即交易'}
               </Button>

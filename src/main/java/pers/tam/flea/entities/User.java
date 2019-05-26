@@ -6,19 +6,14 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import pers.tam.flea.repositories.RoleRepository;
-import pers.tam.flea.repositories.UserRepository;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -110,6 +105,7 @@ class UserEventHandler {
 
     @HandleBeforeSave
     public void handleUserSave(User user) {
-        user.setPassword("{noop}" + user.getPassword());
+        if (!user.getPassword().substring(0, 6).equals("{noop}"))
+            user.setPassword("{noop}" + user.getPassword());
     }
 }

@@ -39,7 +39,7 @@ const TopUp = ({ id, close }) => {
       ) : (
         <>
           金额
-          <InputNumber value={value} onChange={e => setValue(e)} />
+          <InputNumber value={value} onChange={e => setValue(e)} min={0} />
           <Button type="primary" onClick={handleTopUp}>
             确认
           </Button>
