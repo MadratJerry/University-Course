@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom'
 import { Menu } from 'antd'
 import UserTable from './UserTable'
 import ItemTable from './ItemTable'
+import OrderTable from './OrderTable'
 
 const Admin = ({
   history,
@@ -22,6 +23,7 @@ const Admin = ({
       </Menu>
       <Route exact path="/admin/users" component={UserTable} />
       <Route exact path="/admin/items" component={ItemTable} />
+      <Route exact path="/admin/orders" component={OrderTable} />
     </>
   )
 }

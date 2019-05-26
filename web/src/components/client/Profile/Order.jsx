@@ -133,6 +133,7 @@ const Order = ({ id }) => {
                 description={
                   <>
                     <GoodPrice style={{ color: 'black' }} value={data.price} />
+                    <div>订单号：{data.id}</div>
                   </>
                 }
               />
