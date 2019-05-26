@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, message, Modal, InputNumber } from 'antd'
 import GoodPrice from '@/components/client/Price'
-import User, { UserConext } from '@/models/User'
+import User, { UserContext } from '@/models/User'
 import { request } from '@/services/fetch'
 var QRCode = require('qrcode.react')
 
@@ -116,7 +116,7 @@ class Info extends React.Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Form onSubmit={this.handleSubmit} style={{ width: 500 }}>
-          <UserConext.Consumer>
+          <UserContext.Consumer>
             {([user]) => (
               <>
                 <Form.Item label="用户名" hasFeedback>
@@ -144,7 +144,7 @@ class Info extends React.Component {
                 </Modal>
               </>
             )}
-          </UserConext.Consumer>
+          </UserContext.Consumer>
           <Form.Item label="密码" hasFeedback>
             {getFieldDecorator('password', {
               rules: [
@@ -182,6 +182,6 @@ class Info extends React.Component {
   }
 }
 
-Info.contextType = UserConext
+Info.contextType = UserContext
 
 export default Form.create()(Info)

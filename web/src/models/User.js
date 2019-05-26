@@ -1,5 +1,5 @@
-import { request, params } from '@/services/fetch'
 import { createContext } from 'react'
+import { request, params } from '@/services/fetch'
 
 export default class User {
   verified
@@ -12,6 +12,8 @@ export default class User {
   static login = async data => await request('/login', 'POST', data)
 
   static logout = async () => await request('/logout', 'GET')
+
+  static addUser = async value => await request('/users/addUser', 'POST', value)
 
   static getInfo = async () => await request('/user')
 
@@ -51,10 +53,11 @@ export default class User {
       )}`,
     )
 }
-
+// state之前的值，action.type动作分类，action.payload要覆盖的user对象的值
 export const reducer = (state, action) => {
   switch (action.type) {
     case 'verified':
+      // local storage 本地持久化存储登录状态
       localStorage.setItem('verified', true)
       return { ...state, verified: true }
     case 'unverified':
@@ -67,4 +70,4 @@ export const reducer = (state, action) => {
   }
 }
 
-export const UserConext = createContext([null, () => {}])
+export const UserContext = createContext([null, () => {}])

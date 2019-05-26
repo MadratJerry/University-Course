@@ -2,10 +2,10 @@ import { useContext } from 'react'
 import { withRouter } from 'react-router'
 import fetchIntercept from 'fetch-intercept'
 import { message } from 'antd'
-import { UserConext } from '@/models/User'
+import { UserContext } from '@/models/User'
 
 const Interceptor = ({ history }) => {
-  const [, userDispatch] = useContext(UserConext)
+  const [, userDispatch] = useContext(UserContext)
   fetchIntercept.register({
     request: function(url, config = {}) {
       // Modify the url or config here
@@ -20,6 +20,7 @@ const Interceptor = ({ history }) => {
 
     response: function(response) {
       // Modify the response object
+      // 401未授权，返回主页，把用户设为未登录状态
       switch (response.status) {
         case 401:
           const { pathname } = history.location

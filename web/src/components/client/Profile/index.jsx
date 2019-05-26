@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Tabs } from 'antd'
-import { UserConext } from '@/models/User'
+import { UserContext } from '@/models/User'
 import ShippingAddress from './ShippingAddress'
 import Order from './Order'
 import Item from './Item'
@@ -14,7 +14,7 @@ const Profile = ({
   },
   history,
 }) => {
-  const [user] = useContext(UserConext)
+  const [user] = useContext(UserContext)
 
   const handleTabChange = tab => history.push(`/profile/${tab}`)
 

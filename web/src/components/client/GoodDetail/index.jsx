@@ -5,7 +5,7 @@ import { StickyContainer, Sticky } from 'react-sticky'
 import GoodPrice from '@/components/client/Price'
 import Address from '@/components/client/Address'
 import Item from '@/models/Item'
-import { UserConext } from '@/models/User'
+import { UserContext } from '@/models/User'
 import Comments from './Comments'
 import Order from './Order'
 import './index.css'
@@ -22,7 +22,7 @@ const Good = ({
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState(0)
-  const [user] = useContext(UserConext)
+  const [user] = useContext(UserContext)
 
   const fetchData = async () => {
     setLoading(true)

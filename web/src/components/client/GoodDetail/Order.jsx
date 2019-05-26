@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Avatar, Select, Form, InputNumber, Button, message } from 'antd'
 import GoodPrice from '@/components/client/Price'
-import User, { UserConext } from '@/models/User'
+import User, { UserContext } from '@/models/User'
 import Address from '@/components/client/Address'
 import Item from '@/models/Item'
 
@@ -97,6 +97,6 @@ class Order extends Component {
   }
 }
 
-Order.contextType = UserConext
+Order.contextType = UserContext
 
 export default Form.create()(Order)

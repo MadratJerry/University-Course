@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Avatar, Button, Icon, Comment, Tooltip, Affix, Input, Spin, message } from 'antd'
 import moment from 'moment'
-import { UserConext } from '@/models/User'
+import { UserContext } from '@/models/User'
 import Item from '@/models/Item'
 
 const UserComment = ({ value: { content, createdDate, user, reply, parent }, value, onReply, children }) => (
@@ -35,7 +35,7 @@ const Comments = ({ id }) => {
   const [comments, setComments] = useState([])
   const [replyTo, setReplyTo] = useState()
   const [value, setValue] = useState()
-  const [user] = useContext(UserConext)
+  const [user] = useContext(UserContext)
 
   const fetchData = async () => {
     setLoading(true)

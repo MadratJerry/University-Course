@@ -7,17 +7,16 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pers.tam.flea.entities.Address;
+import pers.tam.flea.entities.Role;
 import pers.tam.flea.entities.ShippingAddress;
 import pers.tam.flea.entities.User;
+import pers.tam.flea.repositories.RoleRepository;
 import pers.tam.flea.repositories.ShippingAddressRepository;
 import pers.tam.flea.repositories.UserRepository;
 import pers.tam.flea.services.UserService;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -29,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final ShippingAddressRepository shippingAddressRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @GetMapping("/user")
     public @ResponseBody
@@ -40,6 +40,15 @@ public class UserController {
         resource.add(linkTo(methodOn(UserController.class).getUserInfo(session)).withSelfRel());
 
         return ResponseEntity.ok(resource);
+    }
+
+    @PostMapping("/users/addUser")
+    public @ResponseBody
+    ResponseEntity<?> addUser(@RequestBody Map<String, String> body) {
+        Role role = roleRepository.getOne(1L);
+        User user = new User(body.get("username"), "{noop}" + body.get("password"), Set.of(role));
+        userRepository.saveAndFlush(user);
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping("/users/addShippingAddress")

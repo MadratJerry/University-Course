@@ -5,18 +5,21 @@ import { LocaleProvider } from 'antd'
 import zh_CN from 'antd/lib/locale-provider/zh_CN'
 import Interceptor from '@/components/Interceptor'
 import Client from '@/components/client'
-import User, { UserConext, reducer } from '@/models/User'
+import User, { UserContext, reducer } from '@/models/User'
 
 const App = () => {
+  // 【值，分配动作】 = （分配函数，初始值）
   const [user, dispatch] = useReducer(reducer, new User())
 
   return (
+    // 选择中文语言包
+    // context上下文（为了全局使用这个对象）
     <LocaleProvider locale={zh_CN}>
       <Router>
-        <UserConext.Provider value={[user, dispatch]}>
+        <UserContext.Provider value={[user, dispatch]}>
           <Interceptor />
           <Route path="/*" component={Client} />
-        </UserConext.Provider>
+        </UserContext.Provider>
       </Router>
     </LocaleProvider>
   )

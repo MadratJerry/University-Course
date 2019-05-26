@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { List, Avatar, Card, Tag, Button, Modal, message } from 'antd'
 import GoodPrice from '@/components/client/Price'
-import User, { UserConext } from '@/models/User'
+import User, { UserContext } from '@/models/User'
 import ItemOrder from '@/models/ItemOrder'
 
 export const OrderState = state => {
@@ -29,7 +29,7 @@ export const OrderState = state => {
 const Order = ({ id }) => {
   const [loading, setLoading] = useState(true)
   const [orders, setOrders] = useState([])
-  const [user] = useContext(UserConext)
+  const [user] = useContext(UserContext)
 
   const fetchData = async () => {
     setLoading(true)

@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pers.tam.flea.entities.*;
 import pers.tam.flea.repositories.CategoryRepository;
-import pers.tam.flea.repositories.ItemOrderRepository;
+import pers.tam.flea.repositories.RoleRepository;
 import pers.tam.flea.repositories.UserRepository;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final ItemOrderRepository orderRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -53,12 +53,15 @@ public class DatabaseLoader implements CommandLineRunner {
                         "admin",
                         AuthorityUtils.createAuthorityList("ROLE_ADMIN")));
 
+        Role roleUser = roleRepository.save(new Role(RoleName.ROLE_USER));
+        Role roleAdmin = roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+
         User user1 = new User("test1", "{noop}test",
-                Set.of(new Role(RoleName.ROLE_USER)));
+                Set.of(roleUser));
         User user2 = new User("test2", "{noop}test",
-                Set.of(new Role(RoleName.ROLE_USER)));
+                Set.of(roleUser));
         User admin = new User("admin", "{noop}admin",
-                Set.of(new Role(RoleName.ROLE_ADMIN)));
+                Set.of(roleAdmin));
 
         Comment comment1 = new Comment("3000出吗");
         Comment comment2 = new Comment("不行!");
