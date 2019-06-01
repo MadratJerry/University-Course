@@ -11,6 +11,7 @@ const TopUp = ({ id, close }) => {
   const [topId, setTopId] = useState(0)
   const [stop, setStop] = useState()
 
+  // 充值动作→向数据库添加记录
   const handleTopUp = async () => {
     const { data } = await request('/topUps', 'POST', {
       user: `/${id}`,
@@ -19,15 +20,18 @@ const TopUp = ({ id, close }) => {
     setTopId(data.id)
     setConfirm(true)
     const stop = setInterval(async () => {
+      // 循环请求，若请求订单消失，则结束请求，充值成功
+      // 不用保留订单信息
       const { data: top } = await request(`/topUps/${data.id}?projection=detail`)
       if (!top) {
         message.success('充值成功！')
         window.location.reload()
       }
     }, 1000)
+    // 改变stop状态
     setStop(stop)
   }
-
+  // stop状态改变时，重新设定，清除stop流程
   useEffect(() => {
     return () => clearInterval(stop)
   }, [stop])
@@ -35,11 +39,12 @@ const TopUp = ({ id, close }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around' }}>
       {confirm ? (
+        // 二维码中信息
         <QRCode value={`${window.location.origin}/topUps/${topId}`} size={256} />
       ) : (
         <>
           金额
-          <InputNumber value={value} onChange={e => setValue(e)} min={0} />
+          <InputNumber value={value} onChange={e => setValue(e)} min={0.01} />
           <Button type="primary" onClick={handleTopUp}>
             确认
           </Button>
@@ -70,9 +75,10 @@ class Info extends React.Component {
     }
     callback()
   }
-
+  // 检查用户名是否已经被使用
   checkUsername = async (rule, value, callback) => {
     const [user] = this.context
+    // 用户名与原来相同
     if (value === user.username) callback()
     else {
       const { data } = await User.getUserByUsername(value)
@@ -145,7 +151,7 @@ class Info extends React.Component {
               </>
             )}
           </UserContext.Consumer>
-          <Form.Item label="密码" hasFeedback>
+          <Form.Item label="新密码" hasFeedback>
             {getFieldDecorator('password', {
               rules: [
                 {

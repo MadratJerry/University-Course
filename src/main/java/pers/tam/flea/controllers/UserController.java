@@ -30,6 +30,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    //    获取当前用户
     @GetMapping("/user")
     public @ResponseBody
     ResponseEntity<?> getUserInfo(HttpSession session) {

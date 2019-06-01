@@ -3,10 +3,6 @@ import { Form, Input, Button, message } from 'antd'
 import User from '@/models/User'
 
 class Register extends React.Component {
-  state = {
-    confirmDirty: false,
-  }
-
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form
     if (value && value !== form.getFieldValue('password')) {
@@ -15,18 +11,14 @@ class Register extends React.Component {
       callback()
     }
   }
-
+  // 验证和再次输入的密码是否相同
+  // 强制调用(force:true)，用confirm字段的检查规则
   validateToNextPassword = (rule, value, callback) => {
     const form = this.props.form
-    if (value && this.state.confirmDirty) {
+    if (value) {
       form.validateFields(['confirm'], { force: true })
     }
     callback()
-  }
-
-  handleConfirmBlur = e => {
-    const value = e.target.value
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
   }
 
   handleSubmit = e => {
@@ -96,7 +88,7 @@ class Register extends React.Component {
                 validator: this.compareToFirstPassword,
               },
             ],
-          })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+          })(<Input.Password />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">

@@ -32,6 +32,9 @@ export default class User {
 
   static getUserByUsername = async username => await request(`/users/search/findByUsername?username=${username}`)
 
+  static getUserByUsernameContains = async username =>
+    await request(`/users/search/findByUsernameContains?username=${username}`)
+
   static addShippingAddress = async data => await request('/users/addShippingAddress', 'POST', data)
 
   static getShippingAddresses = async id => await request(`/users/${id}/shippingAddresses?projection=detail`)

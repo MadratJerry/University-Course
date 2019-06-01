@@ -56,9 +56,9 @@ public class DatabaseLoader implements CommandLineRunner {
         Role roleUser = roleRepository.save(new Role(RoleName.ROLE_USER));
         Role roleAdmin = roleRepository.save(new Role(RoleName.ROLE_ADMIN));
 
-        User user1 = new User("test1", "{noop}test",
+        User user1 = new User("test1", "{noop}test1",
                 Set.of(roleUser));
-        User user2 = new User("test2", "{noop}test",
+        User user2 = new User("test2", "{noop}test2",
                 Set.of(roleUser));
         User admin = new User("admin", "{noop}admin",
                 Set.of(roleAdmin));
@@ -71,6 +71,8 @@ public class DatabaseLoader implements CommandLineRunner {
         comment3.setParent(comment1);
         comment3.setReply((user2));
 
+
+        //item1
         Item item1 = new Item();
         item1.setName("Apple iPhone 8 Plus (A1864) 64GB 深空灰色 移动联通电信4G手机");
         item1.setDescription("<strong>深空灰色 公开版 内存：64GB差不多一年了吧，打算换华为了，一直有贴膜和保护壳，外观无划痕，原包装也都在</strong>");
@@ -82,6 +84,7 @@ public class DatabaseLoader implements CommandLineRunner {
         ));
         item1.setCategory(categories.get("手机"));
         item1.setComments(Set.of(comment1, comment2, comment3));
+        //item2
         Item item2 = new Item();
         item2.setName("美图（meitu） 美图T8s 手机 莫奈粉 全网通(4G+128G)");
         item2.setDescription("莫奈粉 全网通(4G 128G)");
@@ -90,11 +93,77 @@ public class DatabaseLoader implements CommandLineRunner {
         item2.setLocation(new Address("北京市", "北京市", "大兴区", ""));
         item2.setImages(List.of(new Image("/api/static/images/d6f1da000052ded9b92ef1b52ebcfe74.jpg")));
         item2.setCategory(categories.get("手机"));
+        //item3
+        Item item3 = new Item();
+        item3.setName("机械师（MACHENIKE）T58-VB3 15.6英寸游戏本笔记本电脑");
+        item3.setDescription("i5- 9300H 8G 512G PCIE SSD大固态 GTX1650 4G");
+        item3.setPrice(3499);
+        item3.setOriginalPrice(5499);
+        item3.setLocation(new Address("北京市", "北京市", "大兴区", "键盘背光损坏，其余完好"));
+        item3.setImages(List.of(new Image("/api/static/images/c656f416dc6f23263154abd06a6009bc.png")));
+        item3.setCategory(categories.get("笔记本电脑"));
+        //item4
+        Item item4 = new Item();
+        item4.setName("\n" + "美度贝伦赛丽系列)");
+        item4.setDescription("女士石英腕表");
+        item4.setPrice(2900);
+        item4.setOriginalPrice(3400);
+        item4.setLocation(new Address("北京市", "北京市", "大兴区", "就戴过一次"));
+        item4.setImages(List.of(new Image("/api/static/images/2ece6c95c8b57f8f996a14fc6262848d.jpg")));
+        item4.setCategory(categories.get("首饰"));
+        //item5
+        Item item5 = new Item();
+        item5.setName("戴尔塔式3420专业显卡图形工作站");
+        item5.setDescription("");
+        item5.setPrice(3000);
+        item5.setOriginalPrice(4899);
+        item5.setLocation(new Address("北京市", "北京市", "大兴区", "用过一个月，搬家转"));
+        item5.setImages(List.of(new Image("/api/static/images/258b7b30147c1d3e2a264f51b042564f.png")));
+        item5.setCategory(categories.get("电脑配件"));
+        //item6
+        Item item6 = new Item();
+        item6.setName("B&O E6入耳式无线耳机");
+        item6.setDescription("");
+        item6.setPrice(3000);
+        item6.setOriginalPrice(4899);
+        item6.setLocation(new Address("北京市", "北京市", "大兴区", "用过一个月，搬家转"));
+        item6.setImages(List.of(new Image("/api/static/images/86957d2331c56151cefbc7ac3047feac.jpg")));
+        item6.setCategory(categories.get("耳机耳麦"));
+        //item7
+        Item item7 = new Item();
+        item7.setName("B&O PLAY H9i头戴耳机");
+        item7.setDescription("");
+        item7.setPrice(3000);
+        item7.setOriginalPrice(4899);
+        item7.setLocation(new Address("北京市", "北京市", "大兴区", "用过一个月，搬家转"));
+        item7.setImages(List.of(new Image("/api/static/images/159a7775b61664f5f79b958fa0f38c98.jpg")));
+        item7.setCategory(categories.get("耳机耳麦"));
+        //item8
+        Item item8 = new Item();
+        item8.setName("Bose QC35 II 无线耳机");
+        item8.setDescription("");
+        item8.setPrice(3000);
+        item8.setOriginalPrice(4899);
+        item8.setLocation(new Address("北京市", "北京市", "大兴区", "用过一个月，搬家转"));
+        item8.setImages(List.of(new Image("/api/static/images/6368ccf269c7a74a52790fda2a268cd2.jpg")));
+        item8.setCategory(categories.get("耳机耳麦"));
+        //item9
+        Item item9 = new Item();
+        item9.setName("SONY WH-1000xm3头戴耳机");
+        item9.setDescription("");
+        item9.setPrice(3000);
+        item9.setOriginalPrice(4899);
+        item9.setLocation(new Address("北京市", "北京市", "大兴区", "用过一个月，搬家转"));
+        item9.setImages(List.of(new Image("/api/static/images/a72258b31ae71bc9ea42ae43dd780f3.jpg")));
+        item9.setCategory(categories.get("耳机耳麦"));
 
-        user2.setItems(Set.of(item1, item2));
+
+        user2.setItems(Set.of(item1, item2, item8, item9));
         user2.getItems().forEach(i -> i.setSeller(user2));
         user2.setComments(Set.of(comment2));
         user2.getComments().forEach(i -> i.setUser(user2));
+        user1.setItems(Set.of(item3, item4, item5, item6, item7));
+        user1.getItems().forEach(i -> i.setSeller(user1));
         user1.setComments((Set.of(comment1, comment3)));
         user1.getComments().forEach(i -> i.setUser(user1));
         user1.setShippingAddresses(Set.of(

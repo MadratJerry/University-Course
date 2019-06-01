@@ -12,8 +12,10 @@ const TopUp = ({
     try {
       const { data } = await request(`/topUps/${id}?projection=detail`)
       await User.updateInfo(data.user.id, {
+        // 加钱
         money: data.money + data.user.money,
       })
+      // 删除订单
       await request(`/topUps/${id}`, 'DELETE')
       setSuccess(true)
     } catch (e) {

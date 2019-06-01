@@ -124,7 +124,7 @@ class ItemDetail extends React.Component {
                 onClick={() => {
                   confirm({
                     title: '确认下架当前商品？',
-                    content: '下架后商品无法再次上架，如要上架请联系管理员！',
+                    content: '下架后商品无法再次上架，上架请联系管理员！',
                     onOk: () => this.handleState('OFF')(),
                   })
                 }}

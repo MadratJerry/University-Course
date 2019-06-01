@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
+    //SpringSecurity表单提交 → json提交
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (request.getContentType().equals(MediaType.APPLICATION_JSON_UTF8_VALUE) ||

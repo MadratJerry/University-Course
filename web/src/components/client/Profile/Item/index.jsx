@@ -52,7 +52,7 @@ const Item = ({ id }) => {
   return (
     <div>
       <Modal title="物品详情" visible={detailVisible} onCancel={handleDetailCancel} footer={null}>
-        <ItemDetail data={detailData} setVisible={setDetailVisible} fetchData={fetchData} />
+        <ItemDetail key={detailVisible} data={detailData} setVisible={setDetailVisible} fetchData={fetchData} />
       </Modal>
       <Modal title="交易请求" visible={ordersVisible} onCancel={handleOrdersCancel} footer={null}>
         <OrderDetail id={detailData.id} />
@@ -77,6 +77,7 @@ const Item = ({ id }) => {
           <List.Item
             style={{ display: 'flex', justifyContent: 'space-between' }}
             actions={[
+              // 已拉取数据 + 添加表单 --> 详情页面
               <Button onClick={handleDetail(data)} disabled={data.itemState === 'FINISHED'}>
                 详情
               </Button>,

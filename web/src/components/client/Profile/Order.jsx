@@ -5,6 +5,7 @@ import GoodPrice from '@/components/client/Price'
 import User, { UserContext } from '@/models/User'
 import ItemOrder from '@/models/ItemOrder'
 
+// 各种交易状态
 export const OrderState = state => {
   switch (state) {
     case 'UNACCEPTED':

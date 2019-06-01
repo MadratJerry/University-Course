@@ -47,9 +47,11 @@ const Good = ({
       <Card title={data.name} bordered={false} loading={loading}>
         <div className="good-container">
           <div className="good-images">
+            {/* lightbox查看图片 */}
             <Lightbox
               images={data.images.map(i => ({ src: i.url }))}
               isOpen={open}
+              // 显示图片页码不超出图片数
               currentImage={current % data.images.length}
               onClickPrev={() => setCurrent(current - 1 + data.images.length)}
               onClickNext={() => setCurrent(current + 1 + data.images.length)}
@@ -73,6 +75,7 @@ const Good = ({
               </div>
             </div>
             <Card style={{ marginTop: 16 }} loading={loading}>
+              {/* 小卡片 */}
               <Card.Meta
                 avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                 title={data.seller.username}
@@ -85,6 +88,7 @@ const Good = ({
                 size="large"
                 className="buy-btn"
                 onClick={handleClickBuy}
+                // 不能交易：1.未登录；2.买卖双方为同一人；3.物品被下架
                 disabled={!user.verified || data.seller.id === user.id || data.itemState === 'OFF'}
               >
                 {data.itemState === 'OFF' ? '已下架' : '立即交易'}
@@ -97,6 +101,7 @@ const Good = ({
         <Tabs
           defaultActiveKey="1"
           renderTabBar={(props, DefaultTabBar) => (
+            // 留言，sticky
             <Sticky bottomOffset={80}>
               {({ style }) => <DefaultTabBar {...props} style={{ ...style, zIndex: 1, background: '#fff' }} />}
             </Sticky>

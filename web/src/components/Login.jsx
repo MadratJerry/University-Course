@@ -1,8 +1,12 @@
 import React from 'react'
-import { Form, Icon, Input, Button, message } from 'antd'
+import { Form, Icon, Input, Button, message, Modal } from 'antd'
 import User from '@/models/User'
 
 class Login extends React.Component {
+  state = {
+    visible: false,
+  }
+
   handleSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields(async (err, values) => {
@@ -41,10 +45,23 @@ class Login extends React.Component {
           <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
             登录
           </Button>
-          <a className="login-form-forgot" href="/forgot" style={{ float: 'right' }}>
+          <a
+            className="login-form-forgot"
+            style={{ float: 'right' }}
+            href
+            onClick={() => this.setState({ visible: true })}
+          >
             忘记密码
           </a>
         </Form.Item>
+        <Modal
+          title="提醒"
+          visible={this.state.visible}
+          onCancel={() => this.setState({ visible: false })}
+          footer={null}
+        >
+          请联系管理员重置密码！
+        </Modal>
       </Form>
     )
   }

@@ -10,6 +10,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
+    Page<User> findByUsernameContains(String username, Pageable pageable);
+
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     Page<User> findAll(Pageable pageable);

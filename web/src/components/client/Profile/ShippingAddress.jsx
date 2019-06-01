@@ -70,7 +70,7 @@ class AddressForm extends Component {
     )
   }
 }
-
+// 添加收货地址表单
 const WrappedAddressForm = Form.create()(AddressForm)
 
 const ShippingAddress = ({ id }) => {
@@ -119,7 +119,9 @@ const ShippingAddress = ({ id }) => {
                   marginLeft: 8,
                   width: '40%',
                   overflow: 'hidden',
+                  // 超出省略
                   textOverflow: 'ellipsis',
+                  // 超出不换行
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -131,6 +133,7 @@ const ShippingAddress = ({ id }) => {
           </List.Item>
         )}
       />
+      {/* 添加收货地址弹窗 */}
       <Modal title="添加收货地址" visible={visible} footer={null} onCancel={() => setVisible(false)}>
         <WrappedAddressForm setVisible={setVisible} fetchData={fetchData} key={visible} />
       </Modal>

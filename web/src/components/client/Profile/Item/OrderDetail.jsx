@@ -5,6 +5,7 @@ import { OrderState } from '@/components/client/Profile/Order'
 import Item from '@/models/Item'
 import ItemOrder from '@/models/ItemOrder'
 import User from '@/models/User'
+import Address from '../../Address'
 
 const OrderDetail = ({ id, setVisible, fetchData: outerFetch }) => {
   const [loading, setLoading] = useState(true)
@@ -26,7 +27,7 @@ const OrderDetail = ({ id, setVisible, fetchData: outerFetch }) => {
     await handleOrderState(item.id, 'CANCELED')()
     message.success('退货收取成功，金币已返还！')
   }
-
+  // 交易请求
   const ListAction = item => {
     if (item.orderState === 'UNACCEPTED')
       return [
@@ -64,12 +65,35 @@ const OrderDetail = ({ id, setVisible, fetchData: outerFetch }) => {
               avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
               title={
                 <>
+                  {item.user.username}:{'  '}
                   意向价格
                   <GoodPrice style={{ color: '#ff3434', margin: '0 8px' }} value={item.price} />
                   {OrderState(item.orderState)}
                 </>
               }
-              description={`交易方式：${item.buyWay === 'ONLINE' ? '在线交易' : ''}`}
+              description={
+                <>
+                  <div>
+                    交易方式：
+                    {item.buyWay === 'ONLINE' ? '在线交易' : ''}
+                  </div>
+                  {item.orderState === 'UNFINISHED' ? (
+                    <>
+                      <div>
+                        收件人姓名：
+                        {item.shippingAddress.name}
+                      </div>
+                      收件地址：
+                      <Address {...item.shippingAddress.address} />
+                      <div />
+                      <div>
+                        联系方式：
+                        {item.shippingAddress.phoneNumber}
+                      </div>
+                    </>
+                  ) : null}
+                </>
+              }
             />
           </List.Item>
         )}

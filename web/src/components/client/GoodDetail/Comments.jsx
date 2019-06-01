@@ -69,11 +69,17 @@ const Comments = ({ id }) => {
   return (
     <>
       <Spin spinning={loading}>
+        {/* comments中:
+      1.没有parent的，按时间顺序置顶排列-->第一级
+      2.有parent的，对应第一级parent的id-->第二级 */}
+
+        {/* 第一级 */}
         {comments
           .filter(c => !c.parent)
           .sort((a, b) => (a.createdDate > b.createdDate ? -1 : 1))
           .map(v => (
             <UserComment value={v} key={v.id} onReply={handleReply}>
+              {/* 第二级 */}
               {comments
                 .filter(c => c.parent && c.parent.id === v.id)
                 .sort((a, b) => (a.createdDate < b.createdDate ? -1 : 1))
@@ -82,6 +88,7 @@ const Comments = ({ id }) => {
                 ))}
             </UserComment>
           ))}
+        {/* 留言提示affix */}
         <Affix offsetBottom={8}>
           <div className="comment-panel">
             {user.verified ? (

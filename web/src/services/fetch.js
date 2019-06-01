@@ -1,6 +1,7 @@
 export async function request(url, method = 'GET', data, option) {
   const defaultOption = {
     method,
+    // js对象→json
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
@@ -9,6 +10,7 @@ export async function request(url, method = 'GET', data, option) {
   const response = await fetch(`/api${url}`, { ...defaultOption, ...option })
   let json
   try {
+    // json→js对象
     json = await response.json()
   } catch (e) {
     json = null

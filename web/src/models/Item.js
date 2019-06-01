@@ -14,6 +14,7 @@ class Item {
           sort: ',asc',
           priceLow: 0,
           priceHigh: Number.MAX_VALUE,
+          // 后端定义'simple'强制显示哪些字段
           projection: 'simple',
           createdDate: new Date(0).toISOString(),
           itemStates: 'SELLING',
@@ -49,7 +50,7 @@ class Item {
     await request(`/itemOrders`, 'POST', { ...data, item: `/${id}`, shippingAddress: `/${data.shippingAddress}` })
 
   static updateItem = async (id, data) =>
-    await request(`/items/${id}`, 'PATCH', data.address ? await Item.itemReducer(data) : data)
+    await request(`/items/${id}`, 'PATCH', data.location ? await Item.itemReducer(data) : data)
 
   static addItem = async data => await request(`/items`, 'POST', await Item.itemReducer(data))
 

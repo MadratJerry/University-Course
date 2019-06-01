@@ -11,7 +11,7 @@ const Search = Input.Search
 const ItemTable = ({ category }) => {
   const [loading, setLoading] = useState(true)
   const [items, setItems] = useState([])
-  const [page, setPage] = useState({ size: 2, totalElements: 0, totalPages: 0, number: 0 })
+  const [page, setPage] = useState({ size: 9, totalElements: 0, totalPages: 0, number: 0 })
   const [open, setOpen] = useState(false)
   const [filter, setFilter] = useState({})
 
@@ -28,6 +28,7 @@ const ItemTable = ({ category }) => {
       size: page.size,
       ...filter,
     })
+    // 加载图标
     setLoading(false)
     setItems(items)
     setPage({ ...page, ...newPage })
@@ -62,6 +63,7 @@ const ItemTable = ({ category }) => {
 
   return (
     <div>
+      {/* 侧边筛选弹框 */}
       <Drawer
         title="筛选"
         className="filter-drawer"
@@ -121,11 +123,13 @@ const ItemTable = ({ category }) => {
         <>
           <Spin spinning={loading} delay={300}>
             <div className="item-container">
+              {/* loading后要显示的数据 */}
               {items.map(item => (
                 <GoodItem key={item.id} {...item} url={item.images[0].url} />
               ))}
             </div>
           </Spin>
+          {/* 换页处理 */}
           <Pagination
             style={{ marginTop: '1%' }}
             current={page.number + 1}

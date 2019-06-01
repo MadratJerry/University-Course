@@ -27,7 +27,7 @@ class ImageWall extends React.Component {
     const uploadButton = (
       <div>
         <Icon type="plus" />
-        <div className="ant-upload-text">Upload</div>
+        <div className="ant-upload-text">上传</div>
       </div>
     )
     return (
@@ -40,6 +40,7 @@ class ImageWall extends React.Component {
           onChange={this.handleChange}
           onRemove={this.handleRemove}
         >
+          {/* 上传图片上限4张 */}
           {fileList.length >= 4 ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>

@@ -21,7 +21,7 @@ interface ItemOrderDetailProjection {
 
     ItemSimpleProjection getItem();
 
-    ShippingAddress getShippingAddress();
+    ShippingAddressDetailProjection getShippingAddress();
 
     Double getPrice();
 

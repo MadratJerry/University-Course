@@ -4,10 +4,11 @@ import User from '@/models/User'
 
 const UserTable = () => {
   const [data, setData] = useState([])
-  const [page, setPage] = useState({ current: 1, pageSize: 2, total: 0 })
+  const [page, setPage] = useState({ current: 1, pageSize: 8, total: 0 })
   const [loading, setLoading] = useState(true)
   const inputRef = useRef()
 
+  // 重置密码为123456
   const resetPassword = id => async () => {
     const { response } = await User.updateInfo(id, { password: '123456' })
     if (response.ok) {
@@ -19,12 +20,13 @@ const UserTable = () => {
 
   const handleSearch = async (selectedKeys, confirm) => {
     confirm()
-    const { data } = await User.getUserByUsername(selectedKeys[0])
-    setData(data ? [data] : [])
-    setPage({ current: 1, pageSize: 1, total: 1 })
+    const { data } = await User.getUserByUsernameContains(selectedKeys[0])
+    setData(data._embedded.users)
+    setPage({ current: 1, pageSize: data.page.size, total: data.page.totalElements })
   }
 
   const getColumnSearchProps = dataIndex => ({
+    // 筛选用户
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Input
@@ -100,7 +102,7 @@ const UserTable = () => {
 
   const fetchData = async number => {
     setLoading(true)
-    const { data } = await User.getAllUser({ page: number, size: 2 })
+    const { data } = await User.getAllUser({ page: number, size: 8 })
     setData(data._embedded.users)
     setPage({ total: data.page.totalElements, current: data.page.number + 1, pageSize: data.page.size })
     setLoading(false)

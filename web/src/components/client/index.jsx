@@ -30,6 +30,7 @@ const Client = () => {
             <Route exact path="/" component={Home} />
             <Route exact path="/profile/:tab" component={Profile} />
             <Route exact path="/goods" component={GoodList} />
+            {/* “:”捕获后面接的参数，传给组件 */}
             <Route exact path="/goods/:id" component={Good} />
             <Route exact path="/topUps/:id" component={TopUp} />
           </Switch>

@@ -10,13 +10,13 @@ const TopCarousel = () => {
           <img src="/api/static/images/57aeb9e05842d77bf0fd2e42a6812b11.png" alt="" />
         </div>
         <div>
-          <h3>2</h3>
+          <img src="/api/static/images/57aeb9e05842d77bf0fd2e42a6812b11.png" alt="" />
         </div>
         <div>
-          <h3>3</h3>
+          <img src="/api/static/images/57aeb9e05842d77bf0fd2e42a6812b11.png" alt="" />
         </div>
         <div>
-          <h3>4</h3>
+          <img src="/api/static/images/57aeb9e05842d77bf0fd2e42a6812b11.png" alt="" />
         </div>
       </Carousel>
     </div>
