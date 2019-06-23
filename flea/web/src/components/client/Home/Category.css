@@ -1,0 +1,16 @@
+.category-line {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.category-line .link-group a {
+  margin-left: 10px;
+}
+
+.view-more {
+  display: flex;
+  justify-content: center;
+}
+
+/* .category-line . */

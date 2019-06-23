@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "es6",
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "target": "esnext",
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["./**/*"]
+}
